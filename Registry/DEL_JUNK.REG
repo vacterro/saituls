@@ -1,0 +1,13 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\shell\DeleteJunkFiles]
+@="DEL JUNK"
+
+[HKEY_CLASSES_ROOT\Directory\shell\DeleteJunkFiles\command]
+@="pythonw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFiles]
+@="DEL JUNK"
+
+[HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFiles\command]
+@="pythonw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" \"%1\""

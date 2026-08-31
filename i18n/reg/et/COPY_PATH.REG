@@ -1,0 +1,17 @@
+Windows Registry Editor Version 5.00
+
+; Copy Path for all files
+[HKEY_CLASSES_ROOT\*\shell\CopyPathAsText]
+@="Kopeeri tee tekstina"
+"Icon"="imageres.dll,-5302"
+
+[HKEY_CLASSES_ROOT\*\shell\CopyPathAsText\command]
+@="cmd.exe /v:on /c \"set path_var=%1& powershell -WindowStyle Hidden -Command Set-Clipboard -Value $env:path_var.Trim([char]34)\""
+
+; Copy Path for folders
+[HKEY_CLASSES_ROOT\Directory\shell\CopyPathAsText]
+@="Kopeeri tee tekstina"
+"Icon"="imageres.dll,-5302"
+
+[HKEY_CLASSES_ROOT\Directory\shell\CopyPathAsText\command]
+@="cmd.exe /v:on /c \"set path_var=%1& powershell -WindowStyle Hidden -Command Set-Clipboard -Value $env:path_var.Trim([char]34)\""

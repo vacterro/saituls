@@ -1,0 +1,64 @@
+{
+  "FFMPEG_MENU.REG": {
+    "AAC (Моментально)": "ffmpeg.aac_fast",
+    "JPG (Малый вес)": "ffmpeg.jpg_small",
+    "Mp3 (Медленно)": "ffmpeg.mp3_slow",
+    "PNG (Большой вес)": "ffmpeg.png_large",
+    "Высокое качество": "ffmpeg.quality_high",
+    "Извлечь Аудио": "ffmpeg.extract_audio",
+    "Качественный": "ffmpeg.quality_good",
+    "Конвертировать": "ffmpeg.convert",
+    "Медленно (Малый вес)": "ffmpeg.mode_slow",
+    "Моментально (Большой вес)": "ffmpeg.mode_fast",
+    "Низкое качество": "ffmpeg.quality_low",
+    "Опции": "ffmpeg.options",
+    "Разбить на кадры": "ffmpeg.split_frames",
+    "Сбалансированый": "ffmpeg.quality_balanced",
+    "Сделать GIF": "ffmpeg.make_gif",
+    "Сжать в AV1": "ffmpeg.compress_av1",
+    "Сжать в MP4": "ffmpeg.compress_mp4",
+    "Среднее качество": "ffmpeg.quality_medium",
+    "Удалить звук": "ffmpeg.remove_audio"
+  },
+  "MKV_FIX.REG": {
+    "Опции": "ffmpeg.options",
+    "Сжать в AV1": "ffmpeg.compress_av1",
+    "Сжать в MP4": "ffmpeg.compress_mp4"
+  },
+  "DL_YT.REG": {
+    "Скачать с YouTube": "menu.dl_yt",
+    "Видео": "dl_yt.sub_video",
+    "Видео (с датой)": "dl_yt.sub_video_dated",
+    "Видео (плейлист)": "dl_yt.sub_video_playlist",
+    "Аудио": "dl_yt.sub_audio",
+    "Аудио (с датой)": "dl_yt.sub_audio_dated",
+    "Аудио (плейлист)": "dl_yt.sub_audio_playlist"
+  },
+  "PACK.REG": {
+    "Упаковать в папку": "menu.pack"
+  },
+  "COPY_PATH.REG": {
+    "COPY PATH": "menu.copy_path"
+  },
+  "DEL_DUP.REG": {
+    "DEL DUP": "menu.del_dup"
+  },
+  "DEL_EMPTY.REG": {
+    "DEL EMPTY": "menu.del_empty"
+  },
+  "DEL_SAME.REG": {
+    "DEL SAME": "menu.del_same"
+  },
+  "MERGE_AUD.REG": {
+    "MERGE AUD": "menu.merge_aud"
+  },
+  "NEW_PROJ.REG": {
+    "NEW PROJ": "menu.new_proj"
+  },
+  "PS_ADMIN.REG": {
+    "PS ADMIN": "menu.ps_admin"
+  },
+  "TAKE_OWN.REG": {
+    "TAKE OWN": "menu.take_own"
+  }
+}

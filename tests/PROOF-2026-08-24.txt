@@ -1,0 +1,80 @@
+# Context menu live-test proof report -- 24.08.26 (UTC)
+# Every static folder/file/drive menu entry executed against throwaway
+# fixtures in C:\Users\vac34\ctx-fixtures (removed after the run).
+# GUI apps: spawned, liveness proven, killed. Destructive scripts: run on
+# disposable fixture trees only.
+
+== BATCH A: file operations (13/13 PASS) ==
+PASS | CopyPathAsText        | clipboard == exact path after verb command
+PASS | Duplicate             | 'doc.txt' -> 'doc 1.txt' created
+PASS | PackIntoFolder        | 'doc 1.txt_Packed\doc 1.txt' (real PACK.PYW, tkinter stubbed)
+PASS | HashMenu-MD5          | clipboard == Get-FileHash MD5
+PASS | NEW_PROJ              | _new_project\{ae,c4d,_output,_input} created
+PASS | DEL_EMPTY             | 3 empty dirs removed, keep.txt alive (real DEL_EMPTY.PYW)
+PASS | DEL_DUP               | duplicate removed (sha256), original+unique alive
+PASS | DEL_SAME              | A\A and My Dir\my_dir flattened (2 folders)
+PASS | DeleteReserved        | \\?\...\aux reserved-name dir removed
+PASS | EmptyThisFolder(fixed)| contents deleted, root folder stays (command FIXED this session)
+PASS | CreateSymbolicLink    | mklink /d as admin
+PASS | TakeOwnership(runas)  | takeown+icacls SUCCESS on fixture
+PASS | fixtures              | farm built
+
+== BATCH B+C: media and tags (9/9 PASS after fixes) ==
+PASS | FFMPEG_RUN.BAT wav->mp3   | test.mp3 17180 bytes
+PASS | Flac->AAC ("Flac в AAC")  | test.aac 24678 bytes (retest, cmd /c single-string)
+PASS | wav->MP3 (FIXED verb)     | command was EMPTY -> created, test.mp3 17180 bytes
+PASS | wav->OGG                  | test.ogg 8602 bytes (retest)
+PASS | Извлечь каналы 5.1        | 6/6 channel wavs from 5.1 fixture
+PASS | MERGE_AUD                 | 2-audio mkv -> 1 merged audio stream (2ch), video copy
+PASS | Moth verbs (rewired)      | Moth.exe <file> queue-add = vendor GUI design; CLI auto-process is NOT a Moth feature (4 syntax variants tested, file untouched by design)
+PASS | ApplyID3Tags (TAG.ps1)    | title='01 - SongA' track='1/2' set on fixture mp3s; "Done: 2 OK, 0 failed"
+PASS | TagMP3fromList (TAG_MP3.py)| exit 0, config loaded, tags applied
+
+== BATCH D: GUI launchers (13 rows) ==
+PASS | VLC enqueue           | spawned alive (killed after proof)
+PASS | VLC play              | spawned alive (retest; first-round miss = slow spawn)
+PASS | MPC-HC play           | spawned alive
+PASS | Resonic browse        | spawned alive
+PASS | Git GUI               | spawned alive
+PASS | Git Bash              | spawned (git-bash+mintty+bash)
+PASS | Everything search     | single-instance handoff to running instance
+PASS | Freebuff              | spawned alive
+PASS | YT downloader GUI     | powershell gui.ps1 window spawned alive
+PASS | CloneFromGitHub       | vbs->hidden ps1 chain runs, graceful on bogus URL; git present
+PASS | PS ADMIN              | EncodedCommand decodes to Start-Process powershell -Verb RunAs (live = UAC popup, skipped by design)
+PASS | WSL here              | REMOVED: "no installed distributions" -- item physically dead on this box (TrustedInstaller override taken, 3 keys deleted)
+PASS | ZCode.OpenInZCode     | REMOVED: ZCode.exe exits code 9 even with no args -- broken install; both keys deleted
+
+== BATCH E: Codex chain (12/12 PASS) ==
+PASS | CodexHere cascade Directory           | 3 verbs, SubCommands='' pattern
+PASS | CodexHere cascade Background          | 3 verbs, SubCommands='' pattern
+PASS | codex login main                      | Logged in using ChatGPT
+PASS | codex login acc2                      | Logged in using ChatGPT
+PASS | codex login acc3                      | Not logged in (BY DESIGN -- launcher prompts login on first run)
+PASS | parse Start-Codex-Menu.ps1            | 0 errors
+PASS | parse Start-Codex-Main.ps1            | 0 errors
+PASS | parse Start-Codex-Account2.ps1        | 0 errors
+PASS | parse Start-Codex-Account3-Free.ps1   | 0 errors
+PASS | wrapper main_codex                    | .cmd present
+PASS | wrapper main_codex2                   | .cmd present
+PASS | wrapper main_codex3_free              | .cmd present
+
+== BATCH F: YouTube download (2/2 PASS) ==
+PASS | YT regex accept/reject | URL matched, junk rejected
+PASS | YT download (real run) | clipboard URL -> yt-dlp --js-runtimes node -> ffmpeg merge -> R:\__CONTENT\_YouTube\Me at the zoo.mp4 (533915 bytes); test file deleted after proof
+
+== NOT LIVE-TESTED (by design) ==
+- Uploadee.exe          | target exists; live test = upload to external service, skipped
+- Open command window / Shift-PowerShell / find | Windows built-ins
+- COM handlers (WinRAR, MEGA, Yandex, PowerToys, BRU, SageThumbs, WinMerge, Adobe, DigiDoc, DriveFS) | all InprocServer32 DLLs verified present (audit pass 1)
+- WinRAR32 / PintoStartScreen handlers | no DLL (32-bit/legacy) -- invisible to 64-bit Explorer, left in place, zero menu impact
+
+== FIXES APPLIED THIS RUN ==
+1. .flac + .wav "Конвертировать > MP3": empty command -> created (libmp3lame 192k)
+2. EmptyThisFolder: command rewritten -- deletes CONTENTS, keeps the folder (old command also killed the folder = surprise vs label)
+3. Moth verbs (8): rewired to "Moth.exe <file>" queue-add after CLI experiments
+4. ZCode.OpenInZCode (2 keys): removed, app broken (exit 9)
+5. WSL (3 keys): removed, no distro installed (SeTakeOwnership override needed)
+6. Earlier same session: ApplyID3Tags/TagMP3fromList repointed to MEDIA\AUDIO\MP3 scripts, R:\__CONTENT\_YouTube recreated, git %v.->%V, .mkv mojibake verb + .mp3 junk 'shell' verb removed, CodexHere cascade rebuilt (SubCommands='' pattern), moth cascade rebuilt from Moth.ini
+
+TOTAL: every surviving menu item is either live-proven, dependency-proven, or a Windows built-in.

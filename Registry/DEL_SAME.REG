@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\shell\RemoveNestedDuplicates]
+@="DEL SAME"
+
+[HKEY_CLASSES_ROOT\Directory\shell\RemoveNestedDuplicates\command]
+@="pythonw.exe \"%%ROOT%%\\Scripts\\DEL_SAME.PYW\" \"%1\""
+

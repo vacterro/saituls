@@ -1,0 +1,20 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  regs:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run integrity suite
+        shell: pwsh
+        run: |
+          python tests\test_regs.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

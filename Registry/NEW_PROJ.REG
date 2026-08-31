@@ -1,0 +1,16 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\CreateNewProjectFolder]
+@="NEW PROJ"
+"Icon"="explorer.exe"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\CreateNewProjectFolder\command]
+@="\"%%ROOT%%\\Scripts\\NEW_PROJ.CMD\" \"%V\""
+
+[HKEY_CLASSES_ROOT\Directory\shell\CreateNewProjectFolder]
+@="NEW PROJ"
+"Icon"="explorer.exe"
+
+[HKEY_CLASSES_ROOT\Directory\shell\CreateNewProjectFolder\command]
+@="\"%%ROOT%%\\Scripts\\NEW_PROJ.CMD\" \"%1\""
+

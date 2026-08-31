@@ -1,0 +1,16 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\CreateNewProjectFolder]
+@="Loo uue projekti kaust"
+"Icon"="explorer.exe"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\CreateNewProjectFolder\command]
+@="\"%%ROOT%%\\Scripts\\NEW_PROJ.CMD\" \"%V\""
+
+[HKEY_CLASSES_ROOT\Directory\shell\CreateNewProjectFolder]
+@="Loo uue projekti kaust"
+"Icon"="explorer.exe"
+
+[HKEY_CLASSES_ROOT\Directory\shell\CreateNewProjectFolder\command]
+@="\"%%ROOT%%\\Scripts\\NEW_PROJ.CMD\" \"%1\""
+

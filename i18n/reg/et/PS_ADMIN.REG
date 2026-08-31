@@ -1,0 +1,21 @@
+Windows Registry Editor Version 5.00
+
+; Add "Open PowerShell (Admin)" to folder background
+[HKEY_CLASSES_ROOT\Directory\Background\shell\OpenPowerShellAdmin]
+@="Ava PowerShell administraatorina"
+"Icon"="powershell.exe"
+"HasLUAShield"=""
+"Position"="Top"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\OpenPowerShellAdmin\command]
+@="cmd.exe /v:on /c \"set \"path_var=%V\"& powershell.exe -WindowStyle Hidden -EncodedCommand UwB0AGEAcgB0AC0AUAByAG8AYwBlAHMAcwAgAHAAbwB3AGUAcgBzAGgAZQBsAGwAIAAtAEEAcgBnAHUAbQBlAG4AdABMAGkAcwB0ACAAJwAtAE4AbwBFAHgAaQB0ACcALAAgACcALQBDAG8AbQBtAGEAbgBkACcALAAgACcAUwBlAHQALQBMAG8AYwBhAHQAaQBvAG4AIAAtAEwAaQB0AGUAcgBhAGwAUABhAHQAaAAgACQAZQBuAHYAOgBwAGEAdABoAF8AdgBhAHIAJwAgAC0AVgBlAHIAYgAgAFIAdQBuAEEAcwA=\""
+
+; Add "Open PowerShell (Admin)" to folders
+[HKEY_CLASSES_ROOT\Directory\shell\OpenPowerShellAdmin]
+@="Ava PowerShell administraatorina"
+"Icon"="powershell.exe"
+"HasLUAShield"=""
+"Position"="Top"
+
+[HKEY_CLASSES_ROOT\Directory\shell\OpenPowerShellAdmin\command]
+@="cmd.exe /v:on /c \"set \"path_var=%V\"& powershell.exe -WindowStyle Hidden -EncodedCommand UwB0AGEAcgB0AC0AUAByAG8AYwBlAHMAcwAgAHAAbwB3AGUAcgBzAGgAZQBsAGwAIAAtAEEAcgBnAHUAbQBlAG4AdABMAGkAcwB0ACAAJwAtAE4AbwBFAHgAaQB0ACcALAAgACcALQBDAG8AbQBtAGEAbgBkACcALAAgACcAUwBlAHQALQBMAG8AYwBhAHQAaQBvAG4AIAAtAEwAaQB0AGUAcgBhAGwAUABhAHQAaAAgACQAZQBuAHYAOgBwAGEAdABoAF8AdgBhAHIAJwAgAC0AVgBlAHIAYgAgAFIAdQBuAEEAcwA=\""

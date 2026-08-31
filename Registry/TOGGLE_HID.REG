@@ -1,0 +1,72 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\HiddenFiles]
+"Icon"="imageres.dll,-5314"
+"MUIVerb"="Hidden items"
+"Position"="Bottom"
+"Extended"=-
+"SubCommands"=""
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles]
+"CommandStateSync"=""
+"Description"="@shell32.dll,-37573"
+"ExplorerCommandHandler"="{f7300245-1f4b-41ba-8948-6fd392064494}"
+"Icon"="imageres.dll,-5314"
+"MUIVerb"="Hide/Show Hidden items"
+
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\HiddenFiles\shell\x1menu]
+"MUIVerb"="Hide protected OS files"
+"Icon"="imageres.dll,-5314"
+"CommandFlags"=dword:00000020
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\HiddenFiles\shell\x1menu\command]
+@="cmd /c, REG ADD \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 0 /F & powershell -WindowStyle Hidden -EncodedCommand JABzAD0AKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAALQBDAG8AbQBPAGIAagBlAGMAdAAgAFMAaABlAGwAbAAuAEEAcABwAGwAaQBjAGEAdABpAG8AbgApAC4AVwBpAG4AZABvAHcAcwAoACkAOwAgAGYAbwByAGUAYQBjAGgAKAAkAHcAIABpAG4AIAAkAHMAKQB7ACQAdwAuAFIAZQBmAHIAZQBzAGgAKAApAH0AOwAgACgATgBlAHcALQBPAGIAagBlAGMAdAAgAC0AQwBvAG0ATwBiAGoAZQBjAHQAIABXAFMAYwByAGkAcAB0AC4AUwBoAGUAbABsACkALgBTAGUAbgBkAEsAZQB5AHMAKAAnAHsARgA1AH0AJwApAA=="
+
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\HiddenFiles\shell\x2menu]
+"MUIVerb"="Show protected OS files"
+"Icon"="imageres.dll,-5314"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\HiddenFiles\shell\x2menu\command]
+@="cmd /c, REG ADD \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /V Hidden /T REG_DWORD /D 1 /F & REG ADD \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 1 /F & powershell -WindowStyle Hidden -EncodedCommand JABzAD0AKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAALQBDAG8AbQBPAGIAagBlAGMAdAAgAFMAaABlAGwAbAAuAEEAcABwAGwAaQBjAGEAdABpAG8AbgApAC4AVwBpAG4AZABvAHcAcwAoACkAOwAgAGYAbwByAGUAYQBjAGgAKAAkAHcAIABpAG4AIAAkAHMAKQB7ACQAdwAuAFIAZQBmAHIAZQBzAGgAKAApAH0AOwAgACgATgBlAHcALQBPAGIAagBlAGMAdAAgAC0AQwBvAG0ATwBiAGoAZQBjAHQAIABXAFMAYwByAGkAcAB0AC4AUwBoAGUAbABsACkALgBTAGUAbgBkAEsAZQB5AHMAKAAnAHsARgA1AH0AJwApAA=="
+
+
+
+
+[HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\HiddenFiles]
+"Icon"="imageres.dll,-5314"
+"MUIVerb"="Hidden items"
+"Position"="Bottom"
+"Extended"=-
+"SubCommands"=""
+
+[HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\HiddenFiles\shell\Windows.ShowHiddenFiles]
+"CommandStateSync"=""
+"Description"="@shell32.dll,-37573"
+"ExplorerCommandHandler"="{f7300245-1f4b-41ba-8948-6fd392064494}"
+"Icon"="imageres.dll,-5314"
+"MUIVerb"="Hide/Show hidden items"
+
+[HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\HiddenFiles\shell\Windows.HideSelected]
+"Description"="@shell32.dll,-37575"
+"ExplorerCommandHandler"="{0947c622-f98a-48a5-9df7-60e5fe202e07}"
+"Icon"="imageres.dll,-5314"
+"MUIVerb"="Hide/Unhide selected items"
+
+
+[HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\HiddenFiles\shell\x1menu]
+"MUIVerb"="Hide protected OS files"
+"Icon"="imageres.dll,-5314"
+"CommandFlags"=dword:00000020
+
+[HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\HiddenFiles\shell\x1menu\command]
+@="cmd /c, REG ADD \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 0 /F & powershell -WindowStyle Hidden -EncodedCommand JABzAD0AKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAALQBDAG8AbQBPAGIAagBlAGMAdAAgAFMAaABlAGwAbAAuAEEAcABwAGwAaQBjAGEAdABpAG8AbgApAC4AVwBpAG4AZABvAHcAcwAoACkAOwAgAGYAbwByAGUAYQBjAGgAKAAkAHcAIABpAG4AIAAkAHMAKQB7ACQAdwAuAFIAZQBmAHIAZQBzAGgAKAApAH0AOwAgACgATgBlAHcALQBPAGIAagBlAGMAdAAgAC0AQwBvAG0ATwBiAGoAZQBjAHQAIABXAFMAYwByAGkAcAB0AC4AUwBoAGUAbABsACkALgBTAGUAbgBkAEsAZQB5AHMAKAAnAHsARgA1AH0AJwApAA=="
+
+
+[HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\HiddenFiles\shell\x2menu]
+"MUIVerb"="Show protected OS files"
+"Icon"="imageres.dll,-5314"
+
+[HKEY_CLASSES_ROOT\AllFilesystemObjects\shell\HiddenFiles\shell\x2menu\command]
+@="cmd /c, REG ADD \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /V Hidden /T REG_DWORD /D 1 /F & REG ADD \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 1 /F & powershell -WindowStyle Hidden -EncodedCommand JABzAD0AKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAALQBDAG8AbQBPAGIAagBlAGMAdAAgAFMAaABlAGwAbAAuAEEAcABwAGwAaQBjAGEAdABpAG8AbgApAC4AVwBpAG4AZABvAHcAcwAoACkAOwAgAGYAbwByAGUAYQBjAGgAKAAkAHcAIABpAG4AIAAkAHMAKQB7ACQAdwAuAFIAZQBmAHIAZQBzAGgAKAApAH0AOwAgACgATgBlAHcALQBPAGIAagBlAGMAdAAgAC0AQwBvAG0ATwBiAGoAZQBjAHQAIABXAFMAYwByAGkAcAB0AC4AUwBoAGUAbABsACkALgBTAGUAbgBkAEsAZQB5AHMAKAAnAHsARgA1AH0AJwApAA=="

@@ -1,0 +1,19 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\TakeOwnership]
+@="TAKE OWN"
+"Icon"="imageres.dll,-78"
+"HasLUAShield"=""
+"NoWorkingDirectory"=""
+
+[HKEY_CLASSES_ROOT\*\shell\TakeOwnership\command]
+@="cmd.exe /v:on /c \"set path_var=%1& takeown /f !path_var! && icacls !path_var! /grant administrators:F /t\""
+
+[HKEY_CLASSES_ROOT\Directory\shell\TakeOwnership]
+@="TAKE OWN"
+"Icon"="imageres.dll,-78"
+"HasLUAShield"=""
+"NoWorkingDirectory"=""
+
+[HKEY_CLASSES_ROOT\Directory\shell\TakeOwnership\command]
+@="cmd.exe /v:on /c \"set path_var=%1& takeown /f !path_var! /r /d y && icacls !path_var! /grant administrators:F /t\""

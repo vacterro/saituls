@@ -1,0 +1,4 @@
+Удалено пустых папок: 2
+
+V:\_TEMP_\saituls_probe_e3fbfabd\emptyX\emptyY
+V:\_TEMP_\saituls_probe_e3fbfabd\emptyX

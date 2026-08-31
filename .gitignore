@@ -1,0 +1,35 @@
+# Source code — keep Bin/App/ structure for %%ROOT%%, but not the heavy binaries themselves
+Bin/*
+!Bin/FFMPEG_RUN.BAT
+!Bin/AV1_COMPRESS.BAT
+!Bin/*.md
+Bin/App/*
+!Bin/App/YOUTUBE.INI
+!Bin/App/*.md
+
+# Personal autostart scripts — keep on local machine only
+___AHK/
+
+# SAIPEN project memory — private, not for public repo
+.saipen/
+
+# Caches and build artifacts
+__pycache__/
+*.pyc
+*.bak
+*.saisent.bak
+*.tmp
+*.old
+Scripts/__pycache__/
+tests/__pycache__/
+
+# Audit scratch
+audit/
+
+# Windows junk
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Temp files from test runs
+_V_TEMP_/
