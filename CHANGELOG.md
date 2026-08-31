@@ -1,3 +1,22 @@
+# SAITULS 0.0.2 (2026-09-01)
+
+## What changed
+
+- `SAITULS.exe` is now a pure launcher/installer hub. The embedded blip
+  Monitor tab and its engine were removed; Problip stays in the repo as a
+  standalone tool (`problip/Problip.exe`), launched from the Tools tab.
+  Tabs: Menus | Tools | Settings.
+- `LIMISAW.exe` is now tray-first: it draws the live limit numbers directly
+  in the tray icon. The tray menu lets you pick which values to show per
+  account — C1 5h / C1 weekly / C2 5h / C2 weekly, any combination. Added a
+  reset detector (compares previous vs current remaining % and reset time to
+  confirm an OpenAI-side reset) and quiet balloon notifications on reset.
+  Reset times are shown as friendly relative values ("in 3h 20m") instead of
+  raw ISO strings, and the accent palette (green/yellow/red) is brighter for
+  readability on the dark surface.
+- Problip autostart verified: per-user Run key points at the relocated exe,
+  `AutoStart=1` in `problip.ini`, starts silently to tray.
+
 # SAITULS 0.0.1 (2026-08-31)
 
 First public release. The toolkit was consolidated from a scattered personal

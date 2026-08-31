@@ -10,9 +10,9 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 
 // SAITULS — unified toolkit manager.
-// Tabs: Menus | Monitor | Tools | Settings
+// Tabs: Menus | Tools | Settings
 // UI: saipen UI.md Golden Default. Text is NON-antialiased (pixel text).
-// v1 C#. Combines context-menu management, problip monitor, and mini-tools.
+// v1 C#. Launcher hub: context-menu install + tool launcher + settings.
 
 namespace Saituls
 {
@@ -59,11 +59,7 @@ namespace Saituls
         public string Dir;
         public string IniPath;
         public string RootPath;
-        public string WavPath;
         public string IcoPath;
-        public double Volume = 0.05;
-        public int MinMs = 4000;
-        public int MaxMs = 7000;
         public bool AutoStart = true;
         public bool StartMinimized = false;
         public string LastTab = "Menus";
@@ -72,7 +68,6 @@ namespace Saituls
         {
             Dir = dir;
             IniPath = Path.Combine(dir, "SAITULS.ini");
-            WavPath = Path.Combine(dir, "blip01.wav");
             IcoPath = Path.Combine(dir, "SAITULS.ico");
             RootPath = dir;
         }
@@ -93,16 +88,6 @@ namespace Saituls
         public void Load()
         {
             string v;
-            v = Read("Volume", "0.05");
-            double.TryParse(v, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out Volume);
-            if (Volume < 0 || Volume > 1) Volume = 0.05;
-            v = Read("MinMs", "4000");
-            int.TryParse(v, out MinMs);
-            v = Read("MaxMs", "7000");
-            int.TryParse(v, out MaxMs);
-            if (MaxMs < MinMs) MaxMs = MinMs;
-            if (MinMs < 1000) MinMs = 1000;
-            if (MaxMs > 60000) MaxMs = 60000;
             AutoStart = Read("AutoStart", "1") == "1";
             StartMinimized = Read("StartMinimized", "0") == "1";
             LastTab = Read("LastTab", "Menus");
@@ -114,9 +99,6 @@ namespace Saituls
         public void Save()
         {
             var ci = System.Globalization.CultureInfo.InvariantCulture;
-            Write("Volume", Volume.ToString("0.00", ci));
-            Write("MinMs", MinMs.ToString());
-            Write("MaxMs", MaxMs.ToString());
             Write("AutoStart", AutoStart ? "1" : "0");
             Write("StartMinimized", StartMinimized ? "1" : "0");
             Write("LastTab", LastTab);
@@ -124,156 +106,14 @@ namespace Saituls
         }
     }
 
-    class BlipEngine
-    {
-        SaitulsSettings S;
-        System.Media.SoundPlayer Player;
-        string CachePath;
-        Random Rng = new Random();
-        Timer Timer;
-        long LastPlayMs = -100000;
-        Stopwatch Clock = Stopwatch.StartNew();
-        public bool Enabled = false;
-        public int MinMs, MaxMs;
-
-        public BlipEngine(SaitulsSettings s)
-        {
-            S = s;
-            MinMs = s.MinMs;
-            MaxMs = s.MaxMs;
-            Timer = new Timer();
-            Timer.Interval = 500;
-            Timer.Tick += Tick;
-            BuildCache();
-        }
-
-        void BuildCache()
-        {
-            // Every volume change calls Reload -> BuildCache. Dispose the old
-            // player and delete its temp wav, else each click leaks a file in
-            // %TEMP% and the handle keeps it locked for the whole session.
-            try
-            {
-                if (Player != null) { Player.Dispose(); Player = null; }
-                if (CachePath != null && File.Exists(CachePath)) File.Delete(CachePath);
-            }
-            catch { }
-            try
-            {
-                byte[] src = File.ReadAllBytes(S.WavPath);
-                byte[] scaled = ScaleWav(src, S.Volume);
-                CachePath = Path.Combine(Path.GetTempPath(), "saituls_" + Guid.NewGuid().ToString("N") + ".wav");
-                File.WriteAllBytes(CachePath, scaled);
-                Player = new System.Media.SoundPlayer(CachePath);
-                Player.Load();
-            }
-            catch { Player = null; }
-        }
-
-        byte[] ScaleWav(byte[] b, double gain)
-        {
-            if (gain >= 0.999999) return b;
-            byte[] outb = (byte[])b.Clone();
-            int dataStart = -1, dataLen = 0, fmtBits = 0, fmtPos = 12;
-            while (fmtPos + 8 <= b.Length)
-            {
-                string id = System.Text.Encoding.ASCII.GetString(b, fmtPos, 4);
-                int len = BitConverter.ToInt32(b, fmtPos + 4);
-                if (len < 0 || fmtPos + 8 + len > b.Length) break;
-                if (id == "fmt " && len >= 16) fmtBits = BitConverter.ToUInt16(b, fmtPos + 22);
-                else if (id == "data") { dataStart = fmtPos + 8; dataLen = len; break; }
-                fmtPos += 8 + len + (len % 2);
-            }
-            if (dataStart < 0) return b;
-            int bps = fmtBits / 8;
-            int end = dataStart + dataLen;
-            for (int i = dataStart; i + bps <= end; i += bps)
-            {
-                if (fmtBits == 8)
-                {
-                    int v = (int)Math.Round((outb[i] - 128) * gain) + 128;
-                    outb[i] = (byte)Math.Max(0, Math.Min(255, v));
-                }
-                else if (fmtBits == 16)
-                {
-                    short v = BitConverter.ToInt16(outb, i);
-                    int n = (int)Math.Round(v * gain);
-                    if (n > 32767) n = 32767; else if (n < -32768) n = -32768;
-                    outb[i] = (byte)(n & 0xFF); outb[i + 1] = (byte)((n >> 8) & 0xFF);
-                }
-                else if (fmtBits == 24)
-                {
-                    int raw = outb[i] | (outb[i + 1] << 8) | (outb[i + 2] << 16);
-                    int v = (raw & 0x800000) != 0 ? raw - 0x1000000 : raw;
-                    int n = (int)Math.Round(v * gain);
-                    if (n > 8388607) n = 8388607; else if (n < -8388608) n = -8388608;
-                    n &= 0xFFFFFF;
-                    outb[i] = (byte)(n & 0xFF); outb[i + 1] = (byte)((n >> 8) & 0xFF); outb[i + 2] = (byte)((n >> 16) & 0xFF);
-                }
-                else if (fmtBits == 32)
-                {
-                    int v = BitConverter.ToInt32(outb, i);
-                    long n = (long)Math.Round((double)v * gain);
-                    if (n > int.MaxValue) n = int.MaxValue; else if (n < int.MinValue) n = int.MinValue;
-                    byte[] tmp = BitConverter.GetBytes((int)n);
-                    outb[i] = tmp[0]; outb[i + 1] = tmp[1]; outb[i + 2] = tmp[2]; outb[i + 3] = tmp[3];
-                }
-            }
-            return outb;
-        }
-
-        int NextDelay() { if (MinMs >= MaxMs) return MinMs; return Rng.Next(MinMs, MaxMs + 1); }
-
-        void Tick(object sender, EventArgs e)
-        {
-            if (!Enabled || Player == null) return;
-            long now = Clock.ElapsedMilliseconds;
-            if (now - LastPlayMs >= 300)
-            {
-                try { Player.Play(); } catch { }
-                LastPlayMs = now;
-            }
-            Timer.Interval = NextDelay();
-        }
-
-        public void Start() { Enabled = true; Timer.Interval = 500; Timer.Start(); }
-        public void Stop() { Enabled = false; Timer.Stop(); }
-        public void Reload() { Stop(); BuildCache(); Start(); }
-        public bool IsOn
-        {
-            get { return Enabled; }
-        }
-
-        // Called on shutdown: the temp wav must not outlive the process.
-        public void Dispose()
-        {
-            try { Stop(); } catch { }
-            try { if (Player != null) { Player.Dispose(); Player = null; } } catch { }
-            try { if (CachePath != null && File.Exists(CachePath)) File.Delete(CachePath); } catch { }
-        }
-
-        // Sweep wavs left behind by earlier runs that were killed before Dispose.
-        public static void SweepStaleCaches()
-        {
-            try
-            {
-                foreach (string f in Directory.GetFiles(Path.GetTempPath(), "saituls_*.wav"))
-                {
-                    try { File.Delete(f); } catch { }
-                }
-            }
-            catch { }
-        }
-    }
 
     class SaitulsForm : Form
     {
         SaitulsSettings S;
-        BlipEngine Engine;
         NotifyIcon Tray;
         string CurrentTab = "Menus";
         List<Rectangle> TabRects = new List<Rectangle>();
-        string[] TabNames = { "Menus", "Monitor", "Tools", "Settings" };
+        string[] TabNames = { "Menus", "Tools", "Settings" };
         List<ButtonDef> Buttons = new List<ButtonDef>();
 
         // Registry feature list
@@ -290,17 +130,11 @@ namespace Saituls
         bool[] FeatureChecked;
         List<Rectangle> MenuCheckRects = new List<Rectangle>();
 
-        // Monitor state
-        double[] VolPresets = { 0.01, 0.05, 0.10, 0.33, 0.50, 0.75, 1.00 };
-        int[] MinPresets = { 4000, 5000, 10000, 15000, 20000, 30000 };
-        int[] MaxPresets = { 7000, 5000, 10000, 15000, 20000, 30000 };
-        string[] IntervalLabels = { "4-7s", "5s", "10s", "15s", "20s", "30s" };
-
         class ButtonDef { public Rectangle R; public Action A; public string Label; public bool Sel; }
 
-        public SaitulsForm(SaitulsSettings s, BlipEngine engine, NotifyIcon tray)
+        public SaitulsForm(SaitulsSettings s, NotifyIcon tray)
         {
-            S = s; Engine = engine; Tray = tray;
+            S = s; Tray = tray;
             Text = "SAITULS";
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.CenterScreen;
@@ -355,10 +189,7 @@ namespace Saituls
             // title bar
             using (var b = new SolidBrush(Palette.SURFACE)) g.FillRectangle(b, 0, 0, Width, 24);
             DrawText(g, "SAITULS", 8, 5, Palette.TEXT, 14, true);
-            DrawText(g, "v1", 92, 7, Palette.TEXT2, 11);
-            string st = Engine.IsOn ? "ON" : "OFF";
-            int sw = (int)g.MeasureString(st, F(12)).Width;
-            DrawText(g, st, Width - 44 - sw, 5, Engine.IsOn ? Palette.SUCCESS : Palette.MUTED, 12, true);
+            DrawText(g, "v1", 78, 7, Palette.TEXT2, 11);
             var xr = new Rectangle(Width - 22, 2, 20, 20);
             Buttons.Add(new ButtonDef { R = xr, A = () => { Hide(); } });
             DrawText(g, "X", Width - 18, 5, Palette.TEXT2, 12, true);
@@ -406,7 +237,6 @@ namespace Saituls
             switch (CurrentTab)
             {
                 case "Menus": DrawMenusTab(g, x, y, w, r.Height - 16); break;
-                case "Monitor": DrawMonitorTab(g, x, y, w, r.Height - 16); break;
                 case "Tools": DrawToolsTab(g, x, y, w, r.Height - 16); break;
                 case "Settings": DrawSettingsTab(g, x, y, w, r.Height - 16); break;
             }
@@ -457,55 +287,6 @@ namespace Saituls
             var rmR = new Rectangle(x + btnW + 8, btnY2, btnW, btnH);
             Buttons.Add(new ButtonDef { R = rmR, A = () => UninstallSelected() });
             DrawButton(g, rmR, "Remove", false);
-        }
-
-        void DrawMonitorTab(Graphics g, int x, int y, int w, int h)
-        {
-            DrawText(g, "Volume %:", x, y, Palette.TEXT2, 11);
-            int xv = x + 70;
-            for (int i = 0; i < VolPresets.Length; i++)
-            {
-                double v = VolPresets[i];
-                bool sel = Math.Abs(v - S.Volume) < 0.0001;
-                string lbl = (v * 100).ToString("0");
-                int bw = TextW(g, lbl, 10) + 12;
-                var r = new Rectangle(xv, y, bw, 22);
-                double vc = v;
-                Buttons.Add(new ButtonDef { R = r, A = () => SetVolume(vc), Sel = sel });
-                DrawButton(g, r, lbl, sel, 10);
-                xv += bw + 3;
-            }
-
-            int yi = y + 30;
-            DrawText(g, "Interval:", x, yi, Palette.TEXT2, 11);
-            int xi = x + 70;
-            for (int i = 0; i < MinPresets.Length; i++)
-            {
-                int mn = MinPresets[i], mx = MaxPresets[i];
-                bool sel = S.MinMs == mn && S.MaxMs == mx;
-                var r = new Rectangle(xi, yi, 48, 22);
-                int cmn = mn, cmx = mx;
-                Buttons.Add(new ButtonDef { R = r, A = () => ApplyRange(cmn, cmx), Sel = sel });
-                DrawButton(g, r, IntervalLabels[i], sel, 10);
-                xi += 52;
-            }
-
-            int yb = yi + 34;
-            bool ao = AutoStartEnabled("SaitulsMonitor");
-            var ar = new Rectangle(x, yb, 130, 22);
-            Buttons.Add(new ButtonDef { R = ar, A = () => ToggleAutostart("SaitulsMonitor", "SAITULS Monitor") });
-            DrawButton(g, ar, ao ? "[X] autostart" : "[ ] autostart", ao);
-
-            var sr = new Rectangle(x + 138, yb, 60, 22);
-            Buttons.Add(new ButtonDef { R = sr, A = () => { Engine.Start(); Refresh(); } });
-            DrawButton(g, sr, "ON", Engine.IsOn);
-
-            var pr = new Rectangle(x + 204, yb, 60, 22);
-            Buttons.Add(new ButtonDef { R = pr, A = () => { Engine.Stop(); Refresh(); } });
-            DrawButton(g, pr, "OFF", !Engine.IsOn);
-
-            int yb2 = yb + 30;
-            DrawText(g, "Status: " + (Engine.IsOn ? "blip active" : "stopped"), x, yb2, Engine.IsOn ? Palette.SUCCESS : Palette.MUTED, 11);
         }
 
         // label | script | argument mode
@@ -562,7 +343,7 @@ namespace Saituls
             int by = y + 70;
             int bw = 140;
             var br = new Rectangle(x, by, bw, 26);
-            Buttons.Add(new ButtonDef { R = br, A = () => { Engine.Stop(); Application.Exit(); } });
+            Buttons.Add(new ButtonDef { R = br, A = () => { Application.Exit(); } });
             DrawButton(g, br, "Exit", false);
 
             var ber = new Rectangle(x + bw + 8, by, bw, 26);
@@ -757,21 +538,7 @@ namespace Saituls
             Refresh();
         }
 
-        void SetVolume(double v)
-        {
-            S.Volume = v;
-            S.Save();
-            Engine.Reload();
-            Refresh();
-        }
 
-        void ApplyRange(int mn, int mx)
-        {
-            S.MinMs = mn; S.MaxMs = mx;
-            S.Save();
-            Engine.MinMs = mn; Engine.MaxMs = mx;
-            Refresh();
-        }
 
         bool AutoStartEnabled(string keyName)
         {
@@ -910,30 +677,20 @@ namespace Saituls
                 SaitulsSettings s = new SaitulsSettings(dir);
                 s.Load();
 
-                // Clear wavs left by runs that were killed before shutdown.
-                BlipEngine.SweepStaleCaches();
-
-                BlipEngine engine = new BlipEngine(s);
-                engine.Start();
-
                 NotifyIcon tray = new NotifyIcon();
                 tray.Icon = File.Exists(s.IcoPath) ? new Icon(s.IcoPath) : SystemIcons.Application;
                 tray.Text = "SAITULS";
                 ContextMenuStrip menu = new ContextMenuStrip();
-                menu.Items.Add("Open SAITULS", null, (o, e) => ShowForm(s, engine, tray));
-                menu.Items.Add(new ToolStripSeparator());
-                menu.Items.Add("Monitor ON", null, (o, e) => { engine.Start(); RefreshForm(); });
-                menu.Items.Add("Monitor OFF", null, (o, e) => { engine.Stop(); RefreshForm(); });
+                menu.Items.Add("Open SAITULS", null, (o, e) => ShowForm(s, tray));
                 menu.Items.Add(new ToolStripSeparator());
                 menu.Items.Add("Exit", null, (o, e) =>
                 {
-                    engine.Dispose();
-                    tray.Visible = false;
+                                        tray.Visible = false;
                     Application.Exit();
                 });
                 tray.ContextMenuStrip = menu;
                 tray.Visible = true;
-                tray.DoubleClick += (o, e) => ShowForm(s, engine, tray);
+                tray.DoubleClick += (o, e) => ShowForm(s, tray);
 
                 try
                 {
@@ -950,27 +707,18 @@ namespace Saituls
                 }
                 catch { }
 
-                ShowForm(s, engine, tray);
+ShowForm(s, tray);
                 Application.Run();
-                engine.Dispose();
                 tray.Visible = false;
                 tray.Dispose();
             }
         }
 
-        // Tray Monitor ON/OFF changes engine state; the open panel must redraw
-        // or its ON/OFF badge lies until the next click.
-        static void RefreshForm()
-        {
-            try { if (_form != null && !_form.IsDisposed && _form.Visible) _form.Refresh(); }
-            catch { }
-        }
-
-        static void ShowForm(SaitulsSettings s, BlipEngine engine, NotifyIcon tray)
+        static void ShowForm(SaitulsSettings s, NotifyIcon tray)
         {
             if (_form == null || _form.IsDisposed)
             {
-                _form = new SaitulsForm(s, engine, tray);
+                _form = new SaitulsForm(s, tray);
                 _form.FormClosing += (o, e) =>
                 {
                     if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; _form.Hide(); }
