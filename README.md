@@ -1,58 +1,44 @@
-# SAITULS
+# SAITULS — личные тулзы под Windows
 
-Личная коробка инструментов под Windows. Никакой глобальной цели — просто
-сборник того, что накопилось за годы и реально используется каждый день:
-контекстные меню Explorer, пара медиа-утилит, тихий «пищалка»-монитор для
-медитаций. Всё это жило в разных папках, пока не собралось в один GUI с
-галочками.
+Сборник того, что накопилось за годы и реально используется каждый день:
+контекстные меню Explorer, медиа-утилиты, тихий blip-монитор. Без пафоса,
+без глобальной цели — просто рабочие инструменты в одном окне.
+
+## Быстрый старт
+
+```cmd
+powershell -ExecutionPolicy Bypass -File setup.ps1
+```
+
+Скрипт сам поднимет права, скачает Python (если нет), ffmpeg, yt-dlp,
+aria2c — и установит всё меню. Потом можно запускать `SAITULS_LAUNCHER.cmd`.
+
+## SAITULS.exe — четыре вкладки
+
+- **Menus** — 14 пунктов контекстного меню с галочками
+- **Monitor** — blip-пищалка с интервалом и громкостью
+- **Tools** — запуск мини-тулз (DL_YT, DEL_*, Pack, Project)
+- **Settings** — путь, автозапуск
 
 ## Что внутри
 
-`SAITULS.exe` — маленькое окошко в стиле Golden Default (тёмное, Verdan'а
-без сглаживания, никаких скруглений). Четыре вкладки:
+- 14 контекстных меню (копировать путь, взять владение, удалить дубликаты/
+  пустые/одинаковые/мусор, упаковать, слить аудио, новый проект, скрытые
+  файлы, PS от админа, YouTube, FFmpeg/MKV)
+- OpenCode / Cline YOLO здесь
+- Codex на 3 аккаунта
+- 33 локали для подписей меню
+- Problip — отдельный blip-монитор в трее
 
-- **Menus** — 14 пунктов контекстного меню: копировать путь, взять во
-  владение, удалить дубликаты / пустые / одинаковые / мусорные файлы,
-  упаковать в папку, слить аудио, создать `_new_project`, показать скрытые
-  файлы, PowerShell от админа, скачать с YouTube, FFmpeg-конвертация
-  (23 расширения) и MKV-фиксы.
-- **Monitor** — «blip»: тихий звуковой сигнал с интервалом, громкостью и
-  автозапуском. Служит якорем для медитаций/пауз.
-- **Tools** — быстрый запуск тех же скриптов без правого клика.
-- **Settings** — корень тулкита, INI, автозапуск.
+## Сборка
 
-Плюс отдельно: лаунчеры OpenCode / Cline «YOLO здесь» с Wintage-профилем
-консоли, каскадное меню Codex на 3 аккаунта, `problip/` — автономный
-трей-монитор (C#), 33 локали для подписей меню.
-
-## Запуск
+Если нужен свежий `SAITULS.exe`:
 
 ```cmd
-SAITULS_LAUNCHER.cmd
+csc -nologo -target:winexe -out:SAITULS.exe -optimize+ \
+  -r:System.dll,System.Drawing.dll,System.Windows.Forms.dll \
+  SAITULS.cs
 ```
-
-Лаунчер сам поднимает права (UAC) и стартует `SAITULS.exe`.
-
-## Payload
-
-Тяжёлые бинарники (ffmpeg, yt-dlp и т.д.) в git не лежат — репозиторий
-только исходники. Возьми `SAITULS-payload-<версия>.zip` со страницы
-Releases и распакуй в `Bin\` и `Bin\App\`, либо собери сам через
-`BUILD_PAYLOAD.cmd`. Нужное:
-
-- `Bin\FFMPEG.EXE`, `Bin\FFPROBE.EXE`, `Bin\yt-dlp.exe`, `Bin\ARIA2C.EXE`
-- `Bin\App\ffmpeg.exe` + те же `FFPROBE`/`yt-dlp`/`ARIA2C`
-- `Bin\App\AV1 CPU\FFMPEG.EXE`, `Bin\App\RTX40__\FFMPEG.EXE`
-- `Bin\App\GS\` (Ghostscript), `Bin\App\ExifCleaner\`
-- `Bin\App\AUDIO.EXE`, `VIDEO.EXE`, `ICON.ICO`, `YOUTUBE.INI`
-
-## Сборка из исходников
-
-```cmd
-csc -nologo -target:winexe -out:SAITULS.exe -optimize+ -r:System.dll,System.Drawing.dll,System.Windows.Forms.dll SAITULS.cs
-```
-
-Нужен .NET Framework 4.8 (csc.exe идёт в комплекте).
 
 ## Тесты
 
@@ -60,9 +46,6 @@ csc -nologo -target:winexe -out:SAITULS.exe -optimize+ -r:System.dll,System.Draw
 python tests\test_regs.py
 ```
 
-Exit 0 = PASS. Проверяет reg-файлы, кодировки, паритет 33 локалей,
-PowerShell-скрипты, YOLO-команды.
-
 ## Лицензия
 
-MIT. Подробности в `LICENSE`.
+MIT. Подробнее в `LICENSE`.
