@@ -13,6 +13,16 @@ ___AHK/
 # SAIPEN project memory — private, not for public repo
 .saipen/
 
+# Runtime config, generated on first launch; may carry machine paths
+SAITULS.ini
+
+# Freebuff menu points at a machine-specific freebuff.exe — personal
+_FREEBUFF_MENU/
+
+# Logs / test artifacts with personal paths
+Scripts/_.txt
+tests/PROOF-*.txt
+
 # Caches and build artifacts
 __pycache__/
 *.pyc
@@ -25,6 +35,9 @@ tests/__pycache__/
 
 # Audit scratch
 audit/
+
+# Release payload zip (built by BUILD_PAYLOAD.cmd, uploaded to Releases)
+dist/
 
 # Windows junk
 Thumbs.db
