@@ -77,15 +77,29 @@ try {
     $hasDotNet = $true; Write-Host ".NET: $($csc.Source)" -ForegroundColor Green
 } catch { Write-Host ".NET: csc.exe not found — SAITULS.exe needs pre-built binary or .NET SDK" -ForegroundColor Yellow }
 
-# ── Compile SAITULS.exe if csc available ──────────────────────────────────
+# ── Compile SAITULS.exe + LIMISAW.exe if csc available ────────────────
+$hasWebExt = ($null -ne ([System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")) -or `
+              (Test-Path "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\System.Web.Extensions.dll"))
+function Compile-Exe {
+    param([string]$Source, [string]$Out, [string[]]$Refs = @("System.dll","System.Drawing.dll","System.Windows.Forms.dll"))
+    Write-Host "Compiling $Out..." -ForegroundColor Yellow
+    $argList = @("-nologo","-target:winexe","-out:$Out","-optimize+") + ($Refs | ForEach-Object { "-r:$_" }) + @($Source)
+    & csc.exe @argList | Out-Null
+    if ($LASTEXITCODE -eq 0) { Write-Host "  $Out compiled" -ForegroundColor Green }
+    else { Write-Host "  $Out FAILED" -ForegroundColor Red }
+}
+
 $saitulsExe = Join-Path $root "SAITULS.exe"
-if (-not (Test-Path $saitulsExe) -and $hasDotNet) {
-    Write-Host "Compiling SAITULS.exe..." -ForegroundColor Yellow
-    & csc.exe -nologo -target:winexe -out:"$saitulsExe" -optimize+ `
-        -r:System.dll,System.Drawing.dll,System.Windows.Forms.dll `
-        (Join-Path $root "SAITULS.cs")
-    if ($LASTEXITCODE -eq 0) { Write-Host "SAITULS.exe compiled" -ForegroundColor Green }
-    else { Write-Host "SAITULS.exe compilation FAILED" -ForegroundColor Red }
+$limisawExe = Join-Path $root "LIMISAW.exe"
+if ($hasDotNet) {
+    if (-not (Test-Path $saitulsExe)) {
+        Compile-Exe (Join-Path $root "SAITULS.cs") $saitulsExe
+    }
+    if (-not (Test-Path $limisawExe) -and $hasWebExt) {
+        Compile-Exe (Join-Path $root "LIMISAW.cs") $limisawExe @("System.dll","System.Drawing.dll","System.Windows.Forms.dll","System.Web.Extensions.dll")
+    } elseif (-not (Test-Path $limisawExe)) {
+        Write-Host "LIMISAW.exe: System.Web.Extensions not found, skipping compile" -ForegroundColor Yellow
+    }
 }
 
 # ── Payload download (ffmpeg, yt-dlp, aria2c) ─────────────────────────────

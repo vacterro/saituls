@@ -523,6 +523,7 @@ namespace Saituls
             { "Del Same",     "DEL_SAME.PYW",     "folder" },
             { "Del Junk",     "DEL_JUNK.PYW",     "folder" },
             { "PS Admin",     "powershell.exe",   "none"   },
+            { "Codex Limits", "LIMISAW.EXE",      "none"   },
         };
 
         void DrawToolsTab(Graphics g, int x, int y, int w, int h)
@@ -675,6 +676,20 @@ namespace Saituls
                     });
                 }
                 catch (System.ComponentModel.Win32Exception) { }
+                return;
+            }
+
+            if (script == "LIMISAW.EXE")
+            {
+                string limi = Path.Combine(root, "LIMISAW.exe");
+                if (File.Exists(limi))
+                {
+                    Process.Start(new ProcessStartInfo(limi) { WorkingDirectory = root, UseShellExecute = true });
+                }
+                else
+                {
+                    MessageBox.Show("LIMISAW.exe not found:\n" + limi, "SAITULS");
+                }
                 return;
             }
 

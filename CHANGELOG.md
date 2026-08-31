@@ -7,6 +7,11 @@ setup into one repository and one GUI.
 
 - `SAITULS.exe` — Golden Default (Wintage) WinForms GUI compiled from
   `SAITULS.cs`: Menus / Monitor / Tools / Settings tabs.
+- `LIMISAW.exe` — Codex rate-limit monitor (`LIMISAW.cs`): probes account 1
+  (`~\.codex`) and account 2 (`~\.codex-account2`) via the codex app-server
+  JSON-RPC protocol and shows the 5-hour and weekly remaining percentages
+  with reset times. Read-only; never parses `auth.json` or touches tokens.
+  Reachable from SAITULS's Tools tab (`Codex Limits`).
 - 14 Explorer context-menu features (`Registry/`, installed via
   `Installers/INSTALL_ALL.PS1` or the GUI's Menus tab).
 - OpenCode / Cline YOLO launchers, Codex cascaded menu.
