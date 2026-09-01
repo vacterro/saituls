@@ -50,3 +50,6 @@ $RECYCLE.BIN/
 
 # Temp files from test runs
 _V_TEMP_/
+
+# Personal shortcuts
+*.lnk
