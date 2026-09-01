@@ -1,3 +1,29 @@
+# SAITULS 0.1.1 (2026-09-01)
+
+## What changed
+
+- README and Wiki are now fully **English**; Cyrillic menu/UI labels are
+  documented in English (actual `.reg` files keep their UTF-16 Cyrillic labels
+  by design). Added GitHub community files: issue/PR templates, SECURITY.md,
+  CONTRIBUTING.md; repo description and topics set; README gained badges,
+  a feature matrix and a repository map.
+- LIMISAW tray icon is rendered **non-antialiased at native 16×16** (was 32×32
+  downscaled by the shell → blur). App icon is the `heh` avatar
+  (`heh.ico`), embedded via `/win32icon:`. Program icon restored.
+- LIMISAW `lowest` tray metric now shows the **minimum non-zero** remaining
+  percentage (skips exhausted 5h windows, falls back to 0 only when all are 0).
+- LIMISAW **quiet autostart**: `AutoStart=1`, registry Run key, launches
+  `--minimized` into the tray.
+- Problip gained a **0–100 volume slider** (replaced preset buttons); drag,
+  click-to-jump, value saved to `problip.ini`.
+- Codex account launchers hardened: `Start-Codex-Main.ps1` now explicitly sets
+  `CODEX_HOME=$HOME\.codex` so inherited environment cannot open account 2/3
+  under the main account. All three isolated launchers verified against their
+  own profiles.
+- AI_AGENT_LAUNCHER.PS1 `Get-StablePort` switched from FNV-1a (uint64 overflow)
+  to a SHA-256-based deterministic port.
+- `tests/test_regs.py` README contract updated to the English tokens.
+
 # SAITULS 0.1.0 (2026-09-01)
 
 - Added `INSTALL.cmd` and turned `setup.ps1` into a non-interactive,

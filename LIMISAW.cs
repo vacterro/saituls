@@ -124,6 +124,7 @@ namespace Limisaw
             StartPosition = FormStartPosition.CenterScreen; ClientSize = new Size(380, 260);
             BackColor = Palette.BG; DoubleBuffered = true; TopMost = false;
             KeyPreview = true;
+            try { string ico = Path.Combine(root, "heh.ico"); if (File.Exists(ico)) Icon = new Icon(ico); } catch { }
             if (Settings.WindowX != int.MinValue && Settings.WindowY != int.MinValue)
             {
                 var saved = new Rectangle(Settings.WindowX, Settings.WindowY, Width, Height);
