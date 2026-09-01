@@ -408,13 +408,20 @@ namespace Limisaw
             if (Settings.TrayMetric == "lowest")
             {
                 string[] ids = { "c1_5h", "c1_week", "c2_5h", "c2_week" };
+                int minAny = int.MaxValue; int minPos = int.MaxValue;
+                string labelAny = ""; string labelPos = "";
+                bool any = false, pos = false;
                 foreach (string id in ids)
                 {
                     int candidate; bool candidateAvailable; string candidateLabel;
                     GetMetric(id, out candidate, out candidateAvailable, out candidateLabel);
-                    if (candidateAvailable && (!available || candidate < value))
-                    { value = candidate; available = true; label = candidateLabel; }
+                    if (!candidateAvailable) continue;
+                    if (candidate < minAny) { minAny = candidate; labelAny = candidateLabel; any = true; }
+                    if (candidate > 0 && candidate < minPos) { minPos = candidate; labelPos = candidateLabel; pos = true; }
                 }
+                if (pos) { value = minPos; label = labelPos; }
+                else if (any) { value = minAny; label = labelAny; }
+                available = any;
                 return;
             }
             GetMetric(Settings.TrayMetric, out value, out available, out label);

@@ -257,6 +257,8 @@ namespace Problip
         BlipEngine Engine;
         NotifyIcon Tray;
         List<HotZone> Hot = new List<HotZone>();
+        Rectangle VolTrack;
+        bool VolDragging = false;
 
         class HotZone
         {
@@ -331,23 +333,21 @@ namespace Problip
             int sw = (int)g.MeasureString(st, F(12)).Width;
             DrawText(g, st, Width - 24 - sw, 4, Engine.IsOn ? Palette.SUCCESS : Palette.MUTED, 12, true);
 
-            // ── volume presets ──
-            int yv = 30;
-            DrawText(g, "vol%", 8, yv + 4, Palette.TEXT2, 11);
-            int xv = 32;
-            double[] vols = new double[] { 0.01, 0.05, 0.10, 0.33, 0.50, 0.75, 1.00 };
-            for (int i = 0; i < vols.Length; i++)
-            {
-                double v = vols[i];
-                bool sel = Math.Abs(v - S.Volume) < 0.0001;
-                string lbl = (v * 100).ToString("0").Replace(",", "");
-                int w = TextW(g, lbl, 10) + 10;
-                var r = new Rectangle(xv, yv, w, 22);
-                double vc = v;
-                Hot.Add(MakeHot(r, delegate() { SetVolume(vc); }));
-                DrawButton(g, r, lbl, sel, 10);
-                xv += w + 3;
-            }
+            // ── volume slider 0..100 ──
+            int yv = 34;
+            DrawText(g, "vol", 8, yv + 2, Palette.TEXT2, 11);
+            VolTrack = new Rectangle(36, yv, 168, 12);
+            DrawBevel(g, VolTrack, false);
+            int pct = (int)Math.Round(S.Volume * 100);
+            using (var bg = new SolidBrush(Palette.SURFACE)) g.FillRectangle(bg, VolTrack.X + 1, VolTrack.Y + 1, VolTrack.Width - 2, VolTrack.Height - 2);
+            using (var fill = new SolidBrush(Palette.LINK))
+                g.FillRectangle(fill, VolTrack.X + 1, VolTrack.Y + 1, (int)((VolTrack.Width - 2) * S.Volume), VolTrack.Height - 2);
+            int thx = VolTrack.X + (int)((VolTrack.Width - 10) * S.Volume);
+            var thr = new Rectangle(thx, yv - 3, 10, 18);
+            Hot.Add(MakeHot(thr, delegate() { StartVolumeDrag(); }));
+            DrawBevel(g, thr, true);
+            using (var tb = new SolidBrush(Palette.ALT)) g.FillRectangle(tb, thr.X + 1, thr.Y + 1, thr.Width - 2, thr.Height - 2);
+            DrawText(g, pct + "%", 210, yv + 1, Palette.TEXT, 11, true);
 
             // ── interval presets ──
             int yi = 60;
@@ -426,10 +426,24 @@ namespace Problip
                 return (int)Math.Ceiling(g.MeasureString(s, f).Width);
         }
 
-        void SetVolume(double v)
+        void StartVolumeDrag()
         {
+            VolDragging = true;
+        }
+
+        void SetVolumeFromX(int x)
+        {
+            double v = (double)(x - VolTrack.X) / (VolTrack.Width - 10);
+            if (v < 0) v = 0; else if (v > 1) v = 1;
             S.Volume = v;
-            S.Save("Volume", v.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+            Refresh();
+        }
+
+        void EndVolumeDrag()
+        {
+            if (!VolDragging) return;
+            VolDragging = false;
+            S.Save("Volume", S.Volume.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
             Engine.Reload();
             Refresh();
         }
@@ -475,10 +489,34 @@ namespace Problip
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
+                if (VolTrack.Contains(e.Location))
+                {
+                    SetVolumeFromX(e.X);
+                    VolDragging = true;
+                    return;
+                }
                 foreach (HotZone h in Hot)
                 {
                     if (h.R.Contains(e.Location)) { h.A(); return; }
                 }
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (VolDragging && e.Button == MouseButtons.Left)
+            {
+                SetVolumeFromX(e.X);
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            if (VolDragging)
+            {
+                EndVolumeDrag();
             }
         }
 
