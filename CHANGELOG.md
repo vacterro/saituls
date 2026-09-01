@@ -1,3 +1,20 @@
+# SAITULS 0.1.0 (2026-09-01)
+
+- Added `INSTALL.cmd` and turned `setup.ps1` into a non-interactive,
+  repeatable install/repair flow. Missing Python, FFmpeg, yt-dlp, aria2 and
+  Deno are provisioned automatically; optional OpenCode/Cline menus no longer
+  break the core installation when their CLIs are absent.
+- Reorganized SAITULS around a Home readiness screen, clearer Explorer-menu
+  names, full-row checkbox hit targets, safe dependency checks, destination
+  selection for YouTube downloads, and non-elevated everyday launch.
+- LIMISAW now has reliable title-bar dragging, one readable tray percentage
+  (lowest remaining by default), a single refresh action, shortcut keys,
+  double-click restore, single-instance behavior and quiet autostart.
+- Destructive cleanup scripts now explain their scope and ask before deleting.
+- Removed the personal `Ctrl+Delete` Task Manager hotkey; the native Windows
+  `Ctrl+Shift+Esc` shortcut remains untouched.
+- Rewrote README against the shipped behavior and current dependency model.
+
 # SAITULS 0.0.2 (2026-09-01)
 
 ## What changed

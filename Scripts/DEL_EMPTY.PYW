@@ -38,6 +38,14 @@ if __name__ == '__main__':
     else:
         current_dir = os.getcwd()
 
+    root = tk.Tk()
+    root.withdraw()
+    if not messagebox.askyesno(
+        "Удалить пустые папки?",
+        f"Все пустые папки внутри этого пути будут удалены без корзины:\n\n{current_dir}\n\nПродолжить?",
+    ):
+        raise SystemExit(0)
+
     total, deleted_paths, failed = remove_empty_dirs(current_dir)
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -51,12 +59,8 @@ if __name__ == '__main__':
             for path, err in failed:
                 f.write(f"ОШИБКА: {path} -- {err}\n")
     except Exception as e:
-        root = tk.Tk()
-        root.withdraw()
         messagebox.showerror("Ошибка", f"Не удалось записать лог:\n{e}")
 
-    root = tk.Tk()
-    root.withdraw()
     if total > 0:
         msg = f"Удалено папок: {total}\nЛог: {log_path}"
         if failed:

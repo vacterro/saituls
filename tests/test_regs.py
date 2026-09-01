@@ -5,12 +5,13 @@ Run:  python tests/test_regs.py
 Exit: 0 = all PASS, 1 = failures.
 
   Checks:
-  1. install-set .REG parse (file header), count == 13
+  1. install-set .REG parse (file header), count == 14
   2. encoding rule: non-ASCII .REG must be UTF-16 LE + BOM; ASCII any
   3. every drive path referenced by install regs / scripts / bin wrappers resolves
   4. i18n: 33 locale string files, identical key set (parity)
   5. reg-map.json: every mapped label key exists in the bundle; no empty mappings
   6. AI-agent PowerShell launch/install scripts parse and self-test both YOLO commands
+  7. one-click setup, non-elevated launcher, safe destructive tools and LIMISAW UX invariants
 """
 import re, os, glob, io, json, subprocess, sys
 
@@ -133,6 +134,8 @@ def main():
         os.path.join(ROOT, 'Add-ClineContextMenu.ps1'),
         os.path.join(ROOT, 'Add-OpenCodeContextMenu.ps1'),
         os.path.join(ROOT, 'Remove-AgentContextMenus.ps1'),
+        os.path.join(ROOT, 'setup.ps1'),
+        os.path.join(ROOT, 'Installers', 'INSTALL_ALL.PS1'),
     ]
     for script in agent_scripts:
         escaped = script.replace("'", "''")
@@ -183,6 +186,57 @@ def main():
         'WintagePalette', 'goldendefault',
     ))
     check('AI console Ctrl+C/V + Wintage contract', console_contract)
+
+    setup_text, _ = read_text(os.path.join(ROOT, 'setup.ps1'))
+    install_cmd, _ = read_text(os.path.join(ROOT, 'INSTALL.cmd'))
+    launcher_cmd, _ = read_text(os.path.join(ROOT, 'SAITULS_LAUNCHER.cmd'))
+    install_all, _ = read_text(os.path.join(ROOT, 'Installers', 'INSTALL_ALL.PS1'))
+    one_click_tokens = (
+        'setup.ps1', '-NoLaunch',
+        'python.org/ftp/python', 'ffmpeg-release-essentials.zip',
+        'releases/latest/download/yt-dlp.exe', 'aria2-1.37.0-win-64bit-build1.zip',
+        'deno-x86_64-pc-windows-msvc.zip',
+    )
+    check('one-click installer provisions every required runtime',
+          all(token in install_cmd + setup_text for token in one_click_tokens)
+          and 'Choice (1/2/3)' not in setup_text)
+    check('everyday launcher is non-elevated',
+          'RunAs' not in launcher_cmd and 'SAITULS.exe' in launcher_cmd)
+    check('AI menus are optional',
+          'IncludeAgentMenus' in install_all and 'if ($IncludeAgentMenus)' in install_all)
+
+    limisaw_text, _ = read_text(os.path.join(ROOT, 'LIMISAW.cs'))
+    limisaw_ux = all(token in limisaw_text for token in (
+        'TrayMetric', '"lowest"', 'p.X < Width - 22',
+        r'Local\\LimisawApp', r'Local\\LimisawShow',
+        'tray.DoubleClick', 'HideToTray',
+    )) and 'TrayC1_5h' not in limisaw_text and '2x2 grid' not in limisaw_text
+    check('LIMISAW one-number tray, drag and single-instance contract', limisaw_ux)
+
+    saituls_text, _ = read_text(os.path.join(ROOT, 'SAITULS.cs'))
+    check('SAITULS hidden instance can be restored',
+          r'Local\\SaitulsApp' in saituls_text and r'Local\\SaitulsShow' in saituls_text)
+
+    destructive = ('DEL_DUP.PYW', 'DEL_EMPTY.PYW', 'DEL_JUNK.PYW', 'DEL_SAME.PYW')
+    missing_confirmation = []
+    for name in destructive:
+        worker, _ = read_text(os.path.join(ROOT, 'Scripts', name))
+        if 'messagebox.askyesno' not in worker:
+            missing_confirmation.append(name)
+    check('destructive workers require confirmation', not missing_confirmation,
+          '; '.join(missing_confirmation))
+
+    youtube, _ = read_text(os.path.join(ROOT, 'Scripts', 'DL_YT.CMD'))
+    check('YouTube tool accepts destination and bundled Deno',
+          'set "outpath=%~2"' in youtube and 'Bin\\deno.exe' in youtube
+          and '--remote-components ejs:github' in youtube)
+
+    readme, _ = read_text(os.path.join(ROOT, 'README.md'))
+    readme_contract = all(token in readme for token in (
+        'INSTALL.cmd', '14 Explorer commands', 'LIMISAW', 'Problip',
+        'OpenCode', 'Removal and relocation', 'read `auth.json`',
+    ))
+    check('README covers install, features, limits and removal', readme_contract)
 
     print('---')
     print('FAILED' if fails else 'PASS', f'({fails} failure(s))')

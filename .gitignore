@@ -15,9 +15,13 @@ ___AHK/
 
 # Runtime config, generated on first launch; may carry machine paths
 SAITULS.ini
+LIMISAW.ini
 
 # Freebuff menu points at a machine-specific freebuff.exe — personal
 _FREEBUFF_MENU/
+
+# Freebuff runtime SQLite — personal
+.freebuff/
 
 # Logs / test artifacts with personal paths
 Scripts/_.txt

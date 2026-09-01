@@ -21,6 +21,16 @@ function Resolve-AgentCommand([string]$Name) {
     return $command.Source
 }
 
+function Get-StablePort([string]$Path) {
+    # Deterministic port from SHA256 of the canonical project path.
+    # Stable across processes and reboots. Port range: 42000..44047.
+    $canonical = $Path.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar).ToLowerInvariant()
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($canonical)
+    $hash = [System.Security.Cryptography.SHA256]::Create().ComputeHash($bytes)
+    $port = 42000 + (([int]$hash[0] -shl 8 -bor [int]$hash[1]) % 2048)
+    return $port
+}
+
 function Get-ProjectTitle([string]$Path, [string]$Name) {
     $trimmed = $Path.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
     $projectName = Split-Path -Leaf $trimmed
@@ -57,7 +67,8 @@ if (-not $SelfTest -and -not $isAdmin) {
 
 $agentCommand = Resolve-AgentCommand $Agent
 $arguments = if ($Agent -eq "OpenCode") {
-    @($resolvedDir, "--auto")
+    $ocPort = Get-StablePort $resolvedDir
+    @($resolvedDir, "--auto", "--port", "$ocPort")
 } else {
     @("--cwd", $resolvedDir, "--auto-approve", "true", "--tui")
 }
@@ -105,6 +116,7 @@ if ($SelfTest) {
         Agent = $Agent
         Command = $agentCommand
         Arguments = $arguments
+        Port = if ($Agent -eq "OpenCode") { (Get-StablePort $resolvedDir) } else { $null }
         WorkDir = $resolvedDir
         Title = $windowTitle
         ProjectFirst = $windowTitle.StartsWith($projectName)

@@ -1,6 +1,7 @@
 param(
     [switch]$Uninstall,
-    [string]$Lang
+    [string]$Lang,
+    [switch]$IncludeAgentMenus
 )
 
 # Self-elevate: reg import into HKLM/HKCR silently fails without admin rights
@@ -8,6 +9,8 @@ $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIden
 if (-not $isAdmin) {
     $psArgs = @('-ExecutionPolicy','Bypass','-NoProfile','-File',"`"$($MyInvocation.MyCommand.Definition)`"")
     if ($Uninstall) { $psArgs += '-Uninstall' }
+    if ($Lang) { $psArgs += @('-Lang', $Lang) }
+    if ($IncludeAgentMenus) { $psArgs += '-IncludeAgentMenus' }
     Start-Process powershell.exe -ArgumentList $psArgs -Verb RunAs
     exit
 }
@@ -71,10 +74,14 @@ foreach ($file in $regFiles) {
     Import-RegWithRoot $file.FullName
 }
 
-$agentMenuInstaller = Join-Path $scriptDir "INSTALL_AI_AGENT_MENUS.PS1"
-& $agentMenuInstaller -Agent All -Uninstall:$Uninstall
-if (-not $?) {
-    throw "AI-agent context-menu install failed."
+if ($IncludeAgentMenus -or $Uninstall) {
+    $agentMenuInstaller = Join-Path $scriptDir "INSTALL_AI_AGENT_MENUS.PS1"
+    & $agentMenuInstaller -Agent All -Uninstall:$Uninstall
+    if (-not $?) {
+        throw "AI-agent context-menu install failed."
+    }
+} else {
+    Write-Host "Optional OpenCode/Cline menus skipped (use -IncludeAgentMenus after installing both CLIs)." -ForegroundColor Gray
 }
 
 Write-Host "Done!" -ForegroundColor Green

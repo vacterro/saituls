@@ -4,13 +4,15 @@ title Download From Youtube
 
 :: Bin first on PATH so yt-dlp finds aria2c (it rejects absolute --downloader paths)
 set "PATH=%~dp0..\Bin;%PATH%"
-:: yt-dlp needs a JS runtime for YouTube extraction. Use node if available
-:: (yt-dlp-ejs package or regular node install), otherwise skip the flag.
+:: Current yt-dlp needs a JS runtime for YouTube challenge solving. Setup
+:: bundles Deno beside yt-dlp, so the user never has to install Node manually.
 set "params=--force-overwrites --quiet --progress --ffmpeg-location "%~dp0..\Bin\FFMPEG.EXE""
-where node >nul 2>nul && set "params=--js-runtimes node %params%"
+if exist "%~dp0..\Bin\deno.exe" set "params=--js-runtimes "deno:%~dp0..\Bin\deno.exe" --remote-components ejs:github %params%"
+if not exist "%~dp0..\Bin\deno.exe" where node >nul 2>nul && set "params=--js-runtimes node --remote-components ejs:github %params%"
 
 :: Set default outpath
-set "outpath=%cd%"
+set "outpath=%~2"
+if not defined outpath set "outpath=%cd%"
 if /i "%outpath%"=="C:\Windows\system32" set "outpath=%USERPROFILE%\Downloads\_YT_VIDEO"
 if /i "%outpath%\"=="%~dp0" set "outpath=%USERPROFILE%\Downloads\_YT_VIDEO"
 if not exist "%outpath%" mkdir "%outpath%"

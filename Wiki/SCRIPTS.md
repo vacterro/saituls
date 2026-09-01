@@ -7,14 +7,14 @@ files are Python windowed (no console) using `tkinter` for dialogs.
 
 | File | Function |
 |---|---|
-| `DL_YT.CMD` | YouTube downloader. Puts `..\Bin` first on PATH so yt-dlp finds `aria2c`. Reads clipboard URLs, dispatches on first argument: `audio`, `video`, `audiodated`, `videodated`, `audioplaylist`, `videoplaylist`. Format: AV01≤1080 preferred, merges to MKV. Default outpath is `%cd%`; falls back to `%USERPROFILE%\Downloads\_YT_VIDEO` for `system32` or the script dir |
+| `DL_YT.CMD` | YouTube downloader. Puts `..\Bin` first on PATH so yt-dlp finds `aria2c`, uses bundled Deno for current YouTube checks, and reads clipboard URLs. The first argument selects `audio`, `video`, `audiodated`, `videodated`, `audioplaylist`, or `videoplaylist`; the optional second argument is the destination folder. Format: AV01≤1080 preferred, merges to MKV. Without a destination it uses `%cd%`, with a safe Downloads fallback for `system32` or the script dir. |
 | `MERGE_AUD.CMD` | `ffmpeg -filter_complex "[0:a]amerge=inputs=2[aout]"` — merges two audio tracks, replaces the original on success; on error deletes partial output and pauses |
 | `NEW_PROJ.CMD` | Creates `_new_project\ae`, `_new_project\c4d`, `_new_project\_output`, `_new_project\_input` under the target folder |
 | `PACK.PYW` | Packs the selected file/folder into `base_Packed` (counter suffix if exists), tkinter UI |
-| `DEL_DUP.PYW` | Finds duplicate files by SHA-256 (partial hash first, full hash on match), lists with tkinter, deletes selected |
-| `DEL_EMPTY.PYW` | Walks tree bottom-up, removes empty directories; collects failures instead of crashing |
-| `DEL_SAME.PYW` | Removes nested same-name duplicates (name normalized: lowercase, spaces/`-` → `_`); handles read-only files |
-| `DEL_JUNK.PYW` | Walks tree, removes junk files; uses `_SMART_VAC_CLEANER.py` from `V:\___VAC\__K\__CODE\_PY\_SMART_VAC_CLEANER\` |
+| `DEL_DUP.PYW` | Finds duplicates by partial/full SHA-256, previews redundant copies, and deletes only after confirmation |
+| `DEL_EMPTY.PYW` | Confirms, then walks bottom-up and removes empty directories; failures are logged instead of crashing |
+| `DEL_SAME.PYW` | Confirms, then flattens nested same-name folders (lowercase, spaces/`-` → `_`); conflicts gain `_copy` |
+| `DEL_JUNK.PYW` | Self-contained junk rules; previews counts/paths and warns that caches, logs, `build`, `dist`, and `node_modules` are deleted without Recycle Bin |
 | `AI_AGENT_LAUNCHER.PS1` | Shared OpenCode/Cline launcher: explicit YOLO arguments, literal project CWD, project-first guarded title, UTF-8 and Wintage console host |
 | `..\SAITULS.exe` | Unified GUI: `SAITULS.cs` compiled to `SAITULS.exe` (Golden Default WinForms) |
 | `Legacy/` | Old scripts, not part of the active install set |
@@ -43,13 +43,13 @@ arguments, title check, and global Vintage-skill check without starting a TUI.
 
 `SAITULS.exe` is the unified control panel. Tabs:
 
-- **Menus** — checkbox grid of the 14 context-menu features, `Check All`
+- **Home** — live dependency readiness and one `Install / repair` action.
+- **Explorer menus** — checkbox grid of the 14 context-menu features, `Check All`
   / `Uncheck All`, `Install` / `Remove`. Self-elevates by relaunching
   `INSTALL_ALL.PS1` (or `IMPORT_SAFE.PS1` as fallback).
-- **Monitor** — blip volume presets (1 %..100 %), interval presets
-  (4-7s / 5s / 10s / 15s / 20s / 30s), autostart toggle, ON/OFF.
 - **Tools** — launches the bundled scripts and binaries with PATH
-  prepended to `Bin\` and `Bin\App\`.
+  prepended to `Bin\` and `Bin\App\`; every file/folder action first asks
+  for its target.
 - **Settings** — toolkit root display, INI path, app autostart toggle,
   `Open folder`, `Exit`.
 
@@ -58,9 +58,8 @@ arguments, title check, and global Vintage-skill check without starting a TUI.
 `problip/` holds the C# source + compiled `Problip.exe` for the older
 standalone tray monitor. It is **not** the same binary as `SAITULS.exe`;
 it is kept for compatibility with the previous `problip.ini` settings and
-autostart key. SAITULS.exe has its own embedded blip engine and uses a
-different HKCU Run key (`SaitulsMonitor`). The standalone `Problip.exe`
-remains available for users who want the tray icon.
+autostart key. SAITULS has no embedded blip engine; Problip is fully separate
+and remains available only for users who want that sound monitor.
 
 Run the compiled `Problip.exe` (or `Problip.cs` recompiled with csc). It
 registers itself in the per-user Windows `Run` key as `Problip` and starts
@@ -97,21 +96,21 @@ GUI's payload folders — it is the only record of what it checks.
 
 **Launch-time file checks** (static text, read via window probes):
 - needs `App\ffmpeg.exe` or `App\AV1 CPU\ffmpeg.exe` → else warning
-  `Нужен ffmpeg.exe или AV1 CPU на диске`
+  "ffmpeg.exe or AV1 CPU needed on disk"
 - needs `App\AV1 CPU\ffmpeg.exe` → else warning
-  `Файл ffmpeg.exe для AV1 CPU не найден`
-- when all present the status static reads `Статус файлов:(ок)`
+  "AV1 CPU ffmpeg.exe not found"
+- when all present the status static reads "File status: (ok)"
 
 **Button → tool wiring (observed):**
 
 | Button | Uses |
 |---|---|
-| Сжать MP4(CPU) | `App\AV1 CPU\FFMPEG.EXE` (SVT-AV1 CPU preset) |
+| Compress MP4 (CPU) | `App\AV1 CPU\FFMPEG.EXE` (SVT-AV1 CPU preset) |
 | RTX | `App\RTX40__\FFMPEG.EXE` (NVIDIA NVENC) |
-| Сжать PDF | `App\GS\` (Ghostscript: `GSDLL64.DLL`, `GSWIN64C.EXE`) |
+| Compress PDF | `App\GS\` (Ghostscript: `GSDLL64.DLL`, `GSWIN64C.EXE`) |
 | ExifCleaner | `App\ExifCleaner\EXIFCLEANER.EXE` |
-| YouTube / Скачать файлы | `App\YOUTUBE.INI` commands (bare `yt-dlp` on PATH) + `App\AUDIO.EXE` / `App\VIDEO.EXE` helpers |
-| Заменить MP3 / Извлечь WAV / Сделать GIF / Раскадровать / MKV / Flac в AAC | ffmpeg via `App\ffmpeg.exe` |
+| YouTube / Download files | `App\YOUTUBE.INI` commands (bare `yt-dlp` on PATH) + `App\AUDIO.EXE` / `App\VIDEO.EXE` helpers |
+| Replace MP3 / Extract WAV / Make GIF / Split frames / MKV / Flac to AAC | ffmpeg via `App\ffmpeg.exe` |
 
 **Layout rule (why `Bin/App/` exists):** the legacy GUI resolves
 `App\...` relative to its working directory, and `SAITULS_LAUNCHER.cmd` sets

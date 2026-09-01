@@ -156,6 +156,25 @@ if __name__ == "__main__":
 
     junk_files, junk_dirs = scan_junk(target_dir)
 
+    if not junk_files and not junk_dirs:
+        messagebox.showinfo("Результат", "Мусор не найден.")
+        raise SystemExit(0)
+
+    preview = (junk_files + junk_dirs)[:10]
+    preview_text = "\n".join(preview)
+    if len(junk_files) + len(junk_dirs) > len(preview):
+        preview_text += f"\n... и ещё {len(junk_files) + len(junk_dirs) - len(preview)}"
+    confirmed = messagebox.askyesno(
+        "Удалить найденный мусор?",
+        f"Папка: {target_dir}\n\n"
+        f"Файлов: {len(junk_files)}\nПапок: {len(junk_dirs)}\n\n"
+        "Будут удалены кэши, логи, временные файлы, а также папки "
+        "build/dist/node_modules. Корзина не используется.\n\n"
+        f"Первые найденные пути:\n{preview_text}\n\nПродолжить?",
+    )
+    if not confirmed:
+        raise SystemExit(0)
+
     deleted_files, deleted_dirs, errors = delete_junk(junk_files, junk_dirs)
 
     try:
@@ -177,3 +196,8 @@ if __name__ == "__main__":
                     f.write(f"ОШИБКА: {p} — {err}\n")
     except Exception as e:
         messagebox.showerror("Ошибка", f"Не удалось записать лог:\n{e}")
+
+    result = f"Удалено файлов: {len(deleted_files)}\nУдалено папок: {len(deleted_dirs)}\nЛог: {log_path}"
+    if errors:
+        result += f"\nНе удалось удалить: {len(errors)}"
+    messagebox.showinfo("Готово", result)

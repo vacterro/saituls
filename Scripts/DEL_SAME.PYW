@@ -70,10 +70,16 @@ if __name__ == "__main__":
         sys.exit(1)
 
     target_folder = sys.argv[1].strip('"')
-    removed = flatten_duplicate_folders(target_folder)
-    
     root = tk.Tk()
     root.withdraw()
+    if not messagebox.askyesno(
+        "Убрать вложенные папки с тем же именем?",
+        f"Содержимое одинаково названных вложенных папок будет перенесено выше, "
+        f"а пустые оболочки удалены без корзины:\n\n{target_folder}\n\nПродолжить?",
+    ):
+        raise SystemExit(0)
+    removed = flatten_duplicate_folders(target_folder)
+
     if removed > 0:
         messagebox.showinfo("Готово", f"Удалено одинаковых папок: {removed}")
     else:

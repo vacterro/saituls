@@ -40,8 +40,7 @@ def main():
             except OSError:
                 continue
 
-    deleted_count = 0
-    saved_bytes = 0
+    duplicates = []
     
     for files in size_dict.values():
         if len(files) < 2:
@@ -66,10 +65,7 @@ def main():
                 try:
                     h = hash_file(f)
                     if h in full_hashes:
-                        size = os.path.getsize(f)
-                        os.remove(f)
-                        deleted_count += 1
-                        saved_bytes += size
+                        duplicates.append(f)
                     else:
                         full_hashes[h] = f
                 except OSError:
@@ -77,7 +73,30 @@ def main():
 
     root = tk.Tk()
     root.withdraw()
-    if deleted_count > 0:
+    if duplicates:
+        total_bytes = sum(os.path.getsize(f) for f in duplicates if os.path.exists(f))
+        preview = "\n".join(duplicates[:10])
+        if len(duplicates) > 10:
+            preview += f"\n... и ещё {len(duplicates) - 10}"
+        confirmed = messagebox.askyesno(
+            "Удалить дубликаты?",
+            f"Найдено лишних копий: {len(duplicates)}\n"
+            f"Можно освободить: {round(total_bytes / 1024 / 1024, 2)} МБ\n\n"
+            "Первая копия каждого файла останется. Корзина не используется.\n\n"
+            f"Будут удалены:\n{preview}\n\nПродолжить?",
+        )
+        if not confirmed:
+            return
+        deleted_count = 0
+        saved_bytes = 0
+        for path in duplicates:
+            try:
+                size = os.path.getsize(path)
+                os.remove(path)
+                deleted_count += 1
+                saved_bytes += size
+            except OSError:
+                continue
         mb = round(saved_bytes / 1024 / 1024, 2)
         messagebox.showinfo("Готово", f"Удалено дубликатов: {deleted_count}\nОсвобождено: {mb} МБ")
     else:

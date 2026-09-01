@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 
 // SAITULS — unified toolkit manager.
-// Tabs: Menus | Tools | Settings
+// Tabs: Home | Explorer menus | Tools | Settings
 // UI: saipen UI.md Golden Default. Text is NON-antialiased (pixel text).
 // v1 C#. Launcher hub: context-menu install + tool launcher + settings.
 
@@ -19,9 +19,13 @@ namespace Saituls
     static class Native
     {
         [DllImport("user32.dll")] public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern IntPtr FindWindow(string className, string windowName);
+        [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int command);
+        [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
         [DllImport("gdi32.dll")] public static extern IntPtr CreateFont(int nHeight, int nWidth, int nEscapement, int nOrientation,
             int fnWeight, uint fdwItalic, uint fdwUnderline, uint fdwStrikeOut, uint fdwCharSet,
             uint fdwOutputPrecision, uint fdwClipPrecision, uint fdwQuality, uint fdwPitchAndFamily, string lpszFace);
+        [DllImport("gdi32.dll")] public static extern bool DeleteObject(IntPtr handle);
         public const int NONANTIALIASED_QUALITY = 3;
     }
 
@@ -60,9 +64,8 @@ namespace Saituls
         public string IniPath;
         public string RootPath;
         public string IcoPath;
-        public bool AutoStart = true;
-        public bool StartMinimized = false;
-        public string LastTab = "Menus";
+        public bool AutoStart = false;
+        public string LastTab = "Home";
 
         public SaitulsSettings(string dir)
         {
@@ -88,9 +91,8 @@ namespace Saituls
         public void Load()
         {
             string v;
-            AutoStart = Read("AutoStart", "1") == "1";
-            StartMinimized = Read("StartMinimized", "0") == "1";
-            LastTab = Read("LastTab", "Menus");
+            AutoStart = Read("AutoStart", "0") == "1";
+            LastTab = Read("LastTab", "Home");
             v = Read("RootPath", Dir);
             if (Directory.Exists(v)) RootPath = v;
             if (!File.Exists(IniPath)) Save();
@@ -100,7 +102,6 @@ namespace Saituls
         {
             var ci = System.Globalization.CultureInfo.InvariantCulture;
             Write("AutoStart", AutoStart ? "1" : "0");
-            Write("StartMinimized", StartMinimized ? "1" : "0");
             Write("LastTab", LastTab);
             Write("RootPath", RootPath);
         }
@@ -111,10 +112,11 @@ namespace Saituls
     {
         SaitulsSettings S;
         NotifyIcon Tray;
-        string CurrentTab = "Menus";
+        string CurrentTab = "Home";
         List<Rectangle> TabRects = new List<Rectangle>();
-        string[] TabNames = { "Menus", "Tools", "Settings" };
+        string[] TabNames = { "Home", "Explorer menus", "Tools", "Settings" };
         List<ButtonDef> Buttons = new List<ButtonDef>();
+        int FocusedButton = -1;
 
         // Registry feature list
         string[] RegFeatures = {
@@ -123,9 +125,9 @@ namespace Saituls
             "PS_ADMIN", "TAKE_OWN", "TOGGLE_HID"
         };
         string[] RegLabels = {
-            "Copy Path", "Del Dup", "Del Empty", "Del Junk", "Del Same", "YouTube DL",
-            "FFmpeg Menu", "Merge Audio", "MKV Fix", "New Project", "Pack",
-            "PS Admin", "Take Own", "Toggle Hidden"
+            "Copy file path", "Delete duplicates", "Delete empty folders", "Delete junk", "Delete same-name items", "Download YouTube",
+            "FFmpeg actions", "Merge audio tracks", "Repair MKV", "Create project folders", "Pack file",
+            "PowerShell as admin", "Take ownership", "Show / hide files"
         };
         bool[] FeatureChecked;
         List<Rectangle> MenuCheckRects = new List<Rectangle>();
@@ -138,13 +140,16 @@ namespace Saituls
             Text = "SAITULS";
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.CenterScreen;
-            ClientSize = new Size(480, 420);
+            ClientSize = new Size(560, 440);
             BackColor = Palette.BG;
             DoubleBuffered = true;
             TopMost = false;
+            KeyPreview = true;
             FeatureChecked = new bool[RegFeatures.Length];
             for (int i = 0; i < FeatureChecked.Length; i++) FeatureChecked[i] = true;
+            if (Array.IndexOf(TabNames, S.LastTab) >= 0) CurrentTab = S.LastTab;
             try { Icon = File.Exists(s.IcoPath) ? new Icon(s.IcoPath) : SystemIcons.Application; } catch { }
+            Activated += (o, e) => Refresh();
         }
 
         protected override void WndProc(ref Message m)
@@ -160,7 +165,7 @@ namespace Saituls
                 int x = raw & 0xFFFF; if (x > 0x7FFF) x -= 0x10000;
                 int y = (raw >> 16) & 0xFFFF; if (y > 0x7FFF) y -= 0x10000;
                 Point p = PointToClient(new Point(x, y));
-                if (p.Y < 24 && p.X < Width - 20) m.Result = (IntPtr)HTCAPTION;
+                if (p.X >= 0 && p.Y >= 0 && p.Y < 24 && p.X < Width - 20) m.Result = (IntPtr)HTCAPTION;
             }
         }
 
@@ -168,7 +173,8 @@ namespace Saituls
         {
             IntPtr hf = Native.CreateFont(-(int)(pt * 96 / 72), 0, 0, 0, 400,
                 0, 0, 0, 1, 0, 0, Native.NONANTIALIASED_QUALITY, 0, name);
-            return Font.FromHfont(hf);
+            try { using (Font wrapped = Font.FromHfont(hf)) return (Font)wrapped.Clone(); }
+            finally { if (hf != IntPtr.Zero) Native.DeleteObject(hf); }
         }
         static Font F(int pt)
         {
@@ -189,7 +195,7 @@ namespace Saituls
             // title bar
             using (var b = new SolidBrush(Palette.SURFACE)) g.FillRectangle(b, 0, 0, Width, 24);
             DrawText(g, "SAITULS", 8, 5, Palette.TEXT, 14, true);
-            DrawText(g, "v1", 78, 7, Palette.TEXT2, 11);
+            DrawText(g, "desktop toolkit", 88, 7, Palette.TEXT2, 10);
             var xr = new Rectangle(Width - 22, 2, 20, 20);
             Buttons.Add(new ButtonDef { R = xr, A = () => { Hide(); } });
             DrawText(g, "X", Width - 18, 5, Palette.TEXT2, 12, true);
@@ -229,6 +235,11 @@ namespace Saituls
                 DrawContent(g, contentRect);
                 g.ResetClip();
             }
+            if (FocusedButton >= 0 && FocusedButton < Buttons.Count)
+            {
+                Rectangle focus = Buttons[FocusedButton].R; focus.Inflate(-3, -3);
+                using (var pen = new Pen(Palette.TEXT)) { pen.DashStyle = DashStyle.Dot; g.DrawRectangle(pen, focus); }
+            }
         }
 
         void DrawContent(Graphics g, Rectangle r)
@@ -236,10 +247,59 @@ namespace Saituls
             int x = r.X + 8, y = r.Y + 8, w = r.Width - 16;
             switch (CurrentTab)
             {
-                case "Menus": DrawMenusTab(g, x, y, w, r.Height - 16); break;
+                case "Home": DrawHomeTab(g, x, y, w, r.Height - 16); break;
+                case "Explorer menus": DrawMenusTab(g, x, y, w, r.Height - 16); break;
                 case "Tools": DrawToolsTab(g, x, y, w, r.Height - 16); break;
                 case "Settings": DrawSettingsTab(g, x, y, w, r.Height - 16); break;
             }
+        }
+
+        void DrawHomeTab(Graphics g, int x, int y, int w, int h)
+        {
+            bool python = FindOnPath("pythonw.exe") != null || FindOnPath("python.exe") != null;
+            bool ffmpeg = File.Exists(Path.Combine(S.RootPath, "Bin", "FFMPEG.EXE"));
+            bool ytdlp = File.Exists(Path.Combine(S.RootPath, "Bin", "yt-dlp.exe"));
+            bool aria = File.Exists(Path.Combine(S.RootPath, "Bin", "ARIA2C.EXE"));
+            bool deno = File.Exists(Path.Combine(S.RootPath, "Bin", "deno.exe"));
+            bool limisaw = File.Exists(Path.Combine(S.RootPath, "LIMISAW.exe"));
+            bool ready = python && ffmpeg && ytdlp && aria && deno && limisaw;
+
+            DrawText(g, ready ? "Ready to use" : "Setup needs attention", x, y, ready ? Palette.LINK : Palette.DANGERTXT, 14, true);
+            DrawText(g, "Install or repair fills only missing parts and refreshes Explorer menus.", x, y + 22, Palette.TEXT2, 10);
+            DrawStatus(g, x, y + 48, "Main app", true, "ready");
+            DrawStatus(g, x, y + 68, "Python tools", python, python ? "ready" : "missing");
+            DrawStatus(g, x, y + 88, "FFmpeg", ffmpeg, ffmpeg ? "ready" : "missing");
+            DrawStatus(g, x, y + 108, "yt-dlp", ytdlp, ytdlp ? "ready" : "missing");
+            DrawStatus(g, x, y + 128, "aria2", aria, aria ? "ready" : "missing");
+            DrawStatus(g, x, y + 148, "Deno for YouTube", deno, deno ? "ready" : "missing");
+            DrawStatus(g, x, y + 168, "Codex limits", limisaw, limisaw ? "ready" : "missing");
+
+            int by = y + 204;
+            var setup = new Rectangle(x, by, 176, 28);
+            Buttons.Add(new ButtonDef { R = setup, A = () => StartSetup() });
+            DrawButton(g, setup, "Install / repair", false, 11);
+
+            var limits = new Rectangle(x + 184, by, 150, 28);
+            Buttons.Add(new ButtonDef { R = limits, A = () => LaunchTool("LIMISAW.EXE", "none") });
+            DrawButton(g, limits, "Open Codex limits", false, 10);
+
+            int by2 = by + 36;
+            var readme = new Rectangle(x, by2, 176, 26);
+            Buttons.Add(new ButtonDef { R = readme, A = () => OpenPath(Path.Combine(S.RootPath, "README.md")) });
+            DrawButton(g, readme, "Open README", false, 10);
+
+            var folder = new Rectangle(x + 184, by2, 150, 26);
+            Buttons.Add(new ButtonDef { R = folder, A = () => OpenPath(S.RootPath) });
+            DrawButton(g, folder, "Open toolkit folder", false, 10);
+
+            DrawText(g, "Nothing is added to Windows startup unless you enable it in Settings.", x, y + h - 18, Palette.MUTED, 10);
+        }
+
+        void DrawStatus(Graphics g, int x, int y, string label, bool ok, string state)
+        {
+            DrawText(g, ok ? "[OK]" : "[--]", x, y, ok ? Palette.LINK : Palette.DANGERTXT, 10, true);
+            DrawText(g, label, x + 42, y, Palette.TEXT, 11);
+            DrawText(g, state, x + 190, y, ok ? Palette.TEXT2 : Palette.DANGERTXT, 10);
         }
 
         void DrawMenusTab(Graphics g, int x, int y, int w, int h)
@@ -252,9 +312,12 @@ namespace Saituls
             {
                 int cx = x + (i < 7 ? 0 : colW + 20);
                 int cy = chkY + (i < 7 ? i : i - 7) * 20;
-                var cr = new Rectangle(cx, cy, 14, 14);
-                MenuCheckRects.Add(cr);
-                DrawBevel(g, cr, false);
+                var box = new Rectangle(cx, cy, 14, 14);
+                var hit = new Rectangle(cx, cy, colW, 16);
+                MenuCheckRects.Add(hit);
+                int featureIndex = i;
+                Buttons.Add(new ButtonDef { R = hit, A = () => { FeatureChecked[featureIndex] = !FeatureChecked[featureIndex]; Refresh(); } });
+                DrawBevel(g, box, false);
                 if (FeatureChecked[i])
                 {
                     using (var p = new Pen(Palette.LINK, 2))
@@ -294,11 +357,12 @@ namespace Saituls
         //   "folder" = ask for a folder, pass it as %1
         //   "file"   = ask for a file, pass it as %1
         string[,] ToolDefs = {
-            { "DL_YT audio",  "DL_YT.CMD",        "audio"  },
-            { "DL_YT video",  "DL_YT.CMD",        "video"  },
+            { "Download audio", "DL_YT.CMD",      "audio"  },
+            { "Download video", "DL_YT.CMD",      "video"  },
             { "Merge Audio",  "MERGE_AUD.CMD",    "file"   },
             { "New Project",  "NEW_PROJ.CMD",     "folder" },
             { "Pack File",    "PACK.PYW",         "file"   },
+            { "Pack Folder",  "PACK.PYW",         "folder" },
             { "Del Empty",    "DEL_EMPTY.PYW",    "folder" },
             { "Del Dup",      "DEL_DUP.PYW",      "folder" },
             { "Del Same",     "DEL_SAME.PYW",     "folder" },
@@ -309,8 +373,8 @@ namespace Saituls
 
         void DrawToolsTab(Graphics g, int x, int y, int w, int h)
         {
-            DrawText(g, "Launch a bundled tool. * asks for a target first.", x, y, Palette.TEXT2, 11);
-            int btnW = 110, btnH = 26, gap = 4, cols = 3;
+            DrawText(g, "Launch a tool. Items marked * ask what file or folder to use.", x, y, Palette.TEXT2, 11);
+            int btnW = 126, btnH = 26, gap = 4, cols = 3;
             int cx = x, cy = y + 18;
             for (int i = 0; i < ToolDefs.GetLength(0); i++)
             {
@@ -336,9 +400,10 @@ namespace Saituls
             DrawText(g, S.IniPath, x + 35, y + 18, Palette.MUTED, 10);
 
             bool ao = AutoStartEnabled("SaitulsApp");
-            var ar = new Rectangle(x, y + 40, 130, 22);
+            var ar = new Rectangle(x, y + 40, 170, 24);
             Buttons.Add(new ButtonDef { R = ar, A = () => ToggleAutostart("SaitulsApp", "SAITULS") });
-            DrawButton(g, ar, ao ? "[X] autostart app" : "[ ] autostart app", ao);
+            DrawButton(g, ar, ao ? "[X] Start with Windows" : "[ ] Start with Windows", ao, 10);
+            DrawText(g, "Starts quietly in the tray. Disabled by default.", x + 180, y + 45, Palette.MUTED, 10);
 
             int by = y + 70;
             int bw = 140;
@@ -352,8 +417,48 @@ namespace Saituls
             } });
             DrawButton(g, ber, "Open folder", false);
 
-            DrawText(g, "SAITULS v1 - " + RegFeatures.Length + " context features", x, by + 34, Palette.MUTED, 10);
+            DrawText(g, "SAITULS - " + RegFeatures.Length + " Explorer menu features", x, by + 34, Palette.MUTED, 10);
             DrawText(g, "Golden Default per saipen UI.md", x, by + 48, Palette.MUTED, 10);
+        }
+
+        void StartSetup()
+        {
+            string setup = Path.Combine(S.RootPath, "setup.ps1");
+            if (!File.Exists(setup)) { MessageBox.Show("Setup script not found:\n" + setup, "SAITULS"); return; }
+            try
+            {
+                Process.Start(new ProcessStartInfo("powershell.exe")
+                {
+                    Arguments = "-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"" + setup + "\" -NoLaunch -WaitAtEnd",
+                    WorkingDirectory = S.RootPath,
+                    Verb = "runas",
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Normal
+                });
+            }
+            catch (Exception ex) { MessageBox.Show("Could not start setup:\n" + ex.Message, "SAITULS"); }
+        }
+
+        void OpenPath(string path)
+        {
+            if (!File.Exists(path) && !Directory.Exists(path)) { MessageBox.Show("Not found:\n" + path, "SAITULS"); return; }
+            try { Process.Start(new ProcessStartInfo(path) { UseShellExecute = true }); }
+            catch (Exception ex) { MessageBox.Show("Could not open:\n" + ex.Message, "SAITULS"); }
+        }
+
+        static string FindOnPath(string fileName)
+        {
+            string path = (Environment.GetEnvironmentVariable("PATH") ?? "") + Path.PathSeparator +
+                (Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine) ?? "") + Path.PathSeparator +
+                (Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? "");
+            foreach (string raw in path.Split(Path.PathSeparator))
+            {
+                string dir = raw.Trim().Trim('"');
+                if (dir.Length == 0) continue;
+                try { string candidate = Path.Combine(dir, fileName); if (File.Exists(candidate)) return candidate; }
+                catch { }
+            }
+            return null;
         }
 
         string ImportSafePath()
@@ -463,7 +568,11 @@ namespace Saituls
             if (script == "LIMISAW.EXE")
             {
                 string limi = Path.Combine(root, "LIMISAW.exe");
-                if (File.Exists(limi))
+                if (FindOnPath("python.exe") == null)
+                {
+                    MessageBox.Show("Python is missing. Open Home and run Install / repair first.", "SAITULS");
+                }
+                else if (File.Exists(limi))
                 {
                     Process.Start(new ProcessStartInfo(limi) { WorkingDirectory = root, UseShellExecute = true });
                 }
@@ -485,11 +594,11 @@ namespace Saituls
             // here there is no selection, so ask — a tool silently operating on
             // Bin\ would be a surprise, and DEL_* delete things.
             string target = null;
-            if (mode == "folder")
+            if (mode == "folder" || mode == "audio" || mode == "video")
             {
                 using (var fb = new FolderBrowserDialog())
                 {
-                    fb.Description = script + " — pick the target folder";
+                    fb.Description = (mode == "audio" || mode == "video") ? "Pick the download folder" : script + " — pick the target folder";
                     fb.SelectedPath = root;
                     if (fb.ShowDialog() != DialogResult.OK) return;
                     target = fb.SelectedPath;
@@ -510,17 +619,22 @@ namespace Saituls
             {
                 if (script.EndsWith(".PYW", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Same interpreter the registry commands use.
-                    string pyw = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "pyw.exe");
-                    string exe = File.Exists(pyw) ? pyw : "pythonw.exe";
+                    string exe = FindOnPath("pythonw.exe") ?? FindOnPath("python.exe");
+                    if (exe == null) { MessageBox.Show("Python is missing. Open Home and run Install / repair first.", "SAITULS"); return; }
                     string args = "\"" + fullPath + "\"" + (target != null ? " \"" + target + "\"" : "");
                     Process.Start(new ProcessStartInfo(exe, args) { WorkingDirectory = binDir, UseShellExecute = false });
                 }
                 else
                 {
+                    if ((script == "DL_YT.CMD" || script == "MERGE_AUD.CMD") && !File.Exists(Path.Combine(binDir, "FFMPEG.EXE")))
+                    { MessageBox.Show("FFmpeg is missing. Open Home and run Install / repair first.", "SAITULS"); return; }
+                    if (script == "DL_YT.CMD" && !File.Exists(Path.Combine(binDir, "yt-dlp.exe")))
+                    { MessageBox.Show("yt-dlp is missing. Open Home and run Install / repair first.", "SAITULS"); return; }
+                    if (script == "DL_YT.CMD" && !File.Exists(Path.Combine(binDir, "deno.exe")) && FindOnPath("node.exe") == null)
+                    { MessageBox.Show("The YouTube JavaScript runtime is missing. Open Home and run Install / repair first.", "SAITULS"); return; }
                     // PATH must carry Bin\ and Bin\App\ so bare yt-dlp/ffmpeg resolve.
                     string args = "/c set \"PATH=" + binDir + ";" + Path.Combine(binDir, "App") + ";%PATH%\" && call \"" + fullPath + "\"" +
-                                  (mode == "audio" || mode == "video" ? " " + mode : (target != null ? " \"" + target + "\"" : ""));
+                                  (mode == "audio" || mode == "video" ? " " + mode + " \"" + target + "\"" : (target != null ? " \"" + target + "\"" : ""));
                     Process.Start(new ProcessStartInfo("cmd.exe", args) { WorkingDirectory = binDir, UseShellExecute = false });
                 }
             }
@@ -533,6 +647,7 @@ namespace Saituls
         void SwitchTab(string name)
         {
             CurrentTab = name;
+            FocusedButton = -1;
             S.LastTab = name;
             S.Save();
             Refresh();
@@ -559,7 +674,7 @@ namespace Saituls
                 {
                     if (rk == null) return;
                     if (AutoStartEnabled(keyName)) { rk.DeleteValue(keyName, false); nowOn = false; }
-                    else { rk.SetValue(keyName, "\"" + Application.ExecutablePath + "\""); nowOn = true; }
+                    else { rk.SetValue(keyName, "\"" + Application.ExecutablePath + "\" --minimized"); nowOn = true; }
                 }
                 // The app-level toggle MUST persist to the ini: Main() re-applies
                 // s.AutoStart on every start, so a registry-only change would be
@@ -619,7 +734,7 @@ namespace Saituls
             if (e.Button == MouseButtons.Left)
             {
                 // Check menuitem checkboxes (hit-test against rects recorded at draw time)
-                if (CurrentTab == "Menus")
+                if (CurrentTab == "Explorer menus")
                 {
                     for (int i = 0; i < MenuCheckRects.Count && i < RegFeatures.Length; i++)
                     {
@@ -631,23 +746,45 @@ namespace Saituls
                         }
                     }
                 }
-                foreach (var b in Buttons)
+                for (int i = 0; i < Buttons.Count; i++)
                 {
-                    if (b.R.Contains(e.Location) && b.A != null) { b.A(); return; }
+                    var b = Buttons[i];
+                    if (b.R.Contains(e.Location) && b.A != null) { FocusedButton = i; b.A(); return; }
                 }
                 // Tab click
                 for (int i = 0; i < TabRects.Count; i++)
                 {
                     if (TabRects[i].Contains(e.Location))
                     {
-                        CurrentTab = TabNames[i];
-                        S.LastTab = TabNames[i];
-                        S.Save();
-                        Refresh();
+                        SwitchTab(TabNames[i]);
                         return;
                     }
                 }
             }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) { Hide(); e.Handled = true; return; }
+            if (e.Control && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D4)
+            {
+                int index = (int)e.KeyCode - (int)Keys.D1;
+                if (index < TabNames.Length) SwitchTab(TabNames[index]);
+                e.Handled = true; return;
+            }
+            if (e.KeyCode == Keys.Tab && Buttons.Count > 0)
+            {
+                int delta = e.Shift ? -1 : 1;
+                FocusedButton = (FocusedButton + delta + Buttons.Count) % Buttons.Count;
+                Refresh(); e.Handled = true; return;
+            }
+            if ((e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space) && FocusedButton >= 0 && FocusedButton < Buttons.Count)
+            {
+                Action action = Buttons[FocusedButton].A;
+                if (action != null) action();
+                e.Handled = true; return;
+            }
+            base.OnKeyDown(e);
         }
     }
 
@@ -656,12 +793,27 @@ namespace Saituls
         static SaitulsForm _form;
 
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             bool createdNew;
             using (var mutex = new System.Threading.Mutex(true, "Local\\SaitulsApp", out createdNew))
             {
-                if (!createdNew) return;
+                if (!createdNew)
+                {
+                    try
+                    {
+                        using (var signal = System.Threading.EventWaitHandle.OpenExisting("Local\\SaitulsShow"))
+                            signal.Set();
+                    }
+                    catch
+                    {
+                        IntPtr existing = Native.FindWindow(null, "SAITULS");
+                        if (existing != IntPtr.Zero) { Native.ShowWindow(existing, 5); Native.SetForegroundWindow(existing); }
+                    }
+                    return;
+                }
+                var showEvent = new System.Threading.EventWaitHandle(false,
+                    System.Threading.EventResetMode.AutoReset, "Local\\SaitulsShow");
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
@@ -699,7 +851,7 @@ namespace Saituls
                         if (rk != null)
                         {
                             if (s.AutoStart)
-                                rk.SetValue("SaitulsApp", "\"" + Application.ExecutablePath + "\"");
+                                rk.SetValue("SaitulsApp", "\"" + Application.ExecutablePath + "\" --minimized");
                             else if (rk.GetValue("SaitulsApp") != null)
                                 rk.DeleteValue("SaitulsApp", false);
                         }
@@ -707,14 +859,30 @@ namespace Saituls
                 }
                 catch { }
 
-ShowForm(s, tray);
+                bool startHidden = Array.Exists(args, a => string.Equals(a, "--minimized", StringComparison.OrdinalIgnoreCase));
+                if (startHidden) EnsureForm(s, tray); else ShowForm(s, tray);
+                var showWait = System.Threading.ThreadPool.RegisterWaitForSingleObject(showEvent, (state, timedOut) =>
+                {
+                    SaitulsForm form = _form;
+                    if (form == null || form.IsDisposed || !form.IsHandleCreated) return;
+                    try { form.BeginInvoke((Action)(() => ShowForm(s, tray))); } catch { }
+                }, null, System.Threading.Timeout.Infinite, false);
                 Application.Run();
+                showWait.Unregister(null);
+                showEvent.Dispose();
                 tray.Visible = false;
                 tray.Dispose();
             }
         }
 
         static void ShowForm(SaitulsSettings s, NotifyIcon tray)
+        {
+            EnsureForm(s, tray);
+            _form.Show();
+            _form.Activate();
+        }
+
+        static void EnsureForm(SaitulsSettings s, NotifyIcon tray)
         {
             if (_form == null || _form.IsDisposed)
             {
@@ -723,9 +891,10 @@ ShowForm(s, tray);
                 {
                     if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; _form.Hide(); }
                 };
+                // BeginInvoke from the single-instance signal needs a handle even
+                // when Windows starts the application hidden in the tray.
+                IntPtr hiddenHandle = _form.Handle;
             }
-            _form.Show();
-            _form.Activate();
         }
     }
 }

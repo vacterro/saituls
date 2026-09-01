@@ -1,5 +1,12 @@
 # Install / uninstall
 
+## Recommended one-click install
+
+Double-click `INSTALL.cmd` at the repository root. It self-elevates once,
+downloads only missing Python/media tools, installs the 14 Explorer features,
+and starts SAITULS without an administrator token. Re-run the same file to
+repair a moved or incomplete installation.
+
 ## Full install (all features)
 
 ```powershell
@@ -29,20 +36,27 @@ Imports every `Registry\*_REM*.reg` (removal counterparts). Complete
 coverage of the FFmpeg menu is provided by `FFMPEG_REM.REG` (removes all
 keys `FFMPEG_MENU.REG` installs, including the 7 legacy extensions).
 
-## GUI install (recommended)
+## GUI install or selective changes
 
 ```cmd
 SAITULS_LAUNCHER.cmd
 ```
 
-The launcher self-elevates and starts `SAITULS.exe`. Use the **Menus** tab
-to check/uncheck features and click **Install** or **Remove**. Equivalent
-to running `INSTALL_ALL.PS1` but with a checkbox grid and no console.
+The launcher starts `SAITULS.exe` as the current user. Use **Home → Install /
+repair** for the complete setup, or **Explorer menus** to check individual
+features and click **Install** or **Remove**. Only the registry write requests
+UAC.
 
 ## OpenCode and Cline YOLO menus
 
-`INSTALL_ALL.PS1` also installs per-user Explorer entries for folder icons,
-folder backgrounds, and drive roots:
+OpenCode/Cline are optional and are not part of the default install. If both
+CLIs are already available, add their Explorer entries with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Installers\INSTALL_ALL.PS1 -IncludeAgentMenus
+```
+
+The optional entries cover folder icons, folder backgrounds, and drive roots:
 
 - `OpenCode YOLO here` runs `opencode <project> --auto`.
 - `Cline YOLO here` runs `cline --cwd <project> --auto-approve true --tui`.
@@ -59,8 +73,8 @@ at the start of the console title, reapplies that title if a TUI overwrites
 it, and uses the shared Wintage Golden console profile. The installer enables
 the modern console edit keys: with a selection, `Ctrl+C` copies; without a
 selection it still reaches the agent as cancel; `Ctrl+V` pastes. It also keeps
-`Ctrl+Shift+C/V` enabled as a fallback. Existing settings are backed up under
-`.saipen\recovery\20260827T0007Z-agent-context-menu\` on this machine.
+`Ctrl+Shift+C/V` enabled as a fallback. This intentionally modifies the user's
+Windows console profile; uninstall preserves that profile.
 
 Remove only these entries with `Remove-AgentContextMenus.ps1`. The Wintage
 palette and console keyboard preferences are intentionally preserved.

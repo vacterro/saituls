@@ -14,7 +14,7 @@ All context-menu entries live under `Registry/`. The install set is the
 | `DL_YT.REG` | (Download From Youtube) | `HKLM\SOFTWARE\Classes\Directory\background\shell\DownloadFromYoutube` | 6 yt-dlp modes: audio/video, with/without date, playlist |
 | `FFMPEG_MENU.REG` | (convert submenu, Cyrillic) | `HKCU\SOFTWARE\Classes\SystemFileAssociations` | ffmpeg conversion submenu, 23 extensions, 599 keys |
 | `MERGE_AUD.REG` | MERGE AUD | `HKCR\*\shell\MergeAudioTracks` | Merge 2 audio tracks into one file |
-| `MKV_FIX.REG` | Сжать в MP4 / Сжать в AV1 | `HKCU\...\SystemFileAssociations\.mkv` | Re-mux to MP4 or re-encode to AV1 |
+| `MKV_FIX.REG` | Compress to MP4 / Compress to AV1 (Cyrillic labels) | `HKCU\...\SystemFileAssociations\.mkv` | Re-mux to MP4 or re-encode to AV1 |
 | `NEW_PROJ.REG` | NEW PROJ | `HKCR\Directory\Background\shell\CreateNewProjectFolder` | Create `_new_project` skeleton |
 | `PACK.REG` | (Pack Into Folder) | `HKCR\*\shell\PackIntoFolder` | Pack file/folder into `*_Packed` |
 | `PS_ADMIN.REG` | PS ADMIN | `HKCR\Directory\Background\shell\OpenPowerShellAdmin` | Open PowerShell as administrator |

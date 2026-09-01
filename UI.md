@@ -1,51 +1,48 @@
 # SAITULS UI contract
 
-SAITULS uses the local Golden Default / Wintage UI contract from `saipen/UI.md`.
-The main window is a compact tabbed dialog: Verdana, classic bevelled controls,
-no rounded corners, shadows, gradients, animation or transparency.
+SAITULS and LIMISAW use the Golden Default palette and compact Windows 95
+geometry defined by the bound SAIPEN `UI.md`: Verdana, non-antialiased GDI
+text, square corners, flat fills, two-pixel bevels and no animation.
 
-All client text uses GDI `CreateFontW` with `NONANTIALIASED_QUALITY=3` and is
-assigned directly with `WM_SETFONT`. Pixel QA must show only foreground and
-background colours in glyph crops; intermediate AA colours are forbidden.
+Both windows are borderless but draggable from their top title strip. The
+right-hand `X` hides the window in the tray; an explicit tray or Settings
+command exits the process. Everyday launch is not elevated. Operations that
+modify protected registry areas request UAC only when invoked.
 
-The distributable is `SAITULS.exe`, compiled from `SAITULS.cs` with
-`csc.exe` (.NET Framework 4.8). Its window icon is the multi-resolution
-`SAITULS.ico`, derived from `SAIPEN_OrangeShine.png`.
+## SAITULS
 
-## Palette
+The 560x440 window stays inside a 640x480 logical desktop and has four tabs:
 
-Only the Golden Default tokens are used:
+- **Home** is the primary screen. It reports readiness for Python, FFmpeg,
+  yt-dlp, aria2, Deno and LIMISAW, then offers one `Install / repair` action.
+- **Explorer menus** exposes the 14 installable menu features with whole-row
+  checkbox hit targets and separate Install/Remove actions.
+- **Tools** launches bundled workers. File/folder operations always ask for a
+  target; YouTube actions also ask for a destination folder.
+- **Settings** shows real paths, optional quiet autostart, open-folder and
+  explicit exit actions.
 
-- backgroundSoft `#232018`
-- surfaceRaised `#3D372A`
-- textPrimary `#D4C89A`
-- borderHighlight `#F0D060`
+Autostart is off by default. When enabled, SAITULS starts with `--minimized`
+and does not steal focus.
 
-## Behavior
+Keyboard operation is complete: `Ctrl+1` through `Ctrl+4` select tabs,
+`Tab`/`Shift+Tab` move the dotted focus rectangle, `Enter`/`Space` activate
+the focused item, and `Esc` hides the window.
 
-- **Menus tab** shows 14 context-menu features. The tray button is functional
-  but the recommended workflow is the tabbed panel.
-- **Monitor tab** has the same Lite/Micro/Full mode trio as the original
-  `problip` contract. `Lite` is the default. The blip WAV is scaled before
-  playback, so the setting works without changing the system volume or
-  installing an audio DLL. `Super silent` enforces a 1.4-second minimum gap.
-- **Tools tab** launches the bundled scripts and binaries. It does not check
-  for `App\` payloads — that is the legacy `__ContextMenu+.exe`'s concern.
-- **Settings tab** shows the toolkit root, INI path, and app autostart.
-- Windows autostart is enabled by default through the per-user `Run` key.
-  The controller immediately starts both the tray and monitor when it starts.
-- Settings are saved in `SAITULS.ini` beside `SAITULS.exe` and are applied
-  by restarting only the monitor. Process Explorer is not restarted during a
-  sound/mode change.
+## LIMISAW
 
-## Controls
+The tray icon contains exactly one readable percentage. `lowest` is the
+default metric; the tray menu can pin account 1/account 2 and 5-hour/weekly.
+The selected metric is named in the tooltip, while disabled status rows in
+the tray menu show both periods for both accounts.
 
-- Tray `Open SAITULS` opens the compact editor.
-- Tray `Monitor ON` / `Monitor OFF` start/stop the blip.
-- `Ctrl+Delete` starts Process Explorer and the monitor together, hidden.
-  (Requires the legacy `Problip.exe` — not yet implemented in SAITULS.exe.)
-- Holding left `Ctrl+Alt` alone for 350 ms opens Process Explorer visibly.
-  The delay keeps the quick `Ctrl+Alt+Delete` chord available for Task Manager.
-- `Ctrl+Alt+Delete` requests Task Manager. Windows may consume the secure
-  attention sequence before AutoHotkey; `Ctrl+Shift+Esc` remains the native
-  guaranteed shortcut, and the tray button always launches `taskmgr.exe`.
+The window has one global `Refresh now` action, fixed account panels, and a
+persistent status/error footer. `F5` refreshes, `Esc` hides, double-clicking
+the tray icon opens the existing instance. A second process activates the
+first instead of adding another tray icon. Window position is saved.
+
+## Personal hotkeys
+
+The local ignored `___AHK/___MAIN.ahk` keeps `Ctrl+Shift+Delete` for Process
+Explorer. It does not bind `Ctrl+Delete` to Task Manager. Windows' native
+`Ctrl+Shift+Esc` Task Manager shortcut remains unchanged.
