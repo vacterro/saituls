@@ -203,6 +203,10 @@ def main():
         check('AI launcher ' + agent + ' YOLO/title/Wintage', ok,
               (probe.stderr or probe.stdout).strip())
 
+    check('Vintage skill prerequisite', os.path.isfile(os.path.join(
+        os.environ.get('USERPROFILE', os.path.expanduser('~')),
+        '.agents', 'skills', 'vintage', 'SKILL.md')))
+
     installer_text, _ = read_text(agent_scripts[1])
     console_contract = all(token in installer_text for token in (
         'ForceV2', 'CtrlKeyShortcutsDisabled', 'InterceptCopyPaste',

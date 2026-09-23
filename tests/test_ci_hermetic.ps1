@@ -29,7 +29,10 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $binDir = Join-Path $StubRoot 'bin'
-$vintageSkill = Join-Path $env:USERPROFILE '.agents\skills\vintage\SKILL.md'
+$originalUserProfile = $env:USERPROFILE
+$fixtureProfile = Join-Path ([IO.Path]::GetTempPath()) ('saituls-ci-profile-' + [guid]::NewGuid().ToString('N'))
+$env:USERPROFILE = $fixtureProfile
+$vintageSkill = Join-Path $fixtureProfile '.agents\skills\vintage\SKILL.md'
 
 $fails = 0
 function Check([string]$name, [bool]$ok, [string]$detail = '') {
@@ -76,7 +79,7 @@ function Remove-StubLayer {
 
 try {
     # Arrange: provision the full fixture layer, then prove it is present...
-    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'tests\ci_fixtures.ps1') | Out-Null
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'tests\ci_fixtures.ps1') -StubRoot $StubRoot | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'ci_fixtures.ps1 provisioning exited nonzero' }
     Check 'fixture layer provisioned' (
         (Test-Path -LiteralPath (Join-Path $binDir 'opencode.cmd')) -and
@@ -138,10 +141,15 @@ try {
 }
 finally {
     # Restore: the next suite run needs a complete fixture layer again.
-    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'tests\ci_fixtures.ps1') | Out-Null
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'tests\ci_fixtures.ps1') -StubRoot $StubRoot | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Host 'FAIL  fixture layer not restored after negative control'
         $script:fails++
+    }
+    $env:USERPROFILE = $originalUserProfile
+    $tempPrefix = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\') + '\'
+    if ([IO.Path]::GetFullPath($fixtureProfile).StartsWith($tempPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+        Remove-Item -LiteralPath $fixtureProfile -Recurse -Force -ErrorAction SilentlyContinue
     }
 }
 
