@@ -21,6 +21,7 @@ these tests replace ``messagebox.askyesno`` with a function that changes the
 filesystem and then answers Yes. That is the real race, executed deterministically.
 """
 import hashlib
+import importlib.machinery
 import importlib.util
 import json
 import os
