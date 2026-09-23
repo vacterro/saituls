@@ -1,0 +1,233 @@
+{
+ "data": [
+  {
+   "id": "msg_FIXTURE_ASSISTANT_5",
+   "time": {
+    "created": 1750000009000,
+    "completed": 1750000000900
+   },
+   "type": "assistant",
+   "agent": "build",
+   "model": {
+    "id": "queue-fixture",
+    "providerID": "fixture",
+    "variant": "default"
+   },
+   "content": [
+    {
+     "type": "text",
+     "id": "text-0",
+     "text": "cc5 finished"
+    }
+   ],
+   "snapshot": {
+    "start": "fixture",
+    "end": "fixture",
+    "files": []
+   },
+   "finish": "stop",
+   "cost": 0,
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "reasoning": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   }
+  },
+  {
+   "id": "msg_FIXTURE_USER_5",
+   "time": {
+    "created": 1750000008000
+   },
+   "text": "FIXTURE_PROMPT_5",
+   "type": "user"
+  },
+  {
+   "id": "msg_FIXTURE_ASSISTANT_4",
+   "time": {
+    "created": 1750000007000,
+    "completed": 1750000002900
+   },
+   "type": "assistant",
+   "agent": "build",
+   "model": {
+    "id": "queue-fixture",
+    "providerID": "fixture",
+    "variant": "default"
+   },
+   "content": [
+    {
+     "type": "text",
+     "id": "text-0",
+     "text": "cc4 finished"
+    }
+   ],
+   "snapshot": {
+    "start": "fixture",
+    "end": "fixture",
+    "files": []
+   },
+   "finish": "stop",
+   "cost": 0,
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "reasoning": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   }
+  },
+  {
+   "id": "msg_FIXTURE_USER_4",
+   "time": {
+    "created": 1750000006000
+   },
+   "text": "FIXTURE_PROMPT_4",
+   "type": "user"
+  },
+  {
+   "id": "msg_FIXTURE_ASSISTANT_3",
+   "time": {
+    "created": 1750000005000,
+    "completed": 1750000004900
+   },
+   "type": "assistant",
+   "agent": "build",
+   "model": {
+    "id": "queue-fixture",
+    "providerID": "fixture",
+    "variant": "default"
+   },
+   "content": [
+    {
+     "type": "text",
+     "id": "text-0",
+     "text": "cc3 finished"
+    }
+   ],
+   "snapshot": {
+    "start": "fixture",
+    "end": "fixture",
+    "files": []
+   },
+   "finish": "stop",
+   "cost": 0,
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "reasoning": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   }
+  },
+  {
+   "id": "msg_FIXTURE_USER_3",
+   "time": {
+    "created": 1750000004000
+   },
+   "text": "FIXTURE_PROMPT_3",
+   "type": "user"
+  },
+  {
+   "id": "msg_FIXTURE_ASSISTANT_2",
+   "time": {
+    "created": 1750000003000,
+    "completed": 1750000006900
+   },
+   "type": "assistant",
+   "agent": "build",
+   "model": {
+    "id": "queue-fixture",
+    "providerID": "fixture",
+    "variant": "default"
+   },
+   "content": [
+    {
+     "type": "text",
+     "id": "text-0",
+     "text": "cc2 finished"
+    }
+   ],
+   "snapshot": {
+    "start": "fixture",
+    "end": "fixture",
+    "files": []
+   },
+   "finish": "stop",
+   "cost": 0,
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "reasoning": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   }
+  },
+  {
+   "id": "msg_FIXTURE_USER_2",
+   "time": {
+    "created": 1750000002000
+   },
+   "text": "FIXTURE_PROMPT_2",
+   "type": "user"
+  },
+  {
+   "id": "msg_FIXTURE_ASSISTANT_1",
+   "time": {
+    "created": 1750000001000,
+    "completed": 1750000008900
+   },
+   "type": "assistant",
+   "agent": "build",
+   "model": {
+    "id": "queue-fixture",
+    "providerID": "fixture",
+    "variant": "default"
+   },
+   "content": [
+    {
+     "type": "text",
+     "id": "text-0",
+     "text": "cc1 finished"
+    }
+   ],
+   "snapshot": {
+    "start": "fixture",
+    "end": "fixture",
+    "files": []
+   },
+   "finish": "stop",
+   "cost": 0,
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "reasoning": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   }
+  },
+  {
+   "id": "msg_FIXTURE_USER_1",
+   "time": {
+    "created": 1750000000000
+   },
+   "text": "FIXTURE_PROMPT_1",
+   "type": "user"
+  }
+ ],
+ "cursor": {
+  "previous": "FIXTURE_CURSOR_PREV",
+  "next": "FIXTURE_CURSOR_NEXT"
+ }
+}

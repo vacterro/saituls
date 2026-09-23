@@ -3,38 +3,48 @@ import sys
 import tkinter as tk
 from tkinter import messagebox
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from shell_arg import shell_target
+
 
 def remove_empty_dirs(path):
     removed = 0
     removed_dirs = []
     failed = []
 
+    # The emptiness check belongs INSIDE the guard, not before it. os.listdir
+    # raises on an access-denied directory, on one that vanished since the walk
+    # enumerated it, and on a transient filesystem error -- and this worker
+    # deletes as it goes, so an escaped exception kills the process after some
+    # directories are already gone, with no log and no summary. Every failure
+    # here is recorded and the scan continues.
     for root, dirs, files in os.walk(path, topdown=False):
         for dir in dirs:
             full_path = os.path.join(root, dir)
-            if not os.listdir(full_path):
-                try:
-                    os.rmdir(full_path)
-                    removed_dirs.append(full_path)
-                    removed += 1
-                except Exception as e:
-                    failed.append((full_path, str(e)))
+            try:
+                if os.listdir(full_path):
+                    continue
+                os.rmdir(full_path)
+                removed_dirs.append(full_path)
+                removed += 1
+            except Exception as e:
+                failed.append((full_path, str(e)))
 
     # Check the root path itself
-    if os.path.isdir(path) and not os.listdir(path):
-        try:
+    try:
+        if os.path.isdir(path) and not os.listdir(path):
             os.rmdir(path)
             removed_dirs.append(path)
             removed += 1
-        except Exception as e:
-            failed.append((path, str(e)))
+    except Exception as e:
+        failed.append((path, str(e)))
 
     return removed, removed_dirs, failed
 
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        current_dir = sys.argv[1].strip('"')
+        current_dir = shell_target(sys.argv[1])
     else:
         current_dir = os.getcwd()
 

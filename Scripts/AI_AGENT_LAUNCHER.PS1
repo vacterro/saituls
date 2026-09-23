@@ -22,13 +22,120 @@ function Resolve-AgentCommand([string]$Name) {
 }
 
 function Get-StablePort([string]$Path) {
-    # Deterministic port from SHA256 of the canonical project path.
-    # Stable across processes and reboots. Port range: 42000..44047.
+    # Collision-safe port allocation. The SHA256-derived port stays as the
+    # PREFERRED start, but a hash into 2048 slots is not unique: two project
+    # paths can want one port, and two live OpenCode instances cannot share it.
+    # A per-user mapping file is the authority:
+    #   %LOCALAPPDATA%\SAITULS\opencode-ports.json
+    #   [{ path, port, pid, updated }]
+    # Rules:
+    #   - a path keeps its claimed port across restarts (stable for transport);
+    #   - a port claimed by a DIFFERENT path is never handed out while that
+    #     owner is alive, and stays stable afterwards (recycled only when every
+    #     slot is exhausted and it is unbound);
+    #   - a port already bound by any listener is skipped;
+    #   - all map access is under a machine-wide mutex, so two simultaneous
+    #     launches cannot claim the same port.
     $canonical = $Path.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar).ToLowerInvariant()
     $bytes = [System.Text.Encoding]::UTF8.GetBytes($canonical)
     $hash = [System.Security.Cryptography.SHA256]::Create().ComputeHash($bytes)
-    $port = 42000 + (([int]$hash[0] -shl 8 -bor [int]$hash[1]) % 2048)
-    return $port
+    $preferred = 42000 + (([int]$hash[0] -shl 8 -bor [int]$hash[1]) % 2048)
+
+    $mapDir = Join-Path $env:LOCALAPPDATA 'SAITULS'
+    $mapFile = Join-Path $mapDir 'opencode-ports.json'
+    $mutex = $null
+    $held = $false
+    try {
+        $mutex = New-Object System.Threading.Mutex($false, 'Global\SAITULS_OPENCODE_PORT_MAP')
+        $held = $mutex.WaitOne(5000)
+        if (-not $held) { return $preferred }   # contested beyond tolerance: deterministic fallback
+        $map = @()
+        if (Test-Path -LiteralPath $mapFile) {
+            try { $map = @(Get-Content -Raw -LiteralPath $mapFile | ConvertFrom-Json) } catch { $map = @() }
+        }
+
+        function Test-PortBound([int]$Port) {
+            $l = $null
+            try {
+                $l = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
+                $l.Start()
+                return $false
+            } catch { return $true }
+            finally { if ($l) { try { $l.Stop() } catch { } } }
+        }
+        function Test-PidAlive([int]$PidValue) {
+            if ($PidValue -le 0) { return $false }
+            return $null -ne (Get-Process -Id $PidValue -ErrorAction SilentlyContinue)
+        }
+
+        $mine = $map | Where-Object { $_.path -eq $canonical } | Select-Object -First 1
+
+        # A single-entry map round-trips as a bare PSCustomObject and, in some
+        # cases, without a settable 'port'. Rebuild every entry into a uniform
+        # shape once, so all reads and writes below are safe.
+        $map = @($map | ForEach-Object {
+            [pscustomobject]@{
+                path    = [string]$_.path
+                port    = $(if ($_.port -is [System.Array]) { [int]@($_.port)[-1] } else { [int]$_.port })
+                pid     = $(if ($_.pid -is [System.Array]) { [int]@($_.pid)[-1] } else { [int]$_.pid })
+                updated = [string]$_.updated
+            }
+        })
+        $mine = $map | Where-Object { $_.path -eq $canonical } | Select-Object -First 1
+
+        # ConvertFrom-Json in Windows PowerShell 5.1 hands back object[] for a
+        # numeric property on a single-entry round trip, so take the last
+        # element before coercing. Every port read goes through this helper.
+        function ConvertTo-PortNumber($Value) {
+            if ($Value -is [System.Array]) { return [int]@($Value)[-1] }
+            return [int]$Value
+        }
+
+        $port = $null
+        if ($mine) {
+            # This path's stable claim. Keep it unless it is now unusable:
+            # bound by a foreign listener, or claimed by a live foreign entry
+            # (a repaired map conflict).
+            $conflict = $map | Where-Object {
+                $_.path -ne $canonical -and $_.port -eq $mine.port -and (Test-PidAlive ([int]$_.pid))
+            } | Select-Object -First 1
+            if (-not (Test-PortBound $mine.port) -and -not $conflict) {
+                $port = $mine.port
+            }
+        }
+
+        if ($null -eq $port) {
+            $start = if ($mine) { $mine.port } else { $preferred }
+            for ($offset = 0; $offset -lt 2048; $offset++) {
+                $candidate = 42000 + ((($start - 42000 + $offset) % 2048 + 2048) % 2048)
+                if ($mine -and $candidate -eq $mine.port) { continue }
+                $conflict = $map | Where-Object {
+                    $_.port -eq $candidate -and $_.path -ne $canonical -and (Test-PidAlive ([int]$_.pid))
+                } | Select-Object -First 1
+                if ($conflict) { continue }
+                if (Test-PortBound $candidate) { continue }
+                $port = $candidate
+                break
+            }
+            if ($null -eq $port) { $port = $preferred }   # exhausted: deterministic fallback
+        }
+
+        $stamp = (Get-Date).ToUniversalTime().ToString('o')
+        if ($mine) {
+            $mine.port = $port; $mine.pid = $PID; $mine.updated = $stamp
+        } else {
+            $map += [pscustomobject]@{ path = $canonical; port = $port; pid = $PID; updated = $stamp }
+        }
+        New-Item -ItemType Directory -Path $mapDir -Force | Out-Null
+        $tmp = "$mapFile.tmp"
+        $map | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $tmp -Encoding UTF8
+        Move-Item -LiteralPath $tmp -Destination $mapFile -Force
+        return $port
+    }
+    finally {
+        if ($held) { try { $mutex.ReleaseMutex() } catch { } }
+        if ($mutex) { $mutex.Dispose() }
+    }
 }
 
 function Get-ProjectTitle([string]$Path, [string]$Name) {
@@ -116,7 +223,7 @@ if ($SelfTest) {
         Agent = $Agent
         Command = $agentCommand
         Arguments = $arguments
-        Port = if ($Agent -eq "OpenCode") { (Get-StablePort $resolvedDir) } else { $null }
+        Port = if ($Agent -eq "OpenCode") { $ocPort } else { $null }
         WorkDir = $resolvedDir
         Title = $windowTitle
         ProjectFirst = $windowTitle.StartsWith($projectName)

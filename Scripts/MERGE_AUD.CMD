@@ -1,16 +1,13 @@
 @echo off
-@chcp 65001 > NUL
+rem T-167: thin launcher. All Merge Audio logic lives in MERGE_AUD.PS1.
+rem The old all-CMD implementation fought for/f + usebackq + codepage
+rem re-parsing; the PowerShell worker owns the contract now.
 setlocal
-set "ffmpeg=%~dp0..\Bin\FFMPEG.EXE"
-set "in=%~1"
-set "out=%~dpn1_merged%~x1"
-
-"%ffmpeg%" -i "%in%" -filter_complex "[0:a]amerge=inputs=2[aout]" -map 0:v -map "[aout]" -c:v copy -c:a aac -b:a 320k "%out%" -y
-if %ERRORLEVEL% equ 0 (
-    move /y "%out%" "%in%"
-) else (
-    echo Произошла ошибка при слиянии аудио.
-    if exist "%out%" del "%out%"
-    pause
-)
-endlocal
+set "MERGE_IN=%~1"
+set "MERGE_SELF=%~f0"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0MERGE_AUD.PS1"
+set "RC=%ERRORLEVEL%"
+if not "%RC%"=="0" if defined T167_NO_PAUSE goto done
+if not "%RC%"=="0" pause
+:done
+exit /b %RC%

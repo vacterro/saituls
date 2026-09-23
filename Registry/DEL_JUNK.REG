@@ -4,10 +4,22 @@ Windows Registry Editor Version 5.00
 @="DEL JUNK"
 
 [HKEY_CLASSES_ROOT\Directory\shell\DeleteJunkFiles\command]
-@="pythonw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" \"%1\""
+@="pyw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" \"%1\""
 
 [HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFiles]
 @="DEL JUNK"
 
 [HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFiles\command]
-@="pythonw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" \"%1\""
+@="pyw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Directory\shell\DeleteJunkFilesAllDisks]
+@="DEL JUNK ALL DISKS AVAILABLE"
+
+[HKEY_CLASSES_ROOT\Directory\shell\DeleteJunkFilesAllDisks\command]
+@="pyw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" --all-disks"
+
+[HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFilesAllDisks]
+@="DEL JUNK ALL DISKS AVAILABLE"
+
+[HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFilesAllDisks\command]
+@="pyw.exe \"%%ROOT%%\\Scripts\\DEL_JUNK.PYW\" --all-disks"

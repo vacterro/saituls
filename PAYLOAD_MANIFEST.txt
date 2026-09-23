@@ -1,0 +1,24 @@
+# Exact release-payload file set. Paths are relative to the repository root.
+Bin/__CONTEXTMENU+.EXE
+Bin/ARIA2C.EXE
+Bin/AV1_COMPRESS.BAT
+Bin/deno.exe
+Bin/FFMPEG_RUN.BAT
+Bin/FFMPEG_RUN.PS1
+Bin/FFMPEG.EXE
+Bin/FFPROBE.EXE
+Bin/LAUNCHER.EXE
+Bin/yt-dlp.exe
+Bin/App/ARIA2C.EXE
+Bin/App/AUDIO.EXE
+Bin/App/ffmpeg.exe
+Bin/App/FFPROBE.EXE
+Bin/App/ICON.ICO
+Bin/App/VIDEO.EXE
+Bin/App/YOUTUBE.INI
+Bin/App/yt-dlp.exe
+Bin/App/AV1 CPU/FFMPEG.EXE
+Bin/App/ExifCleaner/EXIFCLEANER.EXE
+Bin/App/GS/GSDLL64.DLL
+Bin/App/GS/GSWIN64C.EXE
+Bin/App/RTX40__/FFMPEG.EXE

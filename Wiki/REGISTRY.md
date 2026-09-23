@@ -10,6 +10,7 @@ All context-menu entries live under `Registry/`. The install set is the
 | `DEL_DUP.REG` | DEL DUP | `HKCR\Directory\shell\RemoveDuplicateFiles` | Delete duplicate files (SHA-256) |
 | `DEL_EMPTY.REG` | DEL EMPTY | `HKCR\Directory\shell\DeleteEmptyFolders` | Delete empty folders |
 | `DEL_JUNK.REG` | DEL JUNK | `HKCR\Directory\shell\DeleteJunkFiles` | Delete junk files via SMART_VAC_CLEANER |
+| `DEL_JUNK.REG` | DEL JUNK ALL DISKS AVAILABLE | `HKCR\Directory\shell\DeleteJunkFilesAllDisks` | One `SAFE_DISK` pass over every local fixed disk (`--all-disks`) |
 | `DEL_SAME.REG` | DEL SAME | `HKCR\Directory\shell\RemoveNestedDuplicates` | Delete nested same-name files |
 | `DL_YT.REG` | (Download From Youtube) | `HKLM\SOFTWARE\Classes\Directory\background\shell\DownloadFromYoutube` | 6 yt-dlp modes: audio/video, with/without date, playlist |
 | `FFMPEG_MENU.REG` | (convert submenu, Cyrillic) | `HKCU\SOFTWARE\Classes\SystemFileAssociations` | ffmpeg conversion submenu, 23 extensions, 599 keys |

@@ -2,7 +2,7 @@ name: test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'release/**' ]
   pull_request:
 
 jobs:
@@ -13,8 +13,289 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Provision test prerequisites (hermetic, no third-party services)
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\ci_fixtures.ps1 -IncludePythonLauncher -PublishPath
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Prove the suite fails loudly when the stub layer is gone
+        shell: pwsh
+        run: |
+          # The negative control for the fixture layer itself: removing the
+          # stubs must break the dependent harnesses, never silently skip.
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_ci_hermetic.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Run integrity suite
         shell: pwsh
         run: |
           python tests\test_regs.py
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test destructive worker safety
+        shell: pwsh
+        run: |
+          python tests\test_workers.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests\test_destructive_identity.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test DEL JUNK ALL DISKS (acceptance gate)
+        shell: pwsh
+        run: |
+          python tests\test_del_junk_all_disks.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test SAISPIN decision engine and watcher self-test
+        shell: pwsh
+        run: |
+          python tests\test_saispin.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # 5.1 is where the pipe-encoding and automatic-variable traps live, so
+          # the watcher self-test runs on BOTH shells.
+          powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\saispin_watch.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          pwsh -NoProfile -File Scripts\saispin_watch.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test native queue history acceptance oracle
+        shell: pwsh
+        run: |
+          python tests\test_native_queue_history.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test SAIPATCH TUI driver FIFO oracle fixtures
+        shell: pwsh
+        run: |
+          python tests\test_progress_oracle.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test SAIPATCH clipboard security and Ctrl+V injector
+        shell: pwsh
+        run: |
+          python tests\test_saipatch_secret_hygiene.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests\saipatch_ctrlv_receiver.py --self-test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests\saipatch_ctrlv_e2e.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test native TUI boundary probe
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_native_tui_probe.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test transactional release payload build
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_build_payload.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test legacy Cline registry ownership
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_legacy_cline.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test agent-menu install transaction
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_agent_menus_transaction.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Codex cascade install preflight
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_codex_menu_preflight.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test installer locale generation
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_locale_generation.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test %%ROOT%% registry import writes
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_import_safe.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Explorer menu launch and argument contract
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_shell_menu.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test single-instance activation publication
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_single_instance.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test self-elevating scripts report the elevated child result
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_self_elevation_result.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test project skeleton creation
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_new_proj.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test OpenCode port allocator
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_stable_port.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test SAIPATCH patch lifecycle
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_saipatch.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test scenarios migration registry and launcher
+        shell: pwsh
+        run: |
+          python tests\test_scenarios_launcher.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Provision Secure Apps Python dependencies
+        shell: pwsh
+        run: |
+          # cryptography for the key hierarchy, pywin32 for the privileged-
+          # helper transport, and the REAL python-fido2 in the supported
+          # range. fido2 used to be omitted on purpose, which meant the
+          # authentication provider's only executed line was its ImportError
+          # handler -- and that is exactly how it kept compiling against an
+          # API generation that no longer existed. The suites still need no
+          # security key.
+          #
+          # PyQt6 is installed for offscreen GUI validation.
+          python -m pip install --disable-pip-version-check --quiet cryptography pywin32 psutil Pillow "fido2>=2.0,<3" "PyQt6>=6.5,<7"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -c "from importlib import metadata; print('python-fido2', metadata.version('fido2'))"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Secure Apps python-fido2 dependency contract (no hardware)
+        shell: pwsh
+        run: |
+          # Constructs the real 2.x client surface against a stub CTAP2
+          # device. No authenticator, no elevation, no touch.
+          python tests\test_secure_apps_fido2_contract.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Secure Apps lifecycle (fake auth + fake storage, no hardware)
+        shell: pwsh
+        run: |
+          python tests\test_secure_apps.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Secure Apps acceptance (hermetic runner tests, no hardware)
+        shell: pwsh
+        run: |
+          python tests\test_secure_apps_acceptance.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Secure Apps privileged task integration (hermetic)
+        shell: pwsh
+        run: |
+          python tests\test_secure_apps_privtask.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Secure Apps UI (offscreen PyQt6)
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python tests\test_secure_apps_ui.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Secure Apps secret hygiene
+        shell: pwsh
+        run: |
+          python tests\test_secure_apps_hygiene.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Secure Apps launcher and storage-helper preflight
+        shell: pwsh
+        run: |
+          # Structural probes only: no elevation, no disk image, no key.
+          powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\secure_apps\sa_storage_helper.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\secure_apps\SECURE_APPS.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test agent console launcher (non-elevated, data-driven)
+        shell: pwsh
+        run: |
+          python tests\test_consoles_launcher.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test depth, busy-file recovery and ordinary tools
+        shell: pwsh
+        run: |
+          foreach ($suite in @('test_del_junk_depth.py', 'test_del_junk_busy_recovery.py', 'test_item_tools.py', 'test_clipboard_safe_share.py', 'test_saituls_tools_ux.py')) {
+            python "tests\$suite"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+      - name: Test Queue Viewer and native queue state
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python tests\test_queue_viewer.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests\test_saipatch_queue_core.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node --test (Get-ChildItem Scripts\saipatch\patches\opencode-queue-mode\*.test.mjs).FullName
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test Shell Doctor findings and read-only contract
+        shell: pwsh
+        run: |
+          # Fixture findings plus a read-only real-collector smoke (-Json):
+          # nothing is reset, no Explorer restart. Both 5.1 and 7.
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_shell_doctor.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          pwsh -NoProfile -File tests\test_shell_doctor.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test SAIPATCH generation and crash recovery
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_saipatch_generation.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test INSTALL_ALL transaction recorder
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_installer_transaction.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test INSTALL_ALL real disposable registry rollback
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_installer_registry.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test shared registry mutation lock
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_registry_lock.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test media payload validity and atomic publication
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_media_payload.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test payload backup restoration
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_restore_payload.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test SAISPIN task transaction and cadence
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_saispin_task.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test SAITULS repaint resource churn
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_saituls_repaint.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test TaskbarEdge pure logic
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_taskbar_edge_logic.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test TaskbarEdge architectural contract
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_taskbar_edge_contract.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile shipped C# applications (documented csc commands)
+        shell: pwsh
+        run: |
+          $csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+          if (-not (Test-Path $csc)) { Write-Error 'csc.exe not found'; exit 1 }
+          New-Item -ItemType Directory -Path $env:TEMP\saibuild -Force | Out-Null
+          & $csc -nologo -target:winexe -out:"$env:TEMP\saibuild\SAITULS.exe" -optimize+ `
+            -win32icon:SAITULS.ico `
+            -r:System.dll -r:System.Drawing.dll -r:System.Windows.Forms.dll SAITULS.cs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # TaskbarEdge ships as its own background helper, built from the two
+          # sources in Scripts\taskbar_edge. It must compile in CI too.
+          & $csc -nologo -target:winexe -out:"$env:TEMP\saibuild\TaskbarEdge.exe" -optimize+ `
+            -r:System.dll Scripts\taskbar_edge\EdgeLogic.cs Scripts\taskbar_edge\TaskbarEdge.cs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # The artifacts are build-verification only; never commit them.
+          Write-Host 'SAITULS.exe and TaskbarEdge.exe compile clean.'

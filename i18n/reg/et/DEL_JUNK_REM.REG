@@ -3,3 +3,7 @@ Windows Registry Editor Version 5.00
 [-HKEY_CLASSES_ROOT\Directory\shell\DeleteJunkFiles]
 
 [-HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFiles]
+
+[-HKEY_CLASSES_ROOT\Directory\shell\DeleteJunkFilesAllDisks]
+
+[-HKEY_CLASSES_ROOT\Drive\shell\DeleteJunkFilesAllDisks]

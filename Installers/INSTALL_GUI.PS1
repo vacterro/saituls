@@ -1,8 +1,49 @@
 # Self-elevate: reg import into HKLM/HKCR silently fails without admin rights
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) {
-    Start-Process powershell.exe -ArgumentList @('-ExecutionPolicy','Bypass','-NoProfile','-WindowStyle','Hidden','-File',"`"$($MyInvocation.MyCommand.Definition)`"") -Verb RunAs
-    exit
+    # -Wait -PassThru -ErrorAction Stop and the child's own exit code: without
+    # them the parent returned 0 the moment the elevated child STARTED, so a
+    # dismissed UAC prompt or a failed import was indistinguishable from a
+    # completed install to anything calling this script.
+    try {
+        $elevated = Start-Process powershell.exe -ArgumentList @('-ExecutionPolicy','Bypass','-NoProfile','-WindowStyle','Hidden','-File',"`"$($MyInvocation.MyCommand.Definition)`"") -Verb RunAs -Wait -PassThru -ErrorAction Stop
+    } catch {
+        Write-Host "Elevation was cancelled. Nothing was changed." -ForegroundColor Yellow
+        exit 1
+    }
+    # A process object with no ExitCode is counted with a missing one: `exit
+    # $null` is `exit 0`, which is the very "success" this guard exists to stop.
+    if (-not $elevated -or $null -eq $elevated.ExitCode) {
+        Write-Host "Elevation did not complete. Nothing was changed." -ForegroundColor Yellow
+        exit 1
+    }
+    exit $elevated.ExitCode
+}
+
+# Shared cross-process writer contract (T-133 6.1): the GUI holds NO mutation
+# lock while idle. Each Install/Uninstall click takes the one named lock for
+# exactly one bounded transaction and releases it in finally, so a user staring
+# at the form blocks no other registry writer. BUSY -> clear message, zero mutation.
+# The action returns its failure list; the wrapper returns @{Busy;Failures} so a
+# BUSY result is distinguishable from a clean run that collected zero failures.
+function Invoke-RegistryTransaction {
+    param([scriptblock]$Action)
+    $m = New-Object Threading.Mutex($false, 'Global\SAITULS_REGISTRY_MUTATION')
+    $owned = $false
+    try {
+        try { $owned = $m.WaitOne(5000) }
+        catch [Threading.AbandonedMutexException] { $owned = $true }
+        if (-not $owned) {
+            [System.Windows.Forms.MessageBox]::Show(
+                "SAITULS registry mutation is already in progress in another process. Try again in a moment.",
+                "Busy", 0, [System.Windows.Forms.MessageBoxIcon]::Warning)
+            return @{ Busy = $true; Failures = @() }
+        }
+        return @{ Busy = $false; Failures = @(& $Action) }
+    } finally {
+        if ($owned) { $m.ReleaseMutex() }
+        $m.Dispose()
+    }
 }
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -31,10 +72,35 @@ function Import-RegWithRoot([string]$path) {
         [System.IO.File]::WriteAllBytes($tmp, [System.Text.Encoding]::Default.GetBytes($text))
     }
     try {
-        Start-Process "reg.exe" -ArgumentList "import `"$tmp`"" -Wait -WindowStyle Hidden
+        # reg.exe reports a rejected import only through its exit code, so
+        # without -PassThru and this check a denied import was reported to the
+        # user as "Successfully installed".
+        $proc = Start-Process "reg.exe" -ArgumentList "import `"$tmp`"" -Wait -PassThru -WindowStyle Hidden
+        if ($proc.ExitCode -ne 0) {
+            throw "reg import failed with exit code $($proc.ExitCode) for $(Split-Path -Leaf $path)"
+        }
     } finally {
         Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue
     }
+}
+
+# One result dialog for a batch of imports: success only when every requested
+# mutation actually completed, and the failures named so they can be retried.
+# The count is also this script's exit code, so the elevated child reports the
+# real result to whoever waited for it instead of a bare 0.
+$script:failed = 0
+function Show-BatchResult([string]$verb, [string[]]$failures, [int]$total) {
+    if ($failures.Count -eq 0) {
+        [System.Windows.Forms.MessageBox]::Show(
+            "Successfully $verb $total selected feature(s)!", "Success", 0,
+            [System.Windows.Forms.MessageBoxIcon]::Information)
+        return
+    }
+    $script:failed += $failures.Count
+    $detail = ($failures | ForEach-Object { "  - $_" }) -join "`r`n"
+    [System.Windows.Forms.MessageBox]::Show(
+        "$($failures.Count) of $total operation(s) FAILED:`r`n`r`n$detail", "Failed", 0,
+        [System.Windows.Forms.MessageBoxIcon]::Error)
 }
 
 # Get all base features (exclude _Remove files and the Legacy folder)
@@ -82,11 +148,36 @@ $btnInstall.Add_Click({
         [System.Windows.Forms.MessageBox]::Show("Please select at least one feature.", "Notice", 0, [System.Windows.Forms.MessageBoxIcon]::Information)
         return
     }
+    # Preflight: a selected feature whose .reg is missing used to be a silent
+    # skip, so the dialog claimed success for something that never happened.
+    $missing = @()
     foreach ($item in $selected) {
-        $regPath = Join-Path $registryDir "$item.reg"
-        Import-RegWithRoot $regPath
+        if (-not (Test-Path -LiteralPath (Join-Path $registryDir "$item.reg"))) { $missing += $item }
     }
-    [System.Windows.Forms.MessageBox]::Show("Successfully installed selected features!", "Success", 0, [System.Windows.Forms.MessageBoxIcon]::Information)
+    if ($missing.Count -gt 0) {
+        $script:failed += $missing.Count
+        [System.Windows.Forms.MessageBox]::Show(
+            "Missing registry file(s); nothing was installed:`r`n`r`n" + (($missing | ForEach-Object { "  - $_.reg" }) -join "`r`n"),
+            "Failed", 0, [System.Windows.Forms.MessageBoxIcon]::Error)
+        return
+    }
+    $btnInstall.Enabled = $false
+    $btnUninstall.Enabled = $false
+    try {
+        $result = Invoke-RegistryTransaction {
+            $f = @()
+            foreach ($item in $selected) {
+                $regPath = Join-Path $registryDir "$item.reg"
+                try { Import-RegWithRoot $regPath } catch { $f += "$item : $($_.Exception.Message)" }
+            }
+            $f
+        }
+    } finally {
+        $btnInstall.Enabled = $true
+        $btnUninstall.Enabled = $true
+    }
+    if ($result.Busy) { return }
+    Show-BatchResult "installed" $result.Failures $selected.Count
 })
 $form.Controls.Add($btnInstall)
 
@@ -103,16 +194,44 @@ $btnUninstall.Add_Click({
         [System.Windows.Forms.MessageBox]::Show("Please select at least one feature.", "Notice", 0, [System.Windows.Forms.MessageBoxIcon]::Information)
         return
     }
+    $missing = @()
     foreach ($item in $selected) {
-        $removeReg = Join-Path $registryDir "${item}_REM.reg"
-        if (Test-Path $removeReg) {
-            Import-RegWithRoot $removeReg
-        } else {
-            Write-Warning "Removal file not found for $item"
-        }
+        if (-not (Test-Path -LiteralPath (Join-Path $registryDir "${item}_REM.reg"))) { $missing += $item }
     }
-    [System.Windows.Forms.MessageBox]::Show("Successfully removed selected features!", "Success", 0, [System.Windows.Forms.MessageBoxIcon]::Information)
+    if ($missing.Count -gt 0) {
+        $script:failed += $missing.Count
+        [System.Windows.Forms.MessageBox]::Show(
+            "Missing removal file(s); nothing was removed:`r`n`r`n" + (($missing | ForEach-Object { "  - ${_}_REM.reg" }) -join "`r`n"),
+            "Failed", 0, [System.Windows.Forms.MessageBoxIcon]::Error)
+        return
+    }
+    $btnInstall.Enabled = $false
+    $btnUninstall.Enabled = $false
+    try {
+        $result = Invoke-RegistryTransaction {
+            $f = @()
+            foreach ($item in $selected) {
+                $removeReg = Join-Path $registryDir "${item}_REM.reg"
+                try { Import-RegWithRoot $removeReg } catch { $f += "$item : $($_.Exception.Message)" }
+            }
+            $f
+        }
+    } finally {
+        $btnInstall.Enabled = $true
+        $btnUninstall.Enabled = $true
+    }
+    if ($result.Busy) { return }
+    Show-BatchResult "removed" $result.Failures $selected.Count
 })
 $form.Controls.Add($btnUninstall)
 
 $form.ShowDialog() | Out-Null
+
+# Terminal result, printed and returned by the elevated child only -- the
+# unelevated parent above exits with this code, never with its own 0.
+if ($script:failed -gt 0) {
+    Write-Host "FAILED: $($script:failed) operation(s) did not complete." -ForegroundColor Red
+    exit $script:failed
+}
+Write-Host "Done!" -ForegroundColor Green
+exit 0

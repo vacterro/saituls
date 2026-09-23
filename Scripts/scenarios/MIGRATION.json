@@ -1,0 +1,1218 @@
+{
+  "schema": 1,
+  "source_root": "_SCENARIOS",
+  "source_read_only": true,
+  "generated": "2026-09-09",
+  "files": [
+    {
+      "source": ".auditor/PROJECT.md",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Auditor metadata, not runtime payload (append AE)"
+    },
+    {
+      "source": ".auditor/ROADMAP.md",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Auditor metadata, not runtime payload (append AE)"
+    },
+    {
+      "source": ".auditor/STATE.md",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Auditor metadata, not runtime payload (append AE)"
+    },
+    {
+      "source": ".auditor/reports/archive-1.md",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Auditor metadata, not runtime payload (append AE)"
+    },
+    {
+      "source": ".auditor/reports/report-wave2.md",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Auditor metadata, not runtime payload (append AE)"
+    },
+    {
+      "source": ".auditor/reports/report-wave3.md",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Auditor metadata, not runtime payload (append AE)"
+    },
+    {
+      "source": "/nul",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "CLEAN/MEDIA/META_WIPE.py",
+      "source_sha256": "1ec9555be1a7d6be85a13536750d5dd853c2f5cc8519637e5ca98355b4826b7f",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "clean/media/strip_media_metadata.py",
+      "active": true,
+      "reason": "Pure-native metadata sanitizer (argparse --dir; writes in place -> destructive)",
+      "destination_sha256": "5de12bedefb7d8fc649a2d2dbd0aca1ef181eb776c632fd92f3090cce82ad101"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/OFFICE.cmd",
+      "source_sha256": "2866af22404f24941c3b66ce96ab1556a8209a45c6c0879001aa2e914aa9f73b",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/OFFICE.cmd",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "2866af22404f24941c3b66ce96ab1556a8209a45c6c0879001aa2e914aa9f73b"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/README.md",
+      "source_sha256": null,
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/README.md",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "42b9dbd0f8da8399bd8eb8387d2822a4e431159da98a4d0bf6248d06bb4b15f9"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/bin/CleanOffice.txt",
+      "source_sha256": null,
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/bin/CleanOffice.txt",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "c0ff3e0b9cb14687e9ef6da7890941f753f6541ede627a3d14f3d43a20b1163c"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/bin/OffScrub03.vbs",
+      "source_sha256": "2ef8cbc690ccf4829d42fb008cdaf7a67a5c12c462f229c278af757558537c1e",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/bin/OffScrub03.vbs",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "2ef8cbc690ccf4829d42fb008cdaf7a67a5c12c462f229c278af757558537c1e"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/bin/OffScrub07.vbs",
+      "source_sha256": "4f1e42ce509fd0108a2bf261c5bc6e04b749dc7431cef083572623946dbe697b",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/bin/OffScrub07.vbs",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "4f1e42ce509fd0108a2bf261c5bc6e04b749dc7431cef083572623946dbe697b"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/bin/OffScrub10.vbs",
+      "source_sha256": "c7319acd86e6489d44d1723fa9f71f6e76899474d2473b5ab153c01e6c542be9",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/bin/OffScrub10.vbs",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "c7319acd86e6489d44d1723fa9f71f6e76899474d2473b5ab153c01e6c542be9"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/bin/OffScrubC2R.vbs",
+      "source_sha256": "cd94604f7636085641273cad146266dfc997724b4faabe1be42c21310c040dec",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/bin/OffScrubC2R.vbs",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "cd94604f7636085641273cad146266dfc997724b4faabe1be42c21310c040dec"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/bin/OffScrub_O15msi.vbs",
+      "source_sha256": "30704d9f3abfd25a9c3318bf5638bfcfda40446ac0103ff3bb01a28079f70b9b",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/bin/OffScrub_O15msi.vbs",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "30704d9f3abfd25a9c3318bf5638bfcfda40446ac0103ff3bb01a28079f70b9b"
+    },
+    {
+      "source": "CLEAN/OFFICE_S/bin/OffScrub_O16msi.vbs",
+      "source_sha256": "a72bb334cfff2dc236be4160b495d8f45849d9ad061a17a2396bc6158ac8b0ef",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "clean/office/bin/OffScrub_O16msi.vbs",
+      "active": false,
+      "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
+      "destination_sha256": "a72bb334cfff2dc236be4160b495d8f45849d9ad061a17a2396bc6158ac8b0ef"
+    },
+    {
+      "source": "CLEAN/SYS/ADOBE.ps1",
+      "source_sha256": "40ae6bdbc9b7f916cbca6ffb9659c6712f503960af741c1cb20434940e2b01c9",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "CLEAN/SYS/AOMEI.ps1",
+      "source_sha256": "576bccbc3ffe5c95b9af0cec54227f07d04ba36c38fc993bbd3682d82db784b9",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "CLEAN/SYS/CACHE.bat",
+      "source_sha256": "9692b0ca175aac6578b1e2f5c382a774556a3d521bf770745d3b3ece3b5eec3e",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "CLEAN/SYS/CACHE.ps1",
+      "source_sha256": "ae55f8d000e37b6132d14c3fbb3629133bbd97ef2f025414976677e44a82b8a2",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "CLEAN/SYS/CLEAN.pyw",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Zero-byte stub"
+    },
+    {
+      "source": "CLEAN/SYS/FW_ADOBE.bat",
+      "source_sha256": "6d38a973082a9c43f94fcc3b0183779fbd8ac8e9fd3d3d6f0e70c0b83549e05a",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "CLEAN/SYS/MAXON.bat",
+      "source_sha256": "2f10a26334fb67c5fab8314e0e3c306f0b0ee73e17172d5d193df97793d6cfaf",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "CLEAN/SYS/MAXON.ps1",
+      "source_sha256": "9a9fe4b4b72d44e31ead8b89373e489054a2ac596358f97af2af221e2e17da6b",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "CLEAN/SYS/RM_OFF.ps1",
+      "source_sha256": "e2649039d461c60357a8cfbae2b4b14be06eadf2ec3ff8f8e364f3c76811fe76",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Destructive vendor/system cleaner without verified launch contract; disabled, source preserved"
+    },
+    {
+      "source": "COMPRESS.db",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "COMPRESS.log",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "DEPS.py",
+      "source_sha256": "c42d3a80141d12c9be64dd2ac27222c27e8d8ed9470ae86f9353f4161ede9218",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Reference-time dependency audit with hardcoded external base_dir; superseded by scenarios.json dependency checks"
+    },
+    {
+      "source": "DISK/NO_DEFRAG.cmd",
+      "source_sha256": "25b0c9e21286d308ab2ad4db7f460c9b5f8ade22e3f4785286b73710501cee74",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Kills defrag windows by title + admin taskkill; superseded by planned Stop action on defrag scenarios"
+    },
+    {
+      "source": "DISK/_check.ps1",
+      "source_sha256": "b5351e3bf601f3aec34343dbc565131b43d7f79a2461086b64ea5b236c2f5ae2",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_find_C.ps1",
+      "source_sha256": "257d06cad0340e9b53993a13de482a61b6cf15ccdac2719e814173f9f404742c",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_fix_brushes.ps1",
+      "source_sha256": "df77a6dcd3a49fee2c1e9d7b1e010bb049b9e05f0d2025ce9af28634df36d3f0",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_run.ps1",
+      "source_sha256": "f9bffce32db78694d492c1fa13e5d99aea127303319362f29b6741f28a896a5c",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_simple_test.ps1",
+      "source_sha256": "620e66ad8b7f954152dfb7b3e6d461a8907730d8b59a388271af10408b8f7a6d",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_validate.cmd",
+      "source_sha256": "9d5c1d0cefde0e67177a2a330a2c66b2d9bfda8baa77ab7507349f7898dbd2c0",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_validate.ps1",
+      "source_sha256": "d72f2ce422e70f5c2b3503ff2d407c50570c84b47ef66a9316420ad75afa716d",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_validate2.ps1",
+      "source_sha256": "21068e3a592b80940f5970b1985d42a79569dfbae58195e564001e993825ac35",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_validate3.ps1",
+      "source_sha256": "d1189b7cfc6d0d16a075e4e00f89de756568477c7af664570c1aa0b285e88e80",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/_validate4.ps1",
+      "source_sha256": "f18dcc9c524d0ad301d3379e1c1bed82d8b29ca9d52e6a7655e35f99bb3e1641",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev/scratch helper tied to a hardcoded external path"
+    },
+    {
+      "source": "DISK/start_defrag_all_drives.cmd",
+      "source_sha256": "cafcb70f2c2b56cb3133fb588a197dd2af5bffad3ba700d03a865ece0ee7a314",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Real defrag needs drive-semantics review (SSD vs HDD, stale drive lists); not enabled in first wave"
+    },
+    {
+      "source": "DISK/start_defrag_t_drive.cmd",
+      "source_sha256": "acba1a4d76775f79d2b344bc8f1a24d51950fd9bf94ed94749d57a07c0e3c8a5",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Real defrag needs drive-semantics review (SSD vs HDD, stale drive lists); not enabled in first wave"
+    },
+    {
+      "source": "DISK/vintage_defrag.cmd",
+      "source_sha256": "56c56e52c3de4a7acee6148f34042a70eb78b2e24d74e4aacbea792a44cb62df",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Real defrag needs drive-semantics review (SSD vs HDD, stale drive lists); not enabled in first wave"
+    },
+    {
+      "source": "DISK/vintage_defrag.ps1",
+      "source_sha256": "77a8845d39ba3141b070603dd0f6f622c00b3347ff4bee10a0d0f656cbcd59e8",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Real defrag needs drive-semantics review (SSD vs HDD, stale drive lists); not enabled in first wave"
+    },
+    {
+      "source": "DRAFT/js_console_draft_1.txt",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "DRAFT development material (append D)"
+    },
+    {
+      "source": "DRAFT/js_console_draft_2.txt",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "DRAFT development material (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MISC/REN_MP3.ps1",
+      "source_sha256": "7840e274ee5261ef68e4b477d337a6a4c7a0e54e2d8f11e0791b168dcd75c502",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/audio/rename_mp3_from_tags.ps1",
+      "active": true,
+      "reason": "Shell-COM metadata renamer, operates on cwd folder (documented convention)",
+      "destination_sha256": "42be1b87e4de7e4229fc4d1ff130a40dbbdd19c4cb041e080bdb39d94c6b0b01"
+    },
+    {
+      "source": "MEDIA/AUDIO/MISC/SUNO.bat",
+      "source_sha256": "f58d99ada9eb046bf31734789039f36b17c1d6ebba6bcbbbb28b48a06e5f358a",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Fixed machine-specific copy job (g:/v:); not portable"
+    },
+    {
+      "source": "MEDIA/AUDIO/MISC/SUNO_SRV.ps1",
+      "source_sha256": "3de4781350d516f69ed626dcdebfb551c714dc2b463864e9f88891ec5d2af8be",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Hardcoded external Tampermonkey path; not portable"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/.gitignore",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "User sample data / leftover pip artifact / stray file; not product payload"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/=1.47.0",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "User sample data / leftover pip artifact / stray file; not product payload"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/ADD_CTX.reg",
+      "source_sha256": "76badf618150b6d8a9e3686c1f248739ceb2347e9594c7438f13296fddd94201",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Explorer context-menu installer with hardcoded external source path; needs portability rework"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/ALBUM_TOOL.py",
+      "source_sha256": "a706aac7dfa21f3db84a4415d8800d819a8d0e7ca45352494996e01f02ad897a",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/audio/album_tool.py",
+      "active": true,
+      "reason": "Mutagen-based album/tagging tool; optional folder arg (documented convention)",
+      "destination_sha256": "a706aac7dfa21f3db84a4415d8800d819a8d0e7ca45352494996e01f02ad897a"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/INST_TAG.ps1",
+      "source_sha256": "01e34b6f8aa2084e07ff39e044c9c98e904ab27970a7af09aa41c77f47920497",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Explorer context-menu installer with hardcoded external source path; needs portability rework"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/M3U_LIST.cmd",
+      "source_sha256": "550594c190bcaf9837ef4d5f1514c7b3d4f4e8b3c8d854d0bc72a6709ef3f905",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/audio/make_m3u.cmd",
+      "active": true,
+      "reason": "Builds M3U from current folder (drop-in convention)",
+      "destination_sha256": "640c5304a4ae3403747339497858bd7a82fb9dae5cd750e5c153a9d3e73e0bef"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/MK_ALBUM.cmd",
+      "source_sha256": "32bd6e37d99e625c6fba7e090f5790bb4868034e51eb068d5dbb8e178af6ad6a",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Interactive cmd; superseded by TAG_MP3/ALBUM_TOOL scenarios"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/MP3_TIT.ps1",
+      "source_sha256": "5f654ce6259cb31571515d455c2a79e3a3d3388b4b84f7ca797e4aec05fa80ca",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "media/audio/taglib_tag_from_filenames.ps1",
+      "active": false,
+      "reason": "Alternative tagger (TagLibSharp); active in registry but BLOCKED without bundled DLL",
+      "destination_sha256": "5f654ce6259cb31571515d455c2a79e3a3d3388b4b84f7ca797e4aec05fa80ca"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/MP3_WIN.py",
+      "source_sha256": "82614edda1fc4d305156b3542c471098d129d877499679bdba4f5b47032e6b42",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/audio/mp3_win.py",
+      "active": true,
+      "reason": "Mutagen-based album/tagging tool; optional folder arg (documented convention)",
+      "destination_sha256": "6561e9571d315649c637597ba6c647b541fdcec919e469059876d90893e12b2b"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/REM_CTX.reg",
+      "source_sha256": "5ae722b79ebf237ff03b8deca12d3a20d278e56db051b54aafd3a7178568244f",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Explorer context-menu installer with hardcoded external source path; needs portability rework"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/RUN_ALBUM_TOOL.cmd",
+      "source_sha256": "a0c467847fa1186b044e0d41a58928c93851d2cbadf2dbbcf31299534a0ab451",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Launcher shim; ALBUM_TOOL scenario starts the GUI directly"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/SSD.mp3",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "User sample data / leftover pip artifact / stray file; not product payload"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/TAG.ps1",
+      "source_sha256": "3954758e50fc1c5bf3dda0275f87ffef189ddeaabb5d23f84573e8246d92f360",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "media/audio/tag_from_list.ps1",
+      "active": false,
+      "reason": "ffmpeg-based tagger (re-encode path); enabled only after its output is verified",
+      "destination_sha256": "3954758e50fc1c5bf3dda0275f87ffef189ddeaabb5d23f84573e8246d92f360"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/TAG_MP3.py",
+      "source_sha256": "a26485a6916b4985077b186e737ce7dfcd0c10b7aa61304158c5a41ad68dd4c9",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/audio/tag_mp3.py",
+      "active": true,
+      "reason": "Mutagen-based album/tagging tool; optional folder arg (documented convention)",
+      "destination_sha256": "b70d73257e70b3f1c52e81e87b1fb04b1e942e1ea43ce531d4f91f9782b8369b"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/TagLibSharp.dll",
+      "source_sha256": null,
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "PROVENANCE REQUIRED: unverified third-party binary; record hash, do not ship without source"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/WAV_MUTE.py",
+      "source_sha256": "9cecdc60c6aa56c8252fcdc923fc9d10686582394363e1a2e7182bd951a0bd6d",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/audio/mute_first_second_of_wavs.py",
+      "active": true,
+      "reason": "Creates .wav.bak backup before destructive write; drop-in convention",
+      "destination_sha256": "25b2d2da99610c1b33749c07b8e65d3837a4fd68cb30ab172ebbefcaac7ee5cb"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/__pycache__/ALBUM_TOOL.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/__pycache__/MP3_WIN.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/__pycache__/TAG_MP3.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/__pycache__/WAV_MUTE.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/__pycache__/mp3_title_to_windows.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/__pycache__/tag_from_list.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/__pycache__/wav_to_silence.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/album_tags.ini",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "User sample data / leftover pip artifact / stray file; not product payload"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/cover (2).png",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "User sample data / leftover pip artifact / stray file; not product payload"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/cover.png",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "User sample data / leftover pip artifact / stray file; not product payload"
+    },
+    {
+      "source": "MEDIA/AUDIO/MP3/requirements.txt",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "User sample data / leftover pip artifact / stray file; not product payload"
+    },
+    {
+      "source": "MEDIA/AUDIO/nul",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/BZ2TGA.py",
+      "source_sha256": "099ed508233c7fd1ccff73d8883d9c5282cc24536738853c84e784e73942f0dd",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_pic_to_tga.py",
+      "active": true,
+      "reason": "Battlezone .PIC decoder, writes .tga alongside (SAFE, Pillow required)",
+      "destination_sha256": "8bcf3995f3a1a8e7ad850427397abc0be9dda9854a95d8d4d469617af740c090"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/COMPRESS.db",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/COMPRESS.log",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/COMPRESS.py",
+      "source_sha256": "01ba6f5885211697a02e70f890e5427f993efee2f6a03d5d8ddbb80b693f05d7",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/compress_images_lossless.py",
+      "active": true,
+      "reason": "jpegoptim/oxipng lossless compressor; external bundled binaries REQUIRED",
+      "destination_sha256": "01ba6f5885211697a02e70f890e5427f993efee2f6a03d5d8ddbb80b693f05d7"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/DDS2BW.py",
+      "source_sha256": "a244ba62ffe634ef526efced1377da9a698294ab3696836c15e9fdc08f5347f2",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_dds_to_bw.py",
+      "active": true,
+      "reason": "In-place DDS grayscale overwrite (SUFFIX='') -> destructive badge",
+      "destination_sha256": "4d205270e1c725a82774da33c0206e975cc81409c1d3ceb30bb2b84fe516535b"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/DDS2PNG.py",
+      "source_sha256": "111f8a44655f4f67b914c180bb2499682d56b906d54907d77e623e5a58ff90b2",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_dds_to_png.py",
+      "active": true,
+      "reason": "texconv converter, creates new files alongside originals (SAFE)",
+      "destination_sha256": "3a352449d29408c1295e99363cfcd4f094b864d833a152e0ecdfaef0750aeb41"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/DDS2TGA.py",
+      "source_sha256": "f7158d64b9c7b329d3de5f9a714398e4a1797f9ef39d1f3b2ebae902b4220123",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_dds_to_tga.py",
+      "active": true,
+      "reason": "texconv converter, creates new files alongside originals (SAFE)",
+      "destination_sha256": "6552e08eaeb447ea495ba84fc5e5f523761d26fb35feb908e60bfabc0a892a88"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/PNG2DDS.py",
+      "source_sha256": "15c232b1e62234177106684b14dbca85852630bd161d4b4ada8e44da9a8d2a11",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_png_to_dds.py",
+      "active": true,
+      "reason": "texconv converter, creates new files alongside originals (SAFE)",
+      "destination_sha256": "abb46c82e9fa10e797038d11b46cb52b955d078f888071e3ec91830e4169ff6a"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/REP_DDS.ps1",
+      "source_sha256": "f850db4523e9b8bebab6577468ced34b99d000397159221bf3aa67792e8d3fd6",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot dev helper"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/REP_DDS2.py",
+      "source_sha256": "c45305e26521c773180fc799d2a203a3af11f0867e247e7486a7b6da0a4b80bd",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "media/image/replace_dds_with_png.py",
+      "active": false,
+      "reason": "main1.png repack helper; registry-listed but DISABLED (replace-in-place semantics unproven)",
+      "destination_sha256": "de18e81fefef3478d2e439e3849e4d5bd90bfe96020294d6237dcbc036116159"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/TGA2BW.py",
+      "source_sha256": "4fef1d1b72f2b68dcbaa1ff6566140304b11edd309f553a30f7b48da7f8dea1a",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_tga_to_bw.py",
+      "active": true,
+      "reason": "In-place TGA grayscale overwrite (BACKUP=False, no suffix) -> destructive badge",
+      "destination_sha256": "91546b608bfeb895ca49c0d2b2c70d7721b15ae18ec9cd32ffd16d2cab169288"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/TGA2DDS.py",
+      "source_sha256": "05d2b36124eb1fa98fcf8777b3d3e75776e40b55476fb002436a81f2b7455d70",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_tga_to_dds.py",
+      "active": true,
+      "reason": "texconv converter, creates new files alongside originals (SAFE)",
+      "destination_sha256": "153a7e4465d19a686b9be801bc60c5923dcf75d3f155176e6cdfc919efbd19e6"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/TGA2DDS2.py",
+      "source_sha256": "133a7bf7529248d80d3d8909a71345cccfed2e99a63d4cbd12bc516c5d8c1786",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/convert_tga_to_dds_alt.py",
+      "active": true,
+      "reason": "texconv converter, creates new files alongside originals (SAFE)",
+      "destination_sha256": "ff64a571db68a847beb94080da67e6999450caba609703132873c85ef2010905"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/UPS_TGA.py",
+      "source_sha256": "1acd5d0e9cf60f899b8f3c68ee1fd54dc468ef161ea115f1fa5c6750aa90764e",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/upscale_tga_8x.py",
+      "active": true,
+      "reason": "Pillow upscaler writing suffixed copies (SAFE)",
+      "destination_sha256": "a2112e680522f492cf27dae629a5fdc31033e3ef97dcd8fbf7bed6aaaa4ea976"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/UPS_TGA2.py",
+      "source_sha256": "689aacba0e50f7dc07925eb0cede504b8064b1211945de8f9be374c147dde31d",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/image/upscale_tga_2x_sharpen.py",
+      "active": true,
+      "reason": "Pillow upscaler writing suffixed copies (SAFE)",
+      "destination_sha256": "64d5cde03b0e7ccc50a1f7f35e9ec21ec160ca04452728557c031d7b4e401184"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/BZ2TGA.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/COMPRESS.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/DDS2BW.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/DDS2PNG.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/DDS2TGA.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/PNG2DDS.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/REP_DDS2.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/TGA2BW.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/TGA2DDS.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/TGA2DDS2.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/UPS_TGA.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/UPS_TGA2.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/compress_refs.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_bz_pic_to_tga.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_dds_to_bw.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_dds_to_png.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_dds_to_tga.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_png_to_dds.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_tga_to_dds.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_tga_to_dds_alt.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/convert_tga_to_grayscale.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/replace_dds_with_main1png.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/upscale_pic_to_tga_8x.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/__pycache__/upscale_tga_image.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/jpegoptim.exe",
+      "source_sha256": null,
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "PROVENANCE REQUIRED: hash recorded; scenario stays BLOCKED until origin is verified"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/oxipng.exe",
+      "source_sha256": null,
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "PROVENANCE REQUIRED: hash recorded; scenario stays BLOCKED until origin is verified"
+    },
+    {
+      "source": "MEDIA/IMAGE/PIC/texconv.exe",
+      "source_sha256": null,
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "PROVENANCE REQUIRED: hash recorded; scenario stays BLOCKED until origin is verified"
+    },
+    {
+      "source": "MEDIA/STOP.sh.lnk",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Shortcut artifact (append D)"
+    },
+    {
+      "source": "MEDIA/VIDEO/VID/COMP_V.sh",
+      "source_sha256": "31baa1b6fd47a9a5ffc9536e725d26894e2d352f12397cb568c98e5aac245295",
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "media/video/COMPRESS_V.sh",
+      "active": true,
+      "reason": "Git Bash AV1 batch compressor; source dirs moved to config; bash dependency verified on PATH",
+      "destination_sha256": "a5524b4589136dddb871f2051b6c52e6f064b16db15ccc1e05dbfd6ab653e220"
+    },
+    {
+      "source": "MEDIA/VIDEO/VID/GOV.ps1",
+      "source_sha256": "111a8816a3cef88fc27140d73ac91b44a66e86cae34276f8689c4ea755935b40",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Video pipeline wrappers with broad ffmpeg/WMI kills; superseded by the COMPRESS_V scenario in this wave"
+    },
+    {
+      "source": "MEDIA/VIDEO/VID/START.vbs",
+      "source_sha256": "46d0b976fc9209ce63945e8174f6204584415beb8f4468322aadf538cd34d87d",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Video pipeline wrappers with broad ffmpeg/WMI kills; superseded by the COMPRESS_V scenario in this wave"
+    },
+    {
+      "source": "MEDIA/VIDEO/VID/START_V.bat",
+      "source_sha256": "cf056541d2519f453830d3b302cd1873b7e77355ac90d37da095de034fd9551e",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Video pipeline wrappers with broad ffmpeg/WMI kills; superseded by the COMPRESS_V scenario in this wave"
+    },
+    {
+      "source": "MEDIA/VIDEO/VID/STOP.sh",
+      "source_sha256": "5e6f2c6092f6b7e5a70aa60010f74d0a238be69cdcb5e8617b9455fcaff27842",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Video pipeline wrappers with broad ffmpeg/WMI kills; superseded by the COMPRESS_V scenario in this wave"
+    },
+    {
+      "source": "OpenCodeConfigFixer.ps1",
+      "source_sha256": "ec4f82d6898d7207b869f089b796eff21d1735c925dc1dc761b89386b0f0a886",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Rewrites user opencode.json (drops jsonc comments) adjacent to SAIPATCH-owned config; disabled/advanced per append O"
+    },
+    {
+      "source": "STOP.LNK",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Shortcut artifact (append D)"
+    },
+    {
+      "source": "STOP.sh.lnk",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Shortcut artifact (append D)"
+    },
+    {
+      "source": "SVC/BACKUP/BACKUP.log",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "SVC/BACKUP/BACKUP.pid",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "SVC/BACKUP/BACKUP.py",
+      "source_sha256": "bff77a6017c197ac1f90e539ae241a1dc6267cd3a65cf51f861f1ff2aa8481a1",
+      "classification": "MIGRATE_SUPPORT_ONLY",
+      "destination": "services/backup/BACKUP.py",
+      "active": false,
+      "reason": "BZ backup monitor; support payload for a DISABLED Backup Monitor scenario (paths configurable before enable)",
+      "destination_sha256": "20f916e57ba90122b28fe60651f96c5f6bac232a04a0123e06f8b54776d024a2"
+    },
+    {
+      "source": "SVC/BACKUP/START_C.bat",
+      "source_sha256": "8f0135b87d6cd0bb74338e309a68a5e11813b3ba8fe9fb3c3aaaf5b7c9a19566",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Monitor runner wrappers superseded by planned Backup Monitor actions"
+    },
+    {
+      "source": "SVC/BACKUP/START_H.bat",
+      "source_sha256": "e649934249164127627686828dc1f520dcf534b0b59aea658c5f44798537c0d9",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Monitor runner wrappers superseded by planned Backup Monitor actions"
+    },
+    {
+      "source": "SVC/BACKUP/STOP.bat",
+      "source_sha256": "0712ce01f41f77606ae8b648a295c213f97c5e6ce0f2b0277ae8ddb716de2e65",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "Monitor runner wrappers superseded by planned Backup Monitor actions"
+    },
+    {
+      "source": "SVC/BACKUP/TRAY.bat",
+      "source_sha256": "897df253e2841348aad320c5120ce9ab563c4eba9c49ff67cd33fa28a3e85706",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "One-shot pip install shim; not a product scenario"
+    },
+    {
+      "source": "SVC/BACKUP/__pycache__/BACKUP.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "SVC/BACKUP/__pycache__/run_backup_monitor.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "SVC/BACKUP/disassembled.txt",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "SVC/BACKUP/recovered_backup.py",
+      "source_sha256": "b91bdc974838130eb6823f4c4d8f046d16ca3310ca9888af3bc822766d1c7b1e",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Historical recovery artifact; BACKUP.py is the real source (append D/U)"
+    },
+    {
+      "source": "SVC/BACKUP/stderr.log",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Runtime state / dev artifact (append D)"
+    },
+    {
+      "source": "SessionCleaner1.ps1",
+      "source_sha256": "7ae6162aba0877314531573f3820991a7a3004626037dd6550a0bb0499920a80",
+      "classification": "LEGACY_REFERENCE_ONLY",
+      "destination": null,
+      "active": false,
+      "reason": "DEFAULT-NUKE remote session cleaner (local DBs + remote DELETE); has -DryRun/-KeepHistory/-NoKill but wrapper contract not built; disabled this wave per append P"
+    },
+    {
+      "source": "SunoDownloader (Evening 29 Jul - 19_13)_20260807_1735.md",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Historical notes document"
+    },
+    {
+      "source": "__pycache__/DEPS.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "__pycache__/analyze_deps.cpython-311.pyc",
+      "source_sha256": null,
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "__pycache__/fix_cline.cmd",
+      "source_sha256": "a64d7ca1fd39b458affc7b9b957b6eb0044da0804095b64d539b4732ebbbb71e",
+      "classification": "REJECT_JUNK",
+      "destination": null,
+      "active": false,
+      "reason": "Bytecode/dev cache (append D)"
+    },
+    {
+      "source": "(product) Scripts/scenarios/scenarios.json",
+      "source_sha256": null,
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "scenarios.json",
+      "active": true,
+      "reason": "First-party scenario registry (append I); authored in-repo, no external source",
+      "destination_sha256": "2ad2a58067ddc96ec3068382eee6d9100fc872747f5486cb3e08650471e277c0"
+    },
+    {
+      "source": "(product) Scripts/scenarios/SCENARIOS.ps1",
+      "source_sha256": null,
+      "classification": "MIGRATE_ACTIVE",
+      "destination": "SCENARIOS.ps1",
+      "active": true,
+      "reason": "First-party launcher GUI (append G/H); authored in-repo, no external source",
+      "destination_sha256": "984a2dd85f2396accbcac543df085c52af222218a947c769158093957be2d43e"
+    }
+  ]
+}

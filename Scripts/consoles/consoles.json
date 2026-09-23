@@ -1,0 +1,176 @@
+{
+  "schema": "saituls.consoles/1",
+  "schema_version": 1,
+  "launcher": "CONSOLES.ps1",
+  "menu_label": "Открыть в",
+  "notes": "Data-driven console launcher. 'command' is a bare executable name resolved on PATH before launch; 'arguments' is a list and is never parsed from a string, so nothing in this file can become a shell command. Inside an argument, %VAR% is expanded and {workdir} becomes the project folder. 'environment' is applied to the CHILD process only - the launcher's own environment is never modified, an empty value removes the variable from the child, and HOME is refused outright. 'requires_path' must exist before launch; the first existing 'script_candidates' path becomes {script}; 'ensure_directories' are created before launch. Profiles are non-elevated unless they declare requires_admin, and no profile here declares it. The Explorer cascade (Installers\\INSTALL_CONSOLES_MENU.PS1) lists every enabled profile in file order under 'menu_label'.",
+  "profiles": [
+    {
+      "id": "claude-1",
+      "label": "Claude 1",
+      "enabled": true,
+      "command": "claude",
+      "arguments": [
+        "--dangerously-skip-permissions"
+      ],
+      "environment": {
+        "CLAUDE_CONFIG_DIR": "%USERPROFILE%\\.claude"
+      },
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Claude 1 YOLO",
+      "description": "Claude Code on the primary account configuration directory, permission prompts bypassed."
+    },
+    {
+      "id": "claude-2",
+      "label": "Claude 2",
+      "enabled": true,
+      "command": "claude",
+      "arguments": [
+        "--dangerously-skip-permissions"
+      ],
+      "environment": {
+        "CLAUDE_CONFIG_DIR": "%USERPROFILE%\\.claude-account2"
+      },
+      "ensure_directories": [
+        "%USERPROFILE%\\.claude-account2"
+      ],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Claude 2 YOLO",
+      "description": "Claude Code on the second account configuration directory, permission prompts bypassed. Isolation is at launcher level: the child process gets its own CLAUDE_CONFIG_DIR and nothing else is changed."
+    },
+    {
+      "id": "codex-1",
+      "label": "Codex 1",
+      "enabled": true,
+      "command": "codex",
+      "arguments": [
+        "--dangerously-bypass-approvals-and-sandbox"
+      ],
+      "environment": {
+        "CODEX_HOME": "%USERPROFILE%\\.codex"
+      },
+      "ensure_directories": [
+        "%USERPROFILE%\\.codex"
+      ],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Codex 1 YOLO",
+      "description": "Codex CLI on the primary account (CODEX_HOME=.codex), approvals and sandbox bypassed."
+    },
+    {
+      "id": "codex-2",
+      "label": "Codex 2",
+      "enabled": true,
+      "command": "codex",
+      "arguments": [
+        "--dangerously-bypass-approvals-and-sandbox"
+      ],
+      "environment": {
+        "CODEX_HOME": "%USERPROFILE%\\.codex-account2",
+        "OPENAI_API_KEY": "",
+        "CODEX_API_KEY": "",
+        "CODEX_ACCESS_TOKEN": ""
+      },
+      "ensure_directories": [
+        "%USERPROFILE%\\.codex-account2"
+      ],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Codex 2 YOLO",
+      "description": "Codex CLI on the isolated second account (CODEX_HOME=.codex-account2), inherited API keys removed. Sign in from the Codex TUI on first start."
+    },
+    {
+      "id": "codex-3-free",
+      "label": "Codex 3 free",
+      "enabled": true,
+      "command": "codex",
+      "arguments": [
+        "--dangerously-bypass-approvals-and-sandbox"
+      ],
+      "environment": {
+        "CODEX_HOME": "%USERPROFILE%\\.codex-account3free",
+        "OPENAI_API_KEY": "",
+        "CODEX_API_KEY": "",
+        "CODEX_ACCESS_TOKEN": ""
+      },
+      "ensure_directories": [
+        "%USERPROFILE%\\.codex-account3free"
+      ],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Codex 3 free YOLO",
+      "description": "Codex CLI on the isolated free account (CODEX_HOME=.codex-account3free), inherited API keys removed. Sign in from the Codex TUI on first start."
+    },
+    {
+      "id": "antigravity",
+      "label": "Antigravity",
+      "enabled": true,
+      "command": "agy",
+      "arguments": [
+        "--dangerously-skip-permissions"
+      ],
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Antigravity YOLO",
+      "description": "Antigravity CLI in the selected working directory, tool permissions auto-approved."
+    },
+    {
+      "id": "zcode",
+      "label": "ZCode",
+      "enabled": true,
+      "command": "node",
+      "arguments": [
+        "{script}",
+        "--cwd",
+        "{workdir}",
+        "--mode",
+        "yolo"
+      ],
+      "script_candidates": [
+        "%ZCODE_CLI%"
+      ],
+      "icon": "%LOCALAPPDATA%\\Programs\\ZCode\\ZCode.exe",
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "ZCode YOLO",
+      "description": "ZCode terminal UI in yolo permission mode. Needs a full ZCode CLI build (the desktop app bundles only the headless part): set ZCODE_CLI to its dist\\zcode.cjs."
+    },
+    {
+      "id": "cline",
+      "label": "Cline",
+      "enabled": true,
+      "command": "cline",
+      "arguments": [
+        "--cwd",
+        "{workdir}",
+        "--auto-approve",
+        "true",
+        "--tui"
+      ],
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Cline YOLO",
+      "description": "Cline CLI terminal UI with auto-approval for all tools."
+    },
+    {
+      "id": "opencode",
+      "label": "OpenCode",
+      "enabled": true,
+      "command": "opencode",
+      "arguments": [
+        "{workdir}",
+        "--auto"
+      ],
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "OpenCode YOLO",
+      "description": "OpenCode terminal UI with every permission not explicitly denied auto-approved."
+    }
+  ]
+}

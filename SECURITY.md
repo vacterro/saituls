@@ -16,7 +16,9 @@ private channel.
 - Registry import handlers (`Registry/`, `Installers/`)
 - Launchers that spawn elevated processes (`SAITULS_LAUNCHER.cmd`,
   `Scripts/AI_AGENT_LAUNCHER.PS1`, `Installers/INSTALL_*.PS1`)
-- Anything reading or writing user credentials (LIMISAW, Codex launchers)
+- Anything reading or writing user credentials (Codex launchers)
+- Anything that can terminate a process (`Scripts/saispin_watch.ps1` and its
+  scheduled task)
 
 ## What to include
 

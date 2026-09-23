@@ -1,6 +1,7 @@
 # Source code — keep Bin/App/ structure for %%ROOT%%, but not the heavy binaries themselves
 Bin/*
 !Bin/FFMPEG_RUN.BAT
+!Bin/FFMPEG_RUN.PS1
 !Bin/AV1_COMPRESS.BAT
 !Bin/*.md
 Bin/App/*
@@ -11,11 +12,14 @@ Bin/App/*
 ___AHK/
 
 # SAIPEN project memory — private, not for public repo
-.saipen/
+.saipen/*
+!.saipen/IDENTITY.md
+
+
 
 # Runtime config, generated on first launch; may carry machine paths
 SAITULS.ini
-LIMISAW.ini
+Scripts/taskbar_edge/taskbar_edge.ini
 
 # Freebuff menu points at a machine-specific freebuff.exe — personal
 _FREEBUFF_MENU/
@@ -27,6 +31,13 @@ _FREEBUFF_MENU/
 Scripts/_.txt
 tests/PROOF-*.txt
 
+# SAISPIN runtime: the state file and log both carry full command lines of
+# whatever was running on this machine
+saispin_state.json
+saispin_state.json.tmp
+saispin_notify.json
+saispin.log
+
 # Caches and build artifacts
 __pycache__/
 *.pyc
@@ -34,6 +45,7 @@ __pycache__/
 *.saisent.bak
 *.tmp
 *.old
+*.new
 Scripts/__pycache__/
 tests/__pycache__/
 
@@ -51,5 +63,44 @@ $RECYCLE.BIN/
 # Temp files from test runs
 _V_TEMP_/
 
-# Personal shortcuts
-*.lnk
+# Unrelated tool parked in this working copy, not part of SAITULS
+9router_scanner/
+
+# Installed locale generation marker (INSTALL_ALL.PS1 stamps this; machine state, not source)
+Installers/.installed_lang
+
+# Secure Apps managed payload. The managed root normally lives outside the
+# repo (%LOCALAPPDATA%\SAITULS\secure-apps), but SAITULS_SECURE_APPS_ROOT can
+# point it anywhere, so the shapes are refused here too. None of this may
+# ever reach Git or AUDAPACK: imported application binaries, user vaults,
+# encrypted containers, wrapped keys, audit records and migration journals.
+secure-apps/
+Scripts/secure_apps/state/
+Scripts/secure_apps/vaults/
+Scripts/secure_apps/apps/
+# The frozen privileged FIDO worker is a machine-specific BUILD OUTPUT of
+# build_frozen_worker.ps1 (PyInstaller --onedir). It is installed into the
+# protected runtime and fingerprinted there; it is never committed.
+Scripts/secure_apps/fido-worker/
+Scripts/secure_apps/dist/
+Scripts/secure_apps/sa_fido_worker.exe
+**/secure-apps/state/
+**/secure-apps/vaults/
+**/secure-apps/apps/
+*.vhdx
+*.vhd
+secure-apps.json.tmp
+credentials.json
+
+# Local indexes, diagnostics and probe output
+.codebase-memory/
+Microsoft/
+tq_tmp/
+tmp_cbm_cov*.txt
+tq_out.txt
+submit_window.txt
+opencode_serve.log
+_AUDAPACK_MANIFEST.json
+/ACCEPT
+/createQueueCore
+/-

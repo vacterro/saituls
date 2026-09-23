@@ -50,29 +50,42 @@ arguments, title check, and global Vintage-skill check without starting a TUI.
 - **Tools** — launches the bundled scripts and binaries with PATH
   prepended to `Bin\` and `Bin\App\`; every file/folder action first asks
   for its target.
-- **Settings** — toolkit root display, INI path, app autostart toggle,
+- **Settings** — toolkit root display, INI path, app autostart toggle, the
+  **Taskbar** section (`Reliable taskbar edge reveal` on/off plus
+  `Start with SAITULS / Windows` and a live helper status line),
   `Open folder`, `Exit`.
 
-## `problip` (standalone monitor)
+## Reliable taskbar edge reveal (`Scripts/taskbar_edge/`)
 
-`problip/` holds the C# source + compiled `Problip.exe` for the older
-standalone tray monitor. It is **not** the same binary as `SAITULS.exe`;
-it is kept for compatibility with the previous `problip.ini` settings and
-autostart key. SAITULS has no embedded blip engine; Problip is fully separate
-and remains available only for users who want that sound monitor.
+`TaskbarEdge.exe` is a standalone non-elevated per-user background helper. With
+taskbar auto-hide on, pushing the pointer into a monitor's bottom edge reveals
+that monitor's taskbar even when another window owns or covers the activation
+pixels.
 
-Run the compiled `Problip.exe` (or `Problip.cs` recompiled with csc). It
-registers itself in the per-user Windows `Run` key as `Problip` and starts
-the blip engine hidden. Persistent mode blips at a fixed interval
-(5 / 10 / 15 seconds, configurable via `PersistentIntervalMs`) regardless
-of whether Process Explorer or Task Manager is running. Super-silent mode
-rate-limits blips to one per 1.4 seconds while the baseline continues
-refreshing. The compact tray panel persists mode, volume (presets
-0.01 / 0.1 / 0.33 / 0.5), persistent interval presets (5 / 10 / 15 s),
-silent, autostart and the custom-process list in `problip.ini`.
+It samples the real cursor position (`GetCursorPos` + `MonitorFromPoint`, Per-
+Monitor DPI Awareness V2) every 30 ms, requires two consecutive samples in the
+last 2 px of the monitor's full rectangle, resolves that monitor's bar through
+`SHAppBarMessage(ABM_GETAUTOHIDEBAREX, ABE_BOTTOM)` — falling back to
+`Shell_TrayWnd` / `Shell_SecondaryTrayWnd` mapped by `MonitorFromWindow` — and
+refreshes its topmost z-order with a single `SetWindowPos` that never moves,
+resizes, activates or focuses anything. Explorer keeps owning the hide.
 
-Client text is rendered with GDI non-antialiased quality; the panel is a
-fixed-size Golden Default surface.
+One instance per interactive session (`Local\SaitulsTaskbarEdge`). SAITULS may
+only start it, stop it, show its status and toggle its autostart; no edge
+detection lives in `SAITULS.cs`. Its lifetime is independent of the SAITULS
+window — closing to the tray or exiting SAITULS leaves it running, and the
+Settings switch is the explicit stop.
+
+```
+TaskbarEdge.exe --status     non-sensitive desktop and helper facts
+TaskbarEdge.exe --self-test  shell discovery and reveal invariants
+TaskbarEdge.exe --stop       ask the running instance to exit
+```
+
+Advanced values live in `Scripts\taskbar_edge\taskbar_edge.ini`
+(`edge_pixels`, `poll_ms`, `dwell_ms`, `cooldown_ms`, `reveal_strategy`,
+`debug`); bad values fall back to defaults rather than stopping the helper. Full
+detail in `Scripts/taskbar_edge/README.md`.
 
 ## `Bin/App/YOUTUBE.INI` — legacy GUI command source
 
@@ -82,15 +95,14 @@ The legacy `__ContextMenu+.exe` reads its YouTube buttons from this file
 `SAITULS_LAUNCHER.cmd`) prepends `Bin\` and `Bin\App\` so they do regardless
 of the system PATH. `SAITULS.exe` does not depend on this file.
 
-- `[YoutubeVideo]` → `yt-dlp -f "bestvideo+bestaudio/best"` → `P:\__STORE_P\_YT_VIDEO`
-- `[YoutubeAudio]` → `yt-dlp -f bestaudio` → `V:\___VAC\_MUS\_YT_MUSIC`, re-encodes to MP3 via `ffmpeg`
+- `[YoutubeVideo]` → `yt-dlp -f "bestvideo+bestaudio/best"` → `%USERPROFILE%\Videos\SAITULS`
+- `[YoutubeAudio]` → `yt-dlp -f bestaudio` → `%USERPROFILE%\Music\SAITULS`, re-encodes to MP3 via `ffmpeg`
 
 ## Legacy GUI internals — `Bin/__CONTEXTMENU+.EXE` (reverse-engineered, no source)
 
 `__ContextMenu+.exe` is a compiled AutoHotkey app ("GUI Shell FFmpeg" by
 Satirov, 2023). The `.ahk` source was **not found** on the machine
-(searched `V:\___VAC\__K\__CODE\___AHK\` + its `_ARCHIVE\`, plus a
-tree-wide grep for `Satirov`/`RTX40`/`ExifCleaner`/`GUI Shell FFmpeg`),
+(searched the original script archive and related tool directories),
 so this map is observed behavior, not source. Read it before changing the
 GUI's payload folders — it is the only record of what it checks.
 
@@ -118,3 +130,76 @@ CWD to `Bin\` — so the GUI's payload must live at `Bin\App\`. Deleting or
 renaming any of the four tool folders re-triggers the launch warnings
 (T-025/T-026 restore history). `SAITULS.exe` does not require this
 folder; the legacy `__ContextMenu+.exe` does.
+
+## Secure Apps (`Scripts/secure_apps/`)
+
+FIDO2-gated launcher for applications whose data should not be readable when
+the application is closed. Obsidian is the reference profile; the design is
+profile-driven, so further protected applications are added through
+`secure_apps.json` rather than new code.
+
+| file | role |
+|---|---|
+| `SECURE_APPS.ps1` | launcher + `-SelfTest` probe; owns no security logic |
+| `secure_apps.pyw` | thin launcher for `secure_apps_gui.py`; owns no logic |
+| `secure_apps_gui.py` | Golden Default window, hosts the single-instance broker |
+| `secure_apps.json` | versioned, fail-closed profile registry |
+| `sa_broker.py` | sessions, policy, idle, system events, secure-lock sequence |
+| `sa_auth.py` | `ISecureAuthProvider`: YubiKey hmac-secret, external helper, fake |
+| `sa_storage.py` | `ISecureStorageBackend`: BitLocker VHDX, fake |
+| `sa_crypto.py` | HKDF-SHA256 -> AES-256-GCM key hierarchy, zeroizing buffers |
+| `sa_applife.py` | protected process tree, graceful close, protected activity |
+| `sa_state.py` | durable non-secret state + pessimistic crash reconciliation |
+| `sa_audit.py` | allowlist audit log |
+| `sa_enroll.py` | enrollment, one-time recovery material, extra keys |
+| `sa_migrate.py` | plaintext -> encrypted migration with a resumable journal |
+| `sa_privhelper.py` + `sa_storage_helper.ps1` | elevated storage channel over a named pipe |
+| `sa_cli.py` | headless surface: `selftest`, `status`, `enroll`, `open`, `lock`, `mode`, `recover`, `migrate`, `audit` |
+
+Default mode separates the authentication session lifetime (six idle hours)
+from the vault mounted lifetime (only while the application runs). Migration
+never deletes the plaintext copy; it reports `MIGRATION_VERIFIED` **and**
+`PLAINTEXT_SOURCE_REMAINS` until the user removes it. Full contract:
+`Scripts/secure_apps/README.md`.
+
+## AI consoles (`Scripts/consoles/`)
+
+Data-driven, NON-elevated launcher for interactive agent CLIs:
+`claude-1` and `claude-2` (distinct `CLAUDE_CONFIG_DIR`, shared `claude`
+command) and `antigravity` (`agy`). The registry stores a bare command name
+and an argument list; nothing in it can become a shell command. The existing
+Explorer-menu OpenCode/Cline launcher keeps its own maximum-privilege
+behaviour and is untouched. Contract: `Scripts/consoles/README.md`.
+
+## Shell Doctor (`Scripts/shell_doctor/`)
+
+Answers "why does Explorer / the Start button hang for seconds" from evidence
+instead of folklore. Tools tab → **Shell Doctor**, or
+`powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\shell_doctor\SHELL_DOCTOR.ps1`.
+
+| File | Role |
+|------|------|
+| `SHELL_DOCTOR.ps1` | collector (event logs, disks, shell-extension registry, loaded DLLs, Bags, caches) + console report/menu |
+| `shell_doctor_logic.ps1` | pure findings engine over a snapshot hashtable; no I/O, fixture-tested |
+
+What it ranks, worst first:
+
+- **Storage faults** — System log `Event 129` resets and `153` retries (any
+  storage driver: `UASPStor`, `USBSTOR`, `storahci`, `stornvme`, …) plus `7`/`51`/`157`,
+  per `\Device\RaidPortN`, mapped to the physical disk. A *regular* cadence
+  (e.g. every ~285 s) points at a USB bridge/enclosure dropping out, and every
+  reset stalls I/O long enough to freeze Explorer, Start and Everything. Fix is
+  hardware: rear motherboard port, no hub, bridge firmware, or another enclosure.
+- **Shell crashes/hangs** — Application log `Event 1000` (crash) / `1002` (hang) for `explorer.exe`.
+- **Idle shell extensions** — context-menu/overlay/thumbnail DLLs of sync clients
+  (MEGA, Yandex.Disk, Google Drive, Adobe CoreSync, …) loaded into Explorer
+  while the app itself is not running; dangling registrations whose DLL is gone.
+- **Thumbnail-handler overlap** — two providers (e.g. SageThumbs + Icaros)
+  claiming the same extensions.
+- **View-state bloat** — thousands of `Bags` entries.
+
+Flags: `-NoPause` (report only), `-Json`, `-Days N` (default 7). The only
+mutation is `-ResetViews` (or the menu item): per-user `Bags`/`BagMRU` and
+thumbnail/icon caches, `.reg` backup first, then Explorer restart. It never
+writes HKLM, services, power plans or device settings — those findings come
+with advice, not an action. Tests: `tests/test_shell_doctor.ps1`.

@@ -1,0 +1,68 @@
+{
+  "schema": "saituls.secure-apps/1",
+  "schema_version": 1,
+  "managed_root": "%LOCALAPPDATA%\\SAITULS\\secure-apps",
+  "notes": "Data-driven Secure Apps registry. No field here is ever executed as a shell command: 'executable' and 'arguments' are separate and both validated (Scripts/secure_apps/sa_config.py). Payload paths must resolve inside managed_root and may not cross a reparse point; 'mount_path' is the one declared path outside it, because that is where the protected filesystem appears. Conditions are typed entries from a fixed table - there is no policy scripting language. Managed payload (apps, vaults, state) is excluded from Git and AUDAPACK.",
+  "profiles": [
+    {
+      "id": "obsidian",
+      "label": "Obsidian",
+      "enabled": true,
+      "notes": "Reference profile. The vault mounts back onto its historical plaintext path so existing Obsidian references keep working; the plaintext tree is NOT deleted by migration. authentication.user_verification is 'required' on purpose: this profile exists so that possession of the YubiKey alone is not enough to read the vault, which means FIDO2 PIN (or built-in biometric verification) on every enrollment and every unlock. Enrollment refuses outright if the authenticator has no user verification configured. First-run enrollment builds the container at <container dir>\\_enrollment_mount and never at mount_path, so it can run while the plaintext vault still occupies that path.",
+      "application": {
+        "executable": "<managed-root>\\apps\\obsidian\\app\\Obsidian.exe",
+        "working_directory": "<managed-root>\\apps\\obsidian\\app",
+        "arguments": [],
+        "vault_argument_style": "path"
+      },
+      "storage": {
+        "backend": "bitlocker-vhdx",
+        "container": "<managed-root>\\vaults\\obsidian\\obsidian.vhdx",
+        "container_id": "obsidian-vault-1",
+        "mount_path": "%USERPROFILE%\\Documents\\SAITULS Vaults\\Obsidian",
+        "size_gb": 16,
+        "filesystem_label": "SAITULS-OBSIDIAN"
+      },
+      "authentication": {
+        "provider": "yubikey-fido2-hmac-secret",
+        "credential_profile": "primary",
+        "user_verification": "required"
+      },
+      "policy": {
+        "mode": "default",
+        "idle_timeout_minutes": 360,
+        "lock_on_windows_lock": true,
+        "lock_on_suspend": true,
+        "lock_on_logoff": true,
+        "lock_on_shutdown": true,
+        "lock_on_broker_shutdown": true,
+        "unmount_when_app_closes": true,
+        "graceful_close_timeout_seconds": 30,
+        "force_terminate_after_timeout": true,
+        "process_exit_confirm_timeout_seconds": 20,
+        "unmount_timeout_seconds": 60,
+        "conditions": [
+          {
+            "type": "require_auth_after_windows_lock"
+          },
+          {
+            "type": "require_auth_after_suspend"
+          },
+          {
+            "type": "require_auth_after_logoff"
+          },
+          {
+            "type": "require_auth_after_session_expiry"
+          },
+          {
+            "type": "unmount_storage_on_app_exit"
+          },
+          {
+            "type": "require_auth_provider",
+            "provider": "yubikey-fido2-hmac-secret"
+          }
+        ]
+      }
+    }
+  ]
+}

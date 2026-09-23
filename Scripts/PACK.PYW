@@ -4,6 +4,10 @@ import shutil
 import tkinter as tk
 from tkinter import messagebox
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from shell_arg import shell_target
+
+
 def pack_into_folder(target_path):
     if not os.path.exists(target_path):
         return
@@ -34,5 +38,14 @@ def pack_into_folder(target_path):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        pack_into_folder(sys.argv[1].strip('"'))
+        target = shell_target(sys.argv[1])
+        # Packing a drive root would mean moving the whole volume into a
+        # subfolder of itself. The menu is registered on files and folders only,
+        # so this is a guard, not a reachable path -- but this worker moves data.
+        if os.path.splitdrive(target)[1] in ("", os.sep):
+            root = tk.Tk()
+            root.withdraw()
+            messagebox.showerror("Ошибка", "Нельзя упаковать корень диска.")
+        else:
+            pack_into_folder(target)
 
