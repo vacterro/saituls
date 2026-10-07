@@ -1,16 +1,23 @@
+<div align="center">
+
 # SAITULS
 
-![Windows](https://img.shields.io/badge/Windows_10/11-x64-00ADEF?style=flat&logo=windows&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue?style=flat)
-![Version](https://img.shields.io/badge/version-0.1.0-8A2BE2?style=flat)
-![CI](https://img.shields.io/github/actions/workflow/status/vacterro/saituls/test.yml?style=flat&label=tests)
-![C#](https://img.shields.io/badge/C%23-9B4993?style=flat&logo=csharp&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&logo=python&logoColor=white)
+**Windows Explorer utilities, media tools, agent launchers, and supporting desktop helpers in one compact toolbox.**
 
-**SAITULS** adds utility commands to Windows File Explorer and bundles file, media and Codex tools in one window. The installer fetches missing Python, FFmpeg, yt-dlp, aria2 and Deno automatically.
+[![Version](https://img.shields.io/badge/version-0.1.0-D4B86A?style=flat-square)](VERSION)
+![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?style=flat-square&logo=windows&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-.NET%20Framework-9B4993?style=flat-square&logo=dotnet&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+[![CI](https://img.shields.io/github/actions/workflow/status/vacterro/saituls/test.yml?style=flat-square&label=tests)](https://github.com/vacterro/saituls/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+
+[**Install**](#one-click-install) · [Explorer commands](#14-explorer-commands) · [Built-in tools](#built-in-tools) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
+
+</div>
+
+SAITULS adds utility commands to Windows File Explorer and bundles file, media, quota-monitoring, and AI-agent launch helpers in one window. The installer can fetch missing runtime dependencies such as Python, FFmpeg, yt-dlp, aria2, and Deno.
 
 ---
-
 ## ✨ Features
 
 | | Category | What |
