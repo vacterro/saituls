@@ -161,6 +161,10 @@ This removes Explorer entries but does not delete your files or the SAITULS fold
 | aria2c | aria2 GitHub Releases |
 | Deno x64 | Deno GitHub Releases |
 
+The release payload redistributes FFmpeg, ffprobe, yt-dlp, aria2, Ghostscript
+and ExifCleaner unmodified. Their licences and versions are recorded in
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
 Re-running does not re-download existing heavy files. If the connection drops, the installer shows the specific error, returns a non-zero exit code and does not fake a "success" message.
 
 ---
