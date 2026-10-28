@@ -48,6 +48,8 @@ static class AccountIdentityContractTest
     }
     static Bitmap Render(Saituls.SaitulsForm form, object row, int width, int height)
     {
+        Console.WriteLine("RENDER execution=" + App.GetMethod("ExecutionLabel", Any).Invoke(form, new object[] { row })
+            + " context=" + Text(row, "Context") + " runtime=" + Text(row, "RuntimeIdentityFp"));
         var image = new Bitmap(width, height);
         using (var g = Graphics.FromImage(image))
         {
