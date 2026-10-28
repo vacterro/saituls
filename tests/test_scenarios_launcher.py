@@ -185,11 +185,16 @@ rc, r = probe_path("media/audio/tag_mp3.py")
 check("legitimate in-root path accepted", rc == 0 and r and r["ok"])
 
 print("== argument passing (Unicode / spaces / parens / ampersand) ==")
+# Quoting is independent of optional scenario packages. Select a shipped
+# Python scenario with a target and no dependencies, just as the resolution
+# tests do; a clean runner must not need mutagen to inspect an argv plan.
+argv_candidate = next(s for s in zds if s["interpreter"] == "python"
+                      and s["target_mode"] in ("file", "folder"))
 hostile = "C:/tmp/u-ãéïöü-тест (x) & more"
-rc, out = run_launcher("-Scenario", "audio.tag-mp3", "-Target", hostile)
+rc, out = run_launcher("-Scenario", argv_candidate["id"], "-Target", hostile)
 r = parse_json_out(out)
 check("hostile target accepted as single argv element", rc == 0 and r and r["ok"]
-      and r["argv"][-1] == hostile)
+      and r["argv"][-1] == hostile, out)
 check("target arrives exactly once", r and len(r["argv"]) == 2)
 # CommandLineToArgvW round-trip: assert the TARGET parses back byte-identical
 # (the script path is re-homed when the repo moves, so compare element 1 only).
@@ -197,7 +202,7 @@ parsed = win32_argv(r["cmdline"])
 target_ok = (parsed is not None and len(parsed) == 2 and parsed[1] == hostile)
 check("Win32 command line round-trips hostile target", target_ok, f"parsed={parsed}")
 trail = "C:\\tmp\\trail test\\"
-rc, out = run_launcher("-Scenario", "audio.tag-mp3", "-Target", trail)
+rc, out = run_launcher("-Scenario", argv_candidate["id"], "-Target", trail)
 r2 = parse_json_out(out)
 parsed2 = win32_argv(r2["cmdline"])
 check("trailing backslash survives quoting", parsed2 is not None and parsed2[1] == trail,
