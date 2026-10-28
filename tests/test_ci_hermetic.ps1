@@ -1,5 +1,5 @@
 param(
-    [string]$StubRoot = (Join-Path ([IO.Path]::GetTempPath()) 'saituls-ci-stubs')
+    [string]$StubRoot = (Join-Path ([IO.Path]::GetTempPath()) ('saituls-ci-hermetic-' + [Guid]::NewGuid().ToString('N')))
 )
 
 $ErrorActionPreference = 'Stop'
@@ -28,6 +28,16 @@ $ErrorActionPreference = 'Stop'
 # Exit: 0 = all PASS, 1 = failures.
 
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$originalUserProfile = $env:USERPROFILE
+$originalPath = $env:PATH
+$nodeExe = (Get-Command node.exe).Source
+$temporaryRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')
+$StubRoot = [IO.Path]::GetFullPath($StubRoot).TrimEnd('\')
+if (-not $StubRoot.StartsWith($temporaryRoot + '\', [StringComparison]::OrdinalIgnoreCase) -or
+    (Split-Path $StubRoot -Leaf) -notlike 'saituls-ci-hermetic-*') {
+    throw 'The negative-control fixture must live in its own named temporary directory.'
+}
+$env:USERPROFILE = Join-Path $StubRoot 'profile'
 $binDir = Join-Path $StubRoot 'bin'
 $vintageSkill = Join-Path $env:USERPROFILE '.agents\skills\vintage\SKILL.md'
 
@@ -55,8 +65,10 @@ function Invoke-Probe([string]$exePath, [string[]]$arguments) {
     # Microsoft.PowerShell.Utility, so any probe touching Get-FileHash dies on
     # a missing cmdlet instead of reaching the seam under test.
     if ($exePath -match 'WindowsPowerShell') {
+        $documents = [Environment]::GetFolderPath('MyDocuments')
+        if ([string]::IsNullOrWhiteSpace($documents)) { $documents = Join-Path $env:USERPROFILE 'Documents' }
         $psi.EnvironmentVariables['PSModulePath'] = @(
-            (Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'WindowsPowerShell\Modules')
+            (Join-Path $documents 'WindowsPowerShell\Modules')
             (Join-Path $env:ProgramFiles 'WindowsPowerShell\Modules')
             (Join-Path $env:SystemRoot 'system32\WindowsPowerShell\v1.0\Modules')
         ) -join [IO.Path]::PathSeparator
@@ -70,25 +82,34 @@ function Invoke-Probe([string]$exePath, [string[]]$arguments) {
 
 function Remove-StubLayer {
     if (Test-Path -LiteralPath $StubRoot) {
-        Remove-Item -LiteralPath $StubRoot -Recurse -Force
+        $resolved = [IO.Path]::GetFullPath($StubRoot).TrimEnd('\')
+        if (-not $resolved.StartsWith($temporaryRoot + '\', [StringComparison]::OrdinalIgnoreCase) -or
+            (Split-Path $resolved -Leaf) -notlike 'saituls-ci-hermetic-*') { throw 'Unsafe fixture cleanup target.' }
+        Remove-Item -LiteralPath $resolved -Recurse -Force
     }
     foreach ($fixture in @($vintageSkill)) {
-        if (Test-Path -LiteralPath $fixture -PathType Leaf) {
-            Remove-Item -LiteralPath $fixture -Force
-        }
+        # The skill is beneath the owned fake profile and was removed with it.
+        if (Test-Path -LiteralPath $fixture -PathType Leaf) { throw 'Fixture skill escaped owned cleanup.' }
     }
     # Drop the stub directory from PATH for every child probe this harness
     # launches, so nothing can resolve the deleted stubs through a stale entry.
     $parts = [Collections.ArrayList]@([Environment]::GetEnvironmentVariable('PATH') -split [regex]::Escape([IO.Path]::PathSeparator))
     for ($i = $parts.Count - 1; $i -ge 0; $i--) {
-        if ($parts[$i] -eq $binDir) { $parts.RemoveAt($i) }
+            if ($parts[$i] -eq $binDir) { $parts.RemoveAt($i) }
     }
-    $env:PATH = $parts -join [IO.Path]::PathSeparator
+    $remaining = @()
+    foreach ($directory in $parts) {
+        if (-not $directory) { continue }
+        $hasAgent = @('opencode.cmd', 'opencode.exe', 'opencode.ps1', 'cline.cmd', 'cline.exe', 'cline.ps1') |
+            Where-Object { Test-Path -LiteralPath (Join-Path $directory $_) }
+        if (-not $hasAgent) { $remaining += $directory }
+    }
+    $env:PATH = $remaining -join [IO.Path]::PathSeparator
 }
 
 try {
     # Arrange: provision the full fixture layer, then prove it is present...
-    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'tests\ci_fixtures.ps1') | Out-Null
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'tests\ci_fixtures.ps1') -StubRoot $StubRoot | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'ci_fixtures.ps1 provisioning exited nonzero' }
     Check 'fixture layer provisioned' (
         (Test-Path -LiteralPath (Join-Path $binDir 'opencode.cmd')) -and
@@ -99,6 +120,7 @@ try {
     $pwshExe = (Get-Command powershell.exe).Source
     $pre = Invoke-Probe (Get-Command python.exe).Source @((Join-Path $repoRoot 'tests\test_regs.py'))
     Check 'test_regs green with stubs present' ($pre.rc -eq 0) ('exit ' + $pre.rc)
+    if ($pre.rc -ne 0) { Write-Host ($pre.out + $pre.err) }
 
     # Act: remove the whole stub layer...
     Remove-StubLayer
@@ -110,7 +132,7 @@ try {
     $regsLoud = ($post.rc -ne 0) -and ($post.out -match 'FAIL')
     Check 'test_regs fails loudly with stubs gone' $regsLoud ("exit $($post.rc); FAIL line present: $($post.out -match 'FAIL')")
     Check 'the loud failure names the AI launcher seam' ($post.out -match 'AI launcher') 'test_regs.py output'
-    Check 'the loud failure names the Vintage seam' ($post.out -match 'Vintage') 'test_regs.py output'
+    Check 'the loud failure names the Vintage/Wintage seam' ($post.out -match 'Vintage|Wintage') 'test_regs.py output'
 
     # test_saipatch.ps1 resolves OpenCode through PATH like the production
     # patcher: on a clean runner the stub shim is the ONLY resolvable opencode,
@@ -119,7 +141,6 @@ try {
     # that clean-runner condition explicitly by stripping every PATH entry that
     # carries an opencode launcher (the real install on a developer machine,
     # the stub on CI), while keeping node resolvable for the unit-test step.
-    $nodeExe = (Get-Command node.exe).Source
     $nodeOnly = Join-Path ([IO.Path]::GetTempPath()) ('saipatch-node-' + [Guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $nodeOnly -Force | Out-Null
     try {
@@ -150,11 +171,9 @@ try {
 }
 finally {
     # Restore: the next suite run needs a complete fixture layer again.
-    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'tests\ci_fixtures.ps1') | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host 'FAIL  fixture layer not restored after negative control'
-        $script:fails++
-    }
+    # The caller's original fixture layer and skill were never modified.
+    $env:USERPROFILE = $originalUserProfile
+    $env:PATH = $originalPath
 }
 
 Write-Host '---'

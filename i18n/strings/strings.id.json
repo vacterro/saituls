@@ -414,5 +414,7 @@
   "ProviderZcodeHelp": "Verification pending. Support not enabled in this build.",
   "ProviderOpencodeHelp": "Planned provider. The OpenCode launcher exists; account creation does not yet.",
   "ProviderClineHelp": "Planned provider. Cline runs inside VS Code; managed accounts do not yet.",
-  "ProviderGeminiHelp": "Planned provider. Distinct from Antigravity, which already uses Google sign-in."
+  "ProviderGeminiHelp": "Planned provider. Distinct from Antigravity, which already uses Google sign-in.",
+  "FolderAccess": "Folder access",
+  "FolderAccessMgr": "Folder access manager..."
 }
