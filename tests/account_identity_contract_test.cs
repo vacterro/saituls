@@ -48,8 +48,6 @@ static class AccountIdentityContractTest
     }
     static Bitmap Render(Saituls.SaitulsForm form, object row, int width, int height)
     {
-        Console.WriteLine("RENDER execution=" + App.GetMethod("ExecutionLabel", Any).Invoke(form, new object[] { row })
-            + " context=" + Text(row, "Context") + " runtime=" + Text(row, "RuntimeIdentityFp"));
         var image = new Bitmap(width, height);
         using (var g = Graphics.FromImage(image))
         {
@@ -88,8 +86,14 @@ static class AccountIdentityContractTest
                 object row = Row("AG1", "antigravity", Alice);
                 Set(form, "_accounts", Rows(row)); Set(form, "_accountsRuntime", Rows(row));
                 Set(form, "_selectedAccount", "contract-AG1");
+                // The invisible fixture has not had a first paint. Real GDI
+                // font initialization changes even the unchanged subtitle on
+                // hosted Windows; initialize it before comparing identities.
+                using (var warmup = Render(form, row, 640, 540)) { }
                 using (var same = Render(form, row, 640, 540))
                 {
+                    using (var unchanged = Render(form, row, 640, 540))
+                        Check(Equal(same, unchanged), "unchanged identity rendering is stable before comparisons");
                     Set(row, "RuntimeIdentityFp", Bob);
                     using (var distinct = Render(form, row, 640, 540))
                     {
