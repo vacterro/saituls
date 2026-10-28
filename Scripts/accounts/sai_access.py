@@ -21,9 +21,9 @@ privileged code: this runs as the operator, on objects the operator owns, and
 records the exact ACL state before and after the grant so a revoke removes only
 what this lease demonstrably created.
 
-stdlib only, no new dependencies. The ACL is written and read with the
-platform's own tool (icacls), so every other ACE is preserved by construction
-and no ownership is taken.
+stdlib only, no new dependencies. ACL writes use icacls; explicit grants are
+inspected through Windows security APIs in PowerShell. Existing explicit
+grants and ACLs changed after a lease are refused rather than claimed.
 """
 import json
 import os
@@ -200,6 +200,37 @@ def icacls(path, verb, identity, rights=""):
                          (proc.stdout + proc.stderr).strip()[:300])
 
 
+def has_explicit_allow(path, sid):
+    """A pre-existing allow rule cannot be owned or revoked by this lease."""
+    quote = lambda value: "'" + str(value).replace("'", "''") + "'"
+    script = (
+        "$ErrorActionPreference='Stop'; "
+        "$acl=Get-Acl -LiteralPath %s; "
+        "$rules=$acl.GetAccessRules($true,$false,[Security.Principal.SecurityIdentifier]); "
+        "[bool](@($rules | Where-Object { $_.IdentityReference.Value -eq %s "
+        "-and $_.AccessControlType -eq 'Allow' }).Count) | ConvertTo-Json -Compress"
+    ) % (quote(path), quote(sid))
+    # A parent PowerShell 7 module path cannot be reused by Windows PowerShell.
+    env = {key: value for key, value in os.environ.items() if key.upper() != "PSMODULEPATH"}
+    proc = subprocess.run(["powershell", "-NoLogo", "-NoProfile", "-NonInteractive", "-Command", script],
+                          capture_output=True, text=True, timeout=60, env=env)
+    try:
+        answer = json.loads(proc.stdout)
+    except ValueError:
+        answer = None
+    if proc.returncode or type(answer) is not bool:
+        raise LeaseError("ACL_READ_FAILED", (proc.stdout + proc.stderr).strip()[:300])
+    return answer
+
+
+def remove_owned_allow(lease):
+    """Refuse removal when the current ACL no longer matches the lease."""
+    if acl_text(lease["source"]) != lease.get("acl_after"):
+        raise LeaseError("ACL_CHANGED_SINCE_GRANT",
+                         "the ACL changed since this lease; refusing to remove unowned rules")
+    icacls(lease["source"], "/remove:g", lease["windows_sid"])
+
+
 def ancestors_traversable(selector, target):
     """A read ACE on a nested object is unreachable unless every ancestor is
     already traversable by that account. Opening a directory already requires
@@ -287,6 +318,9 @@ def cmd_grant(argv):
     if "--recursive" in flags and not is_directory(target):
         raise LeaseError("RECURSIVE_ONLY_FOR_DIRECTORIES", target)
 
+    if has_explicit_allow(target, sid):
+        raise LeaseError("EQUIVALENT_ACE_ALREADY_PRESENT",
+                         "an explicit allow rule already exists for this SID; a lease cannot own it")
     before = acl_text(target)
     if recursive:
         rights = "(OI)(CI)(R)"
@@ -350,7 +384,7 @@ def cmd_revoke(argv):
 
     target = lease["source"]
     before = acl_text(target)
-    icacls(target, "/remove:g", lease["windows_sid"])
+    remove_owned_allow(lease)
     after = acl_text(target)
 
     if after != lease.get("acl_before"):
@@ -414,7 +448,7 @@ def cmd_sweep(argv):
                 if lease is None or lease.get("revoked") or not lease_expired(lease):
                     continue
                 try:
-                    icacls(lease["source"], "/remove:g", lease["windows_sid"])
+                    remove_owned_allow(lease)
                 except LeaseError as ex:
                     # A lease that cannot be revoked stays in the journal and is
                     # reported. It is never silently dropped.

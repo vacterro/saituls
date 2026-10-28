@@ -4,8 +4,8 @@ The account registry is replaced by a stub that only speaks the three verbs this
 module is allowed to use (get / probe-workdir / verify-file), and every verb it
 receives is recorded so the test can prove no privileged verb was ever asked
 for. icacls runs for real, against disposable objects in a temp directory, under
-the operator's own identity: the ACE written and removed is one this lease
-created, and nothing else is touched.
+the operator's own identity, granting Local Service access to disposable test
+objects through a fake registry. No Windows account or session is created.
 
 Run: python tests/test_sai_access.py
 """
@@ -137,7 +137,13 @@ def main():
                               capture_output=True, text=True).stdout.strip()
     if not identity.startswith("S-1-5-"):
         raise SystemExit("could not resolve an operator SID for the ACL checks: %r" % identity)
-    os.environ["FAKE_IDENTITY"] = identity
+    # Use a resolvable SID absent from the file's default ACL, so the lease
+    # cannot merge with (or revoke) the operator's pre-existing FullControl.
+    os.environ["FAKE_IDENTITY"] = 'S-1-5-19'
+    target_name = subprocess.run([
+        "powershell", "-NoProfile", "-Command",
+        "([Security.Principal.SecurityIdentifier]'S-1-5-19').Translate([Security.Principal.NTAccount]).Value",
+    ], capture_output=True, text=True, check=True).stdout.strip()
     global VERB_LOG
     VERB_LOG = os.path.join(tmp, "verbs.log")
     os.environ["FAKE_VERB_LOG"] = VERB_LOG
@@ -149,6 +155,9 @@ def main():
     target = os.path.join(workdir, "live.log")
     with open(target, "w", encoding="utf-8") as handle:
         handle.write("hello\n")
+    # Freeze this disposable object's inherited baseline before exercising
+    # leases; hosted temp directories may materialize inherited ACEs lazily.
+    subprocess.run(["icacls", target, "/inheritance:d"], check=True, capture_output=True)
 
     # --- argument and selection refusals
     for argv, code in (
@@ -205,10 +214,11 @@ def main():
           "recorded the wrong result")
     # icacls prints the account's SID under its resolved name, so the ACE is
     # identified by the read right this lease granted, not by the SID string.
-    check("access-grant-adds-read-ace", ":(R)" in after and ":(R)" not in before,
+    granted = [line for line in after.splitlines() if target_name in line]
+    check("access-grant-adds-read-ace", len(granted) == 1 and ":(R)" in granted[0],
           (before, after))
     check("access-grant-is-not-modify",
-          ":(M)" not in after and ":(F)" not in after, after)
+          all(":(M)" not in line and ":(F)" not in line for line in granted), after)
     check("access-grant-expiry-set", doc.get("expires_at") and doc.get("expires_at_iso"),
           doc.get("expires_at_iso"))
     check("access-grant-caveats-open-handles", "already-open" in doc.get("expiry_caveat", ""),
@@ -236,6 +246,34 @@ def main():
     access.icacls(target, "/remove", os.environ["FAKE_IDENTITY"], "(R)")
     check("access-foreign-ace-untouched-by-refusal", access.acl_text(target) == before,
           "a refused grant still mutated the object")
+
+    # A broader existing allow is equally unowned. In particular, /grant R
+    # must never claim ownership of an existing F and later remove that F.
+    access.icacls(target, "/grant", os.environ["FAKE_IDENTITY"], "(F)")
+    broad_before = access.acl_text(target)
+    rc, doc = grant(["--account", "ag2", "--source", target, "--minutes", "15"])
+    check("access-refuses-preexisting-full-control",
+          rc != 0 and doc.get("status") == "EQUIVALENT_ACE_ALREADY_PRESENT", (rc, doc))
+    check("access-preserves-preexisting-full-control", access.acl_text(target) == broad_before, doc)
+    access.icacls(target, "/remove:g", os.environ["FAKE_IDENTITY"])
+
+    capture(["grant", "--account", "ag2", "--source", target, "--minutes", "15"])
+    access.icacls(target, "/grant", os.environ["FAKE_IDENTITY"], "(F)")
+    changed = access.acl_text(target)
+    rc, doc = capture(["revoke", "--account", "ag2", "--source", target])
+    check("access-revoke-refuses-concurrent-grant",
+          rc != 0 and doc.get("status") == "ACL_CHANGED_SINCE_GRANT", (rc, doc))
+    check("access-revoke-preserves-concurrent-grant", access.acl_text(target) == changed, doc)
+    changed_lease = access.read_json(lease_file)
+    changed_lease["expires_at"] = 1
+    access.write_json_atomic(lease_file, changed_lease)
+    rc, doc = capture(["sweep"])
+    check("access-sweep-preserves-concurrent-grant",
+          access.acl_text(target) == changed and any(
+              row.get("reason") == "ACL_CHANGED_SINCE_GRANT" for row in doc.get("unrevoked", [])), doc)
+    # Cleanup only this fixture's rule and this disposable lease.
+    access.icacls(target, "/remove:g", os.environ["FAKE_IDENTITY"])
+    os.remove(lease_file)
 
     # --- rollback mismatch is preserved as evidence, never smoothed over
     capture(["grant", "--account", "ag2", "--source", target, "--minutes", "60"])
