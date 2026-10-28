@@ -27,6 +27,11 @@ jobs:
           # stubs must break the dependent harnesses, never silently skip.
           powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_ci_hermetic.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test isolated CI Python launcher and argument forwarding
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_ci_python_launcher.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Run integrity suite
         shell: pwsh
         run: |

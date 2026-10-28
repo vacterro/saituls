@@ -103,7 +103,8 @@ if (-not $Verify) {
         } else {
             $pythonw = Resolve-Application 'pythonw.exe'
             if (-not $pythonw) { throw 'pythonw.exe is not on PATH; cannot provision the Windows Python launcher' }
-            Copy-Item -LiteralPath $pythonw.Source -Destination $pywExe -Force
+            . (Join-Path $PSScriptRoot 'ci_python_launcher.ps1')
+            New-SaiCiPythonLauncher $pythonw.Source $pywExe
             Write-Host "MAKE  Windows Python launcher  $pywExe (from $($pythonw.Source))"
         }
     }
