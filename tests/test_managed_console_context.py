@@ -543,7 +543,7 @@ def test_autoconnect_lifecycle_and_scope():
 def ag_account_local(plane):
     return {'id': 'antigravity:windows-user:' + plane.sid, 'backend': 'windows_user',
             'windows_sid': plane.sid, 'provider': 'antigravity', 'label': 'Antigravity',
-            'compact_label': 'AG1', 'windows_user': 'vac34', 'enabled': True}
+            'compact_label': 'AG1', 'windows_user': os.environ.get('USERNAME', 'operator'), 'enabled': True}
 
 
 def test_launch_does_not_re_enable_disconnected():
@@ -709,16 +709,33 @@ def test_yolo_current_user_launch():
         if not agy:
             check('yolo13-current-user-launch-carries-yolo', False, 'fake agy.exe did not build')
             return
+        fixture_exe = os.path.join(p.dir, 'credential-launch-fixture.exe')
+        compiled = subprocess.run([
+            CSC, '/nologo', '/target:exe', '/main:CredentialProbeFixture',
+            '/r:System.dll', '/r:System.Core.dll', '/r:System.Web.Extensions.dll',
+            '/out:' + fixture_exe, ENGINE,
+            os.path.join(ROOT, 'tests', 'credential_probe_fixture.cs'),
+        ], capture_output=True, text=True)
+        check('yolo13-fixture-builds', compiled.returncode == 0, compiled.stdout + compiled.stderr)
+        if compiled.returncode:
+            return
+        p.executable = fixture_exe
         p.legacy('user', [ag_account_local(p)])
         p.run('import')
         acc_id = p.registry()['accounts'][0]['account_id']
 
         clear_agy_argv(p)
+        p.env['SAI_FIXTURE_CREDENTIAL_PRESENT'] = '0'
+        denied_code, denied, _, _ = p.run('launch', acc_id, '--workdir', p.dir)
+        check('yolo13-authentication-is-required',
+              denied_code != 0 and denied.get('status') == 'AUTH_REQUIRED'
+              and not os.path.exists(os.path.join(p.dir, 'bin', 'agy-argv.txt')), str(denied))
+        p.env['SAI_FIXTURE_CREDENTIAL_PRESENT'] = '1'
         code, out, _, _ = p.run('launch', acc_id, '--workdir', p.dir)
         argv = read_agy_argv(p)
         check('yolo13-current-user-launch-carries-yolo',
               code == 0 and out.get('status') == 'launched' and argv is not None
-              and YOLO_FLAG in argv, (argv or 'no argv')[:300])
+              and YOLO_FLAG in argv, (argv or json.dumps(out))[:1000])
         check('yolo13b-launch-policy-reported', out.get('launch_policy') == YOLO_FLAG,
               str(out)[:200])
         check('yolo13c-exact-workdir-survives',
@@ -1203,9 +1220,11 @@ def test_runtime_constraints():
 
     # 32. No per-launch consent dialog for the broker, and no new modal in the
     #     Accounts path.
+    connect_body = re.sub(r'//.*', '', method_body(gui, 'void AccountsContext('))
     check('rt32-no-broker-consent-prompt',
-          not re.search(r'(connect|start).{0,40}(may start|allow the broker|confirm)', gui, re.I)
-          and 'MessageBox' not in re.sub(r'//.*', '', gui[gui.find('void AccountsContext'):gui.find('void AccountsContext') + 4000]),
+          bool(connect_body)
+          and not re.search(r'(connect|start).{0,40}(may start|allow the broker|confirm)', connect_body, re.I)
+          and 'MessageBox' not in connect_body,
           'a consent prompt crept into the connect path')
 
     # 33. The sweep is bounded and runs off the UI thread, so startup never blocks

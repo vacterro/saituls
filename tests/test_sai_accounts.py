@@ -75,6 +75,7 @@ class Plane:
     """One isolated control-plane environment (registry + broker processes)."""
 
     def __init__(self, scope='op-test'):
+        self.executable = EXE
         self.dir = tempfile.mkdtemp(prefix='sai-accounts-test-')
         self.scope = scope
         self.sid = real_sid()
@@ -88,7 +89,7 @@ class Plane:
         })
 
     def run(self, *args, timeout=90):
-        r = subprocess.run([EXE] + list(args), capture_output=True, text=True,
+        r = subprocess.run([self.executable] + list(args), capture_output=True, text=True,
                            env=self.env, timeout=timeout, cwd=self.dir)
         try:
             payload = json.loads(r.stdout.strip().splitlines()[-1]) if r.stdout.strip() else None
