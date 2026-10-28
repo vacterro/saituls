@@ -1,0 +1,462 @@
+{
+  "schema": "saituls.scenarios/1",
+  "launcher": "SCENARIOS.ps1",
+  "categories": [
+    "all",
+    "clean",
+    "image",
+    "audio",
+    "video",
+    "backup"
+  ],
+  "notes": "Script paths are relative to Scripts/scenarios and may not escape it. Interpreters are fixed constants; no command strings from user input. Badges: SAFE, MODIFIES FILES, ADMIN, DESTRUCTIVE, LONG RUNNING.",
+  "scenarios": [
+    {
+      "id": "image.dds2png",
+      "label": "DDS to PNG",
+      "category": "image",
+      "script": "media/image/convert_dds_to_png.py",
+      "interpreter": "python",
+      "description": "Converts every .dds next to the chosen folder into .png via texconv. Writes new files alongside; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "external:texconv.exe"
+      ]
+    },
+    {
+      "id": "image.dds2tga",
+      "label": "DDS to TGA",
+      "category": "image",
+      "script": "media/image/convert_dds_to_tga.py",
+      "interpreter": "python",
+      "description": "Converts every .dds next to the chosen folder into .tga via texconv. Writes new files alongside; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "external:texconv.exe"
+      ]
+    },
+    {
+      "id": "image.png2dds",
+      "label": "PNG to DDS",
+      "category": "image",
+      "script": "media/image/convert_png_to_dds.py",
+      "interpreter": "python",
+      "description": "Converts .png files into .dds via texconv. Writes new files alongside; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "external:texconv.exe"
+      ]
+    },
+    {
+      "id": "image.tga2dds",
+      "label": "TGA to DDS",
+      "category": "image",
+      "script": "media/image/convert_tga_to_dds.py",
+      "interpreter": "python",
+      "description": "Converts .tga files into .dds via texconv. Writes new files alongside; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "external:texconv.exe"
+      ]
+    },
+    {
+      "id": "image.tga2dds-alt",
+      "label": "TGA to DDS (alt settings)",
+      "category": "image",
+      "script": "media/image/convert_tga_to_dds_alt.py",
+      "interpreter": "python",
+      "description": "Alternative texconv TGA-to-DDS profile. Writes new files alongside; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "bundled:texconv.exe"
+      ]
+    },
+    {
+      "id": "image.pic2tga",
+      "label": "PIC to TGA",
+      "category": "image",
+      "script": "media/image/convert_pic_to_tga.py",
+      "interpreter": "python",
+      "description": "Decodes Battlezone .PIC images into .tga. Writes new files alongside; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:PIL"
+      ]
+    },
+    {
+      "id": "image.dds2bw",
+      "label": "DDS to B&W",
+      "category": "image",
+      "script": "media/image/convert_dds_to_bw.py",
+      "interpreter": "python",
+      "description": "Overwrites every .dds in the chosen folder in place with a pure black-and-white graded copy. No backup. Originals are lost.",
+      "badges": [
+        "DESTRUCTIVE",
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": true,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:PIL",
+        "python:numpy",
+        "external:texconv.exe"
+      ]
+    },
+    {
+      "id": "image.tga2bw",
+      "label": "TGA to B&W",
+      "category": "image",
+      "script": "media/image/convert_tga_to_bw.py",
+      "interpreter": "python",
+      "description": "Overwrites every .tga in the chosen folder in place with a grayscale graded copy. No backup. Originals are lost.",
+      "badges": [
+        "DESTRUCTIVE",
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": true,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:PIL",
+        "python:numpy"
+      ]
+    },
+    {
+      "id": "image.upscale-tga-2x",
+      "label": "Upscale TGA 2x",
+      "category": "image",
+      "script": "media/image/upscale_tga_2x_sharpen.py",
+      "interpreter": "python",
+      "description": "Upscales .tga files 2x with sharpening. Writes suffixed copies; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:PIL"
+      ]
+    },
+    {
+      "id": "image.upscale-tga-8x",
+      "label": "Upscale TGA 8x",
+      "category": "image",
+      "script": "media/image/upscale_tga_8x.py",
+      "interpreter": "python",
+      "description": "Upscales .tga files 8x. Writes suffixed copies; originals untouched.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:PIL"
+      ]
+    },
+    {
+      "id": "image.compress-lossless",
+      "label": "Compress images (lossless)",
+      "category": "image",
+      "script": "media/image/compress_images_lossless.py",
+      "interpreter": "python",
+      "description": "DISABLED: losslessly shrinks .jpg/.png files with jpegoptim/oxipng; bundled binaries not shipped.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "blocked:jpegoptim.exe/oxipng.exe provenance unverified (T-166 manifest; hashes recorded, not copied)"
+      ],
+      "enabled": false,
+      "blocked_reason": "jpegoptim.exe/oxipng.exe not bundled: provenance unverified"
+    },
+    {
+      "id": "image.dds-replace-with-png",
+      "label": "Replace DDS from PNG",
+      "category": "image",
+      "script": "media/image/replace_dds_with_png.py",
+      "interpreter": "python",
+      "description": "DISABLED: repacks .png back over .dds names; replace-in-place semantics not yet proven.",
+      "badges": [
+        "DESTRUCTIVE"
+      ],
+      "requires_admin": false,
+      "destructive": true,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:PIL"
+      ],
+      "enabled": false,
+      "blocked_reason": "replace-in-place semantics unproven (T-166 launch-contract review)"
+    },
+    {
+      "id": "audio.tag-mp3",
+      "label": "Tag MP3 (batch)",
+      "category": "audio",
+      "script": "media/audio/tag_mp3.py",
+      "interpreter": "python",
+      "description": "Batch-writes artist/title/album tags onto .mp3 files in the chosen folder.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:mutagen"
+      ]
+    },
+    {
+      "id": "audio.album-tool",
+      "label": "Album tool",
+      "category": "audio",
+      "script": "media/audio/album_tool.py",
+      "interpreter": "python",
+      "description": "Interactive album artwork and album tags GUI for .mp3 files. The GUI has its own folder picker; no launcher folder is passed.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "none",
+      "dependencies": [
+        "python:mutagen"
+      ]
+    },
+    {
+      "id": "audio.mp3-win",
+      "label": "MP3 win tool",
+      "category": "audio",
+      "script": "media/audio/mp3_win.py",
+      "interpreter": "python",
+      "description": "Interactive MP3 tag/album helper operating on the chosen folder.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:mutagen"
+      ]
+    },
+    {
+      "id": "audio.rename-from-tags",
+      "label": "Rename MP3 from tags",
+      "category": "audio",
+      "script": "media/audio/rename_mp3_from_tags.ps1",
+      "interpreter": "powershell",
+      "description": "Renames .mp3 files in the chosen folder from their embedded tags.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": []
+    },
+    {
+      "id": "audio.taglib-from-filenames",
+      "label": "Tag from filenames (TagLib)",
+      "category": "audio",
+      "script": "media/audio/taglib_tag_from_filenames.ps1",
+      "interpreter": "powershell",
+      "description": "DISABLED: writes tags from filenames via TagLibSharp; bundled DLL provenance unverified.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "blocked:TagLibSharp.dll provenance unverified (T-166 manifest; hash recorded, not copied)"
+      ],
+      "enabled": false,
+      "blocked_reason": "TagLibSharp.dll not bundled: provenance unverified"
+    },
+    {
+      "id": "audio.tag-from-list",
+      "label": "Tag from list (ffmpeg)",
+      "category": "audio",
+      "script": "media/audio/tag_from_list.ps1",
+      "interpreter": "powershell",
+      "description": "DISABLED: ffmpeg-based retag via re-encode; enabled only after output verification.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "external:ffmpeg"
+      ],
+      "enabled": false,
+      "blocked_reason": "re-encode output not yet verified against source quality"
+    },
+    {
+      "id": "audio.mute-wav-first-seconds",
+      "label": "Mute WAV intro",
+      "category": "audio",
+      "script": "media/audio/mute_first_second_of_wavs.py",
+      "interpreter": "python",
+      "description": "Mutes the first seconds of .wav files; keeps a .wav.bak copy of each original next to it.",
+      "badges": [
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": []
+    },
+    {
+      "id": "audio.make-m3u",
+      "label": "M3U to FFmpeg List",
+      "category": "audio",
+      "script": "media/audio/make_m3u.cmd",
+      "interpreter": "cmd",
+      "description": "Reads the first .m3u in the selected folder and writes list.txt (ffmpeg concat input). Does not create an .m3u playlist.",
+      "badges": [
+        "SAFE"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": []
+    },
+    {
+      "id": "video.compress",
+      "label": "Video compressor",
+      "category": "video",
+      "script": "media/video/COMPRESS_V.sh",
+      "interpreter": "bash",
+      "description": "DISABLED (T-167 decision): batch AV1 compressor (Git Bash) is a legacy bulk tool whose source directories are fixed personal library paths; kept in the tree for reference, deliberately not a supported SAITULS action. Explorer menu 'Сжать в AV1' (FFMPEG_MENU/MKV_FIX) is the supported per-file replacement.",
+      "badges": [
+        "LONG RUNNING",
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": true,
+      "target_mode": "none",
+      "dependencies": [
+        "external:bash",
+        "external:ffmpeg"
+      ],
+      "enabled": false,
+      "blocked_reason": "T-167: hardcoded personal source dirs + Git Bash dependency + destructive original-deletion loop do not fit the SAITULS per-file action contract; supported surface = Explorer 'Сжать в AV1' verb instead"
+    },
+    {
+      "id": "clean.strip-media-metadata",
+      "label": "Strip media metadata",
+      "category": "clean",
+      "script": "clean/media/strip_media_metadata.py",
+      "interpreter": "python",
+      "description": "Removes EXIF/ID3 metadata from media files in the chosen folder, rewriting them in place. The stripped data is not recoverable.",
+      "badges": [
+        "DESTRUCTIVE",
+        "MODIFIES FILES"
+      ],
+      "requires_admin": false,
+      "destructive": true,
+      "long_running": false,
+      "target_mode": "folder",
+      "dependencies": [
+        "python:PIL",
+        "python:mutagen"
+      ]
+    },
+    {
+      "id": "clean.office-scrubber",
+      "label": "Office Scrubber",
+      "category": "clean",
+      "script": "clean/office/OFFICE.cmd",
+      "interpreter": "cmd",
+      "description": "DISABLED: Microsoft OffScrub bundle removes Office installations (admin, product uninstall). Launch contract merge pending.",
+      "badges": [
+        "DESTRUCTIVE",
+        "ADMIN",
+        "LONG RUNNING"
+      ],
+      "requires_admin": true,
+      "destructive": true,
+      "long_running": true,
+      "target_mode": "none",
+      "dependencies": [],
+      "enabled": false,
+      "blocked_reason": "launch-contract merge pending: admin + uninstall semantics of bundled OffScrub scripts not yet individually reviewed"
+    },
+    {
+      "id": "backup.monitor",
+      "label": "Backup monitor",
+      "category": "backup",
+      "script": "services/backup/BACKUP.py",
+      "interpreter": "python",
+      "description": "DISABLED: Battlezone backup monitor. Paths must move to user config before enable.",
+      "badges": [
+        "LONG RUNNING"
+      ],
+      "requires_admin": false,
+      "destructive": false,
+      "long_running": true,
+      "target_mode": "none",
+      "dependencies": [],
+      "enabled": false,
+      "blocked_reason": "hardcoded paths must become configurable before enable (T-166 §U)"
+    }
+  ]
+}

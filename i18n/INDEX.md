@@ -1,7 +1,14 @@
 # Translation bundle index
 
 Source surfaces: `communications_protocol.md`, `_FREEBUFF_MENU/README.TXT`, and ~60 real in-app UI strings (context-menu labels + script dialogs).
-Every locale carries the same key set; docs carry source-digest markers.
+Locale bundles have partial application coverage; docs carry source-digest markers.
+SAITULS discovers supported choices from valid `strings.<locale>.json` bundles
+(33 shipped locales). Auto follows the Windows UI culture, matching its exact
+bundle or base language, then English. New provider help/status keys are complete
+in EN/RU and fall back to English elsewhere; this does not claim 33-language
+coverage of every new application string. The built-in EN/RU application tables
+remain compatibility fallback for incomplete or damaged deployments, including
+English provider help. Translations therefore temporarily have two homes.
 
 | Locale | Flag | Native name | Strings file |
 |---|---|---|---|

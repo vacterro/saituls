@@ -1,0 +1,17 @@
+# SAIPEN byte-bound evidence (digest-verified; never convert line endings) -- T-1508.
+.saipen/intake/** -text
+# Same protocol directory, but plain metadata written by the launcher rather than
+# digested evidence: pin it to LF so core.autocrlf=true stops emitting the
+# "LF will be replaced by CRLF" warning that fails tests/toolchain_health.ps1.
+# Narrow on purpose -- the -text rules above own every evidence subtree.
+.saipen/IDENTITY.md text eol=lf
+
+.saipen/archive/source/** -text
+.saipen/archive/retired/** -text
+.saipen/recovery/log-detail/** -text
+.saipen/recovery/board-compaction/** -text
+.saipen/recovery/log-normalize/** -text
+.saipen/recovery/log-foreign-tail/** -text
+
+# SAIPEN byte-bound evidence (digest-verified; never convert line endings) -- T-1508.
+.saipen/recovery/board-scrub/** -text
