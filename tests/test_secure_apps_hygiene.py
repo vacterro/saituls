@@ -397,7 +397,9 @@ class ElevatedWorkerLaunchTests(unittest.TestCase):
     HELPER = SUBSYSTEM / "sa_storage_helper.ps1"
 
     def _run_harness(self, helper=None):
-        scratch = Path(tempfile.mkdtemp(prefix="saituls-worker-launch-"))
+        # The helper deliberately refuses noncanonical paths. Resolve the live
+        # fixture once so a TEMP 8.3 alias does not mask later refusal branches.
+        scratch = Path(tempfile.mkdtemp(prefix="saituls-worker-launch-")).resolve()
         self.addCleanup(shutil.rmtree, scratch, ignore_errors=True)
         (scratch / "empty-root").mkdir()
         runtime = scratch / "privileged"
