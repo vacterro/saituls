@@ -48,6 +48,24 @@ function New-StubCommand([string]$path, [string]$name) {
     # A resolvable Application command is all the suite needs: the launcher and
     # the menu installer resolve it with Get-Command and never run it. Exiting 0
     # keeps an accidental invocation from looking like an agent crash.
+    if ($name -eq 'opencode.cmd') {
+        # SAIPATCH resolves the executable behind an npm-style shim, then
+        # fingerprints it. An echo-only .cmd satisfies Get-Command but cannot
+        # satisfy that contract. Build a harmless, explicitly unsupported host
+        # from source; the existing build-specific tier stays separate.
+        $exe = Join-Path (Split-Path -Parent $path) 'opencode.exe'
+        if (-not (Test-Path -LiteralPath $exe)) {
+            $source = Join-Path $StubRoot 'opencode-fixture.cs'
+            'using System; public static class Fixture { public static int Main(string[] args) { Console.WriteLine("SAITULS test fixture"); return 0; } }' |
+                Set-Content -LiteralPath $source -Encoding UTF8
+            & $cscExe /nologo /target:exe "/out:$exe" $source
+            if ($LASTEXITCODE -ne 0) { throw 'OpenCode fixture compilation failed' }
+        }
+        @('@echo off', 'rem SAITULS test fixture -- not a vendor CLI.',
+            'set "dp0=%~dp0"', '"%dp0%opencode.exe" %*', 'exit /b %errorlevel%') |
+            Set-Content -LiteralPath $path -Encoding Ascii
+        return
+    }
     $lines = @(
         '@echo off'
         "rem SAITULS test fixture -- a resolvable stand-in for the real $name."
@@ -78,7 +96,11 @@ function Resolve-Application([string]$name) {
 if (-not $Verify) {
     New-Item -ItemType Directory -Path $binDir -Force | Out-Null
     foreach ($stub in $stubs) {
-        if (Test-Path -LiteralPath $stub.Path) {
+        if ((Test-Path -LiteralPath $stub.Path) -and $stub.Name -eq 'opencode.cmd' -and
+            (Get-Content -LiteralPath $stub.Path -Raw) -match 'SAITULS test fixture') {
+            New-StubCommand $stub.Path $stub.Name
+            Write-Host "MAKE  complete owned OpenCode fixture  $($stub.Path)"
+        } elseif (Test-Path -LiteralPath $stub.Path) {
             Write-Host "KEEP  $($stub.Name) stub already present  $($stub.Path)"
         } else {
             New-StubCommand $stub.Path $stub.Name
@@ -131,6 +153,14 @@ foreach ($stub in $stubs) {
     $resolved = Resolve-Application $stub.Name
     Assert-Prereq "$($stub.Name) resolves as an application" ($null -ne $resolved) `
         $(if ($resolved) { $resolved.Source } else { 'not on PATH -- run this script without -Verify, or install the real CLI' })
+}
+if (Test-Path -LiteralPath (Join-Path $binDir 'opencode.cmd')) {
+    $shimText = Get-Content -LiteralPath (Join-Path $binDir 'opencode.cmd') -Raw
+    if ($shimText -match 'SAITULS test fixture') {
+        Assert-Prereq 'the OpenCode fixture shim has an executable target' (
+            (Test-Path -LiteralPath (Join-Path $binDir 'opencode.exe') -PathType Leaf) -and
+            $shimText.Contains('"%dp0%opencode.exe"')) 'source-built unsupported test host; no vendor service'
+    }
 }
 Assert-Prereq 'the global Vintage skill exists' (Test-Path -LiteralPath $vintageSkill -PathType Leaf) $vintageSkill
 Assert-Prereq 'the Windows Python launcher exists' (Test-Path -LiteralPath $pywExe -PathType Leaf) `
