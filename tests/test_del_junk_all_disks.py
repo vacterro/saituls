@@ -185,7 +185,7 @@ def test_safe_disk_is_the_only_policy():
           and '"SAFE_DISK"' in ALL_DISKS_SOURCE)
     check('the single-target worker still chooses its policy from the target',
           'mode = select_policy(target_dir)' in SOURCE
-          and WORKER.select_policy('V:\\a\\b') == 'AGGRESSIVE_PROJECT')
+          and WORKER.select_policy(SCRIPTS) == 'AGGRESSIVE_PROJECT')
     check('the shell all-disks command is recognized, a path is not',
           WORKER.wants_all_disks(['DEL_JUNK.PYW', '--all-disks'])
           and not WORKER.wants_all_disks(['DEL_JUNK.PYW', 'G:\\'])
