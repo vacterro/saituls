@@ -15,3 +15,7 @@
 
 # SAIPEN byte-bound evidence (digest-verified; never convert line endings) -- T-1508.
 .saipen/recovery/board-scrub/** -text
+
+# The scenarios migration manifest hashes the published source bytes.
+# Keep those text payloads stable even with core.autocrlf=true on Windows.
+Scripts/scenarios/** text eol=lf

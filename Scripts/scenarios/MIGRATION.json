@@ -76,7 +76,7 @@
    "destination": "clean/office/OFFICE.cmd",
    "active": false,
    "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
-   "destination_sha256": "2866af22404f24941c3b66ce96ab1556a8209a45c6c0879001aa2e914aa9f73b"
+   "destination_sha256": "728dea69c812f9b94d74f5ddb3514c87974e2104b42eb3efca4622ea9c8b972e"
   },
   {
    "source": "CLEAN/OFFICE_S/README.md",
@@ -85,7 +85,7 @@
    "destination": "clean/office/README.md",
    "active": false,
    "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
-   "destination_sha256": "42b9dbd0f8da8399bd8eb8387d2822a4e431159da98a4d0bf6248d06bb4b15f9"
+   "destination_sha256": "dbb6899976fe5769c89c76a1c3057e3c232adde7621e7d9d4a4e87d6f5dbcd1d"
   },
   {
    "source": "CLEAN/OFFICE_S/bin/CleanOffice.txt",
@@ -94,7 +94,7 @@
    "destination": "clean/office/bin/CleanOffice.txt",
    "active": false,
    "reason": "Office scrub bundle; wrapper scenario is DISABLED pending launch-contract merge (admin, uninstall)",
-   "destination_sha256": "c0ff3e0b9cb14687e9ef6da7890941f753f6541ede627a3d14f3d43a20b1163c"
+   "destination_sha256": "0e8cd61f691d27d24467f844d8782da79293d4ff5176ce89b585ef8e26102259"
   },
   {
    "source": "CLEAN/OFFICE_S/bin/OffScrub03.vbs",
@@ -438,7 +438,7 @@
    "destination": "media/audio/album_tool.py",
    "active": true,
    "reason": "Mutagen-based album/tagging tool; optional folder arg (documented convention)",
-   "destination_sha256": "a706aac7dfa21f3db84a4415d8800d819a8d0e7ca45352494996e01f02ad897a"
+   "destination_sha256": "b20c47be1ec3268695c361836bc091235242cb9b53fdd9e473c1cffae749667c"
   },
   {
    "source": "MEDIA/AUDIO/MP3/INST_TAG.ps1",
@@ -472,7 +472,7 @@
    "destination": "media/audio/taglib_tag_from_filenames.ps1",
    "active": false,
    "reason": "Alternative tagger (TagLibSharp); active in registry but BLOCKED without bundled DLL",
-   "destination_sha256": "5f654ce6259cb31571515d455c2a79e3a3d3388b4b84f7ca797e4aec05fa80ca"
+   "destination_sha256": "619c771285846856e670cbb280ca5ddbead0c43321a62b6cf60ebf2ee18806f5"
   },
   {
    "source": "MEDIA/AUDIO/MP3/MP3_WIN.py",
@@ -481,7 +481,7 @@
    "destination": "media/audio/mp3_win.py",
    "active": true,
    "reason": "Mutagen-based album/tagging tool; optional folder arg (documented convention)",
-   "destination_sha256": "6561e9571d315649c637597ba6c647b541fdcec919e469059876d90893e12b2b"
+   "destination_sha256": "3d7ed3988b8637b85d644e09020bc679a8604399da6922b615f1fd8d509f0e7e"
   },
   {
    "source": "MEDIA/AUDIO/MP3/REM_CTX.reg",
@@ -514,7 +514,7 @@
    "destination": "media/audio/tag_from_list.ps1",
    "active": false,
    "reason": "ffmpeg-based tagger (re-encode path); enabled only after its output is verified",
-   "destination_sha256": "3954758e50fc1c5bf3dda0275f87ffef189ddeaabb5d23f84573e8246d92f360"
+   "destination_sha256": "e5c8e4a999e840064fd94263fd93b899e0ede595fbfb3c4de904b92eb2cd5fae"
   },
   {
    "source": "MEDIA/AUDIO/MP3/TAG_MP3.py",
@@ -523,7 +523,7 @@
    "destination": "media/audio/tag_mp3.py",
    "active": true,
    "reason": "Mutagen-based album/tagging tool; optional folder arg (documented convention)",
-   "destination_sha256": "b70d73257e70b3f1c52e81e87b1fb04b1e942e1ea43ce531d4f91f9782b8369b"
+   "destination_sha256": "477c513dea744fe6a7fefec2441ade84990112ee648ce515c861768182232cb6"
   },
   {
    "source": "MEDIA/AUDIO/MP3/TagLibSharp.dll",
@@ -670,7 +670,7 @@
    "destination": "media/image/compress_images_lossless.py",
    "active": true,
    "reason": "jpegoptim/oxipng lossless compressor; external bundled binaries REQUIRED",
-   "destination_sha256": "01ba6f5885211697a02e70f890e5427f993efee2f6a03d5d8ddbb80b693f05d7"
+   "destination_sha256": "03e2d85731e823e5164e727ab5b1fc185884dc70d642d367d4d310800322cdf2"
   },
   {
    "source": "MEDIA/IMAGE/PIC/DDS2BW.py",
@@ -679,7 +679,7 @@
    "destination": "media/image/convert_dds_to_bw.py",
    "active": true,
    "reason": "In-place DDS grayscale overwrite (SUFFIX='') -> destructive badge",
-   "destination_sha256": "4d205270e1c725a82774da33c0206e975cc81409c1d3ceb30bb2b84fe516535b"
+   "destination_sha256": "e11cf70d64a2dd914fecd28e9436ea8ff567877d87c5496eb6b2a6fb3f324796"
   },
   {
    "source": "MEDIA/IMAGE/PIC/DDS2PNG.py",
@@ -688,7 +688,7 @@
    "destination": "media/image/convert_dds_to_png.py",
    "active": true,
    "reason": "texconv converter, creates new files alongside originals (SAFE)",
-   "destination_sha256": "3a352449d29408c1295e99363cfcd4f094b864d833a152e0ecdfaef0750aeb41"
+   "destination_sha256": "e6cb5a2dcc5394a03c93e782629199c059972561f130cb36203d2b1ab13c6a50"
   },
   {
    "source": "MEDIA/IMAGE/PIC/DDS2TGA.py",
@@ -697,7 +697,7 @@
    "destination": "media/image/convert_dds_to_tga.py",
    "active": true,
    "reason": "texconv converter, creates new files alongside originals (SAFE)",
-   "destination_sha256": "6552e08eaeb447ea495ba84fc5e5f523761d26fb35feb908e60bfabc0a892a88"
+   "destination_sha256": "2c2cbff5b8f7d3ecfbc006afecdfe72dbff3148694910b5087a1208ff428af28"
   },
   {
    "source": "MEDIA/IMAGE/PIC/PNG2DDS.py",
@@ -706,7 +706,7 @@
    "destination": "media/image/convert_png_to_dds.py",
    "active": true,
    "reason": "texconv converter, creates new files alongside originals (SAFE)",
-   "destination_sha256": "abb46c82e9fa10e797038d11b46cb52b955d078f888071e3ec91830e4169ff6a"
+   "destination_sha256": "fd93efc40153bfefc75276c63dbadc6b5b86e5dd9546ea3ed3ce9e5b9350bcf9"
   },
   {
    "source": "MEDIA/IMAGE/PIC/REP_DDS.ps1",
@@ -723,7 +723,7 @@
    "destination": "media/image/replace_dds_with_png.py",
    "active": false,
    "reason": "main1.png repack helper; registry-listed but DISABLED (replace-in-place semantics unproven)",
-   "destination_sha256": "de18e81fefef3478d2e439e3849e4d5bd90bfe96020294d6237dcbc036116159"
+   "destination_sha256": "c8ed21c56d6c914c13ba27f7675fa8c7e7b65f7a36ab31af8f52c8abf400f5b1"
   },
   {
    "source": "MEDIA/IMAGE/PIC/TGA2BW.py",
@@ -741,7 +741,7 @@
    "destination": "media/image/convert_tga_to_dds.py",
    "active": true,
    "reason": "texconv converter, creates new files alongside originals (SAFE)",
-   "destination_sha256": "153a7e4465d19a686b9be801bc60c5923dcf75d3f155176e6cdfc919efbd19e6"
+   "destination_sha256": "2b0f46f5ab4ddf2a4b916f6a8ca5d468b58df6a130566ad3f9385a3df089da67"
   },
   {
    "source": "MEDIA/IMAGE/PIC/TGA2DDS2.py",
@@ -750,7 +750,7 @@
    "destination": "media/image/convert_tga_to_dds_alt.py",
    "active": true,
    "reason": "texconv converter, creates new files alongside originals (SAFE)",
-   "destination_sha256": "ff64a571db68a847beb94080da67e6999450caba609703132873c85ef2010905"
+   "destination_sha256": "c753fa0042926b0da47d48061f65d3ef3e92f12ee6b8c8baf171b45d6e79e1cb"
   },
   {
    "source": "MEDIA/IMAGE/PIC/UPS_TGA.py",
@@ -1001,7 +1001,7 @@
    "destination": "media/video/COMPRESS_V.sh",
    "active": true,
    "reason": "Git Bash AV1 batch compressor; source dirs moved to config; bash dependency verified on PATH",
-   "destination_sha256": "a5524b4589136dddb871f2051b6c52e6f064b16db15ccc1e05dbfd6ab653e220"
+   "destination_sha256": "a05b34317ab6f7b0b733229f63774b407f60cdb929be11a3afcfd1bd1fecfb69"
   },
   {
    "source": "MEDIA/VIDEO/VID/GOV.ps1",
