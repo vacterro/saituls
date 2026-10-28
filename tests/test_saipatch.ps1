@@ -190,6 +190,7 @@ try {
     $unit = & node --test (Join-Path $patchSrc 'saipatch-native-queue-2x.test.mjs') (Join-Path $patchSrc 'saipatch-completion-sound.test.mjs') 2>&1
     $unitOut = (($unit | ForEach-Object { "$_" }) -join "`n")
     $unitRc = $LASTEXITCODE
+    if ($unitRc -ne 0) { Write-Host $unitOut }
     Check '2. plugin unit tests green (projection, queue semantics, ambient, wiring, completion sound)' ($unitRc -eq 0) "exit=$unitRc"
 
     $mf = Get-Content -Raw -LiteralPath (Join-Path $patchSrc 'manifest.json') | ConvertFrom-Json
