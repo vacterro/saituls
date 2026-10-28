@@ -7,6 +7,7 @@ oracle (clause 9): if it fails the DRIVER is broken, not OpenCode.
 import json
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -16,15 +17,17 @@ import saipatch_tui_driver as driver  # noqa: E402
 
 
 def main() -> int:
-    out = Path(r"V:\_TEMP_\opencode\ctrlv-e2e.json")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    for suffix in (".json", ".ready"):
-        p = out.with_suffix(suffix)
-        if p.exists():
-            p.unlink()
+    with tempfile.TemporaryDirectory(prefix="saituls-ctrlv-") as scratch:
+        return run(Path(scratch) / "ctrlv-e2e.json")
+
+
+def run(out: Path) -> int:
+    startup = subprocess.STARTUPINFO()
+    startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startup.wShowWindow = subprocess.SW_HIDE
     proc = subprocess.Popen(
         [sys.executable, str(HERE / "saipatch_ctrlv_receiver.py"), "--out", str(out)],
-        creationflags=subprocess.CREATE_NEW_CONSOLE)
+        creationflags=subprocess.CREATE_NEW_CONSOLE, startupinfo=startup)
     try:
         ready = out.with_suffix(".ready")
         deadline = time.monotonic() + 30
