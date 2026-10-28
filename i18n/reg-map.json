@@ -20,9 +20,16 @@
     "Среднее качество": "ffmpeg.quality_medium",
     "Удалить звук": "ffmpeg.remove_audio"
   },
+  "FFMPEG_MENU_REM.REG": {
+    "Извлечь Аудио": "ffmpeg.extract_audio",
+    "Конвертировать": "ffmpeg.convert",
+    "Опции": "ffmpeg.options",
+    "Разбить на кадры": "ffmpeg.split_frames",
+    "Сделать GIF": "ffmpeg.make_gif",
+    "Удалить звук": "ffmpeg.remove_audio"
+  },
   "MKV_FIX.REG": {
     "Опции": "ffmpeg.options",
-    "Сжать в AV1": "ffmpeg.compress_av1",
     "Сжать в MP4": "ffmpeg.compress_mp4"
   },
   "DL_YT.REG": {

@@ -1,0 +1,2043 @@
+{
+  "schema_version": 3,
+  "product": "AUDAPACK",
+  "created_at": "2026-09-07T00:52:26.954598",
+  "project": "__SAITULS",
+  "source_path": "V:\\___VAC\\__K\\__CODE\\__SAITULS",
+  "source_kind": "folder",
+  "fidelity_profile": "standard",
+  "archive_semantics": "audit_representation",
+  "files_discovered": 17353,
+  "files_included": 8029,
+  "files_excluded": 9324,
+  "files_failed": 0,
+  "source_bytes": 1870173945,
+  "included_bytes": 31448298,
+  "excluded_bytes": 1838725647,
+  "archive_bytes": 31448298,
+  "accounting_reconciled": true,
+  "budget_bytes": 31457280,
+  "budget_met": true,
+  "policy_fingerprint": "40271b99348559b53e6aa40aebcade18",
+  "exclusions": {
+    "configured_ignore": {
+      "count": 1,
+      "bytes": 37
+    },
+    "dependency_cache": {
+      "count": 7802,
+      "bytes": 111166987
+    },
+    "generated_output": {
+      "count": 50,
+      "bytes": 1605309036
+    },
+    "profile_media_budget": {
+      "count": 1000,
+      "bytes": 66942188
+    },
+    "secret_policy": {
+      "count": 13,
+      "bytes": 280128
+    },
+    "size_limit": {
+      "count": 458,
+      "bytes": 55027271
+    }
+  },
+  "largest_omitted": [
+    [
+      ".saipen/evidence/final-wave/official-20260906/release/opencode.exe",
+      179632680
+    ],
+    [
+      "Bin/App/ffmpeg.exe",
+      160644608
+    ],
+    [
+      "Bin/FFMPEG.EXE",
+      160644608
+    ],
+    [
+      "Bin/App/AV1 CPU/FFMPEG.EXE",
+      129686016
+    ],
+    [
+      "Bin/App/RTX40__/FFMPEG.EXE",
+      105260032
+    ],
+    [
+      "Bin/deno.exe",
+      97316640
+    ],
+    [
+      "Bin/App/FFPROBE.EXE",
+      86319616
+    ],
+    [
+      "Bin/FFPROBE.EXE",
+      86319616
+    ],
+    [
+      ".saipen/evidence/final-wave/official-20260906/source.zip",
+      85110890
+    ],
+    [
+      ".saipen/evidence/final-wave/official-20260906/opencode-windows-x64.zip",
+      60655378
+    ]
+  ],
+  "pruned_directories": [
+    {
+      "rel": ".freebuff",
+      "reason": "configured_ignore",
+      "files": 1,
+      "bytes": 37
+    },
+    {
+      "rel": ".git/logs",
+      "reason": "generated_output",
+      "files": 3,
+      "bytes": 6702
+    },
+    {
+      "rel": ".git/objects",
+      "reason": "dependency_cache",
+      "files": 468,
+      "bytes": 1233601
+    },
+    {
+      "rel": ".ruff_cache",
+      "reason": "generated_output",
+      "files": 4,
+      "bytes": 694
+    },
+    {
+      "rel": ".saipen/evidence/final-wave/native-fixture/config/opencode/node_modules",
+      "reason": "dependency_cache",
+      "files": 3667,
+      "bytes": 54966690
+    },
+    {
+      "rel": ".saipen/evidence/final-wave/native-fixture/node_modules",
+      "reason": "dependency_cache",
+      "files": 3667,
+      "bytes": 54966696
+    },
+    {
+      "rel": "dist",
+      "reason": "generated_output",
+      "files": 1,
+      "bytes": 346616311
+    },
+    {
+      "rel": "scripts/__pycache__",
+      "reason": "secret_policy",
+      "files": 10,
+      "bytes": 194079
+    },
+    {
+      "rel": "tests/__pycache__",
+      "reason": "secret_policy",
+      "files": 2,
+      "bytes": 86042
+    }
+  ],
+  "pruned_files": 7823,
+  "pruned_bytes": 458070852,
+  "media_inventory": {
+    ".#audio": {
+      "class": "audio",
+      "directory": ".",
+      "total": 1,
+      "total_bytes": 11838,
+      "included": 1,
+      "included_bytes": 11838,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "blip01.wav",
+          "size": 11838
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio#audio": {
+      "class": "audio",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio",
+      "total": 90,
+      "total_bytes": 490170,
+      "included": 3,
+      "included_bytes": 37363,
+      "excluded": 87,
+      "excluded_bytes": 452807,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/nope-11.mp3",
+          "size": 13681
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/bip-bop-09.aac",
+          "size": 12087
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/nope-12.mp3",
+          "size": 11595
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/alert-01.mp3",
+          "size": 11436
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/alert-10.mp3",
+          "size": 10780
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/staplebops-07.mp3",
+          "size": 10376
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/yup-05.mp3",
+          "size": 10339
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/audio/yup-04.mp3",
+          "size": 8674
+        }
+      ]
+    },
+    "___AHK#audio": {
+      "class": "audio",
+      "directory": "___AHK",
+      "total": 8,
+      "total_bytes": 44732,
+      "included": 3,
+      "included_bytes": 22928,
+      "excluded": 5,
+      "excluded_bytes": 21804,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "___AHK/message.wav",
+          "size": 7902
+        },
+        {
+          "rel": "___AHK/bell1.wav",
+          "size": 7754
+        },
+        {
+          "rel": "___AHK/message.mp3",
+          "size": 7272
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": "___AHK/button7.wav",
+          "size": 5826
+        },
+        {
+          "rel": "___AHK/button7.mp3",
+          "size": 5543
+        },
+        {
+          "rel": "___AHK/button9.mp3",
+          "size": 4687
+        },
+        {
+          "rel": "___AHK/button9.wav",
+          "size": 4414
+        },
+        {
+          "rel": "___AHK/blip1.wav",
+          "size": 1334
+        }
+      ]
+    },
+    "___AHK/sound#audio": {
+      "class": "audio",
+      "directory": "___AHK/sound",
+      "total": 2,
+      "total_bytes": 9090,
+      "included": 2,
+      "included_bytes": 9090,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "___AHK/sound/bell.wav",
+          "size": 7758
+        },
+        {
+          "rel": "___AHK/sound/blip.wav",
+          "size": 1332
+        }
+      ],
+      "omitted_sample": []
+    },
+    "___AHK/sound/fvox#audio": {
+      "class": "audio",
+      "directory": "___AHK/sound/fvox",
+      "total": 123,
+      "total_bytes": 2657282,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 123,
+      "excluded_bytes": 2657282,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": "___AHK/sound/fvox/get_assault.wav",
+          "size": 60776
+        },
+        {
+          "rel": "___AHK/sound/fvox/innsuficient_medical.wav",
+          "size": 49906
+        },
+        {
+          "rel": "___AHK/sound/fvox/radiation_detected.wav",
+          "size": 49776
+        },
+        {
+          "rel": "___AHK/sound/fvox/powermove_overload.wav",
+          "size": 48630
+        },
+        {
+          "rel": "___AHK/sound/fvox/hev_shutdown.wav",
+          "size": 46508
+        }
+      ]
+    },
+    "___AHK/sound/vox#audio": {
+      "class": "audio",
+      "directory": "___AHK/sound/vox",
+      "total": 612,
+      "total_bytes": 4581872,
+      "included": 3,
+      "included_bytes": 45602,
+      "excluded": 609,
+      "excluded_bytes": 4536270,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "___AHK/sound/vox/electromagnetic.wav",
+          "size": 15900
+        },
+        {
+          "rel": "___AHK/sound/vox/transportation.wav",
+          "size": 15044
+        },
+        {
+          "rel": "___AHK/sound/vox/decontamination.wav",
+          "size": 14658
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": "___AHK/sound/vox/lab.wav",
+          "size": 13860
+        },
+        {
+          "rel": "___AHK/sound/vox/administration.wav",
+          "size": 13818
+        },
+        {
+          "rel": "___AHK/sound/vox/sterilization.wav",
+          "size": 13344
+        },
+        {
+          "rel": "___AHK/sound/vox/superconducting.wav",
+          "size": 13322
+        },
+        {
+          "rel": "___AHK/sound/vox/radioactive.wav",
+          "size": 13244
+        }
+      ]
+    },
+    "problip#audio": {
+      "class": "audio",
+      "directory": "problip",
+      "total": 1,
+      "total_bytes": 11838,
+      "included": 1,
+      "included_bytes": 11838,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "problip/blip01.wav",
+          "size": 11838
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/assets#font": {
+      "class": "font",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/assets",
+      "total": 2,
+      "total_bytes": 1935288,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 2,
+      "excluded_bytes": 1935288,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/assets/JetBrainsMonoNerdFontMono-Regular.woff2",
+          "size": 1060580
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/assets/Inter.ttf",
+          "size": 874708
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static#font": {
+      "class": "font",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static",
+      "total": 7,
+      "total_bytes": 261816,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 7,
+      "excluded_bytes": 261816,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/JetBrainsMono-Medium.woff2",
+          "size": 93824
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/JetBrainsMono-Regular.woff2",
+          "size": 92164
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/rubik-latin.woff2",
+          "size": 35320
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/ibm-plex-mono-latin-600.woff2",
+          "size": 10148
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/ibm-plex-mono-latin-700.woff2",
+          "size": 10140
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/fonts#font": {
+      "class": "font",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/fonts",
+      "total": 2,
+      "total_bytes": 1935288,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 2,
+      "excluded_bytes": 1935288,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/fonts/JetBrainsMonoNerdFontMono-Regular.woff2",
+          "size": 1060580
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/fonts/Inter.ttf",
+          "size": 874708
+        }
+      ]
+    },
+    ".#image": {
+      "class": "image",
+      "directory": ".",
+      "total": 1,
+      "total_bytes": 67518,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 1,
+      "excluded_bytes": 67518,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": "SAITULS.ico",
+          "size": 67518
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd",
+      "total": 1,
+      "total_bytes": 83462,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 1,
+      "excluded_bytes": 83462,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/screenshot-uk.png",
+          "size": 83462
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out",
+      "total": 1,
+      "total_bytes": 65609,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 1,
+      "excluded_bytes": 65609,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out/june-totals.png",
+          "size": 65609
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/public#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/public",
+      "total": 2,
+      "total_bytes": 339697,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 2,
+      "excluded_bytes": 339697,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/public/sheep.jpg",
+          "size": 176501
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/public/book.jpg",
+          "size": 163196
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public",
+      "total": 10,
+      "total_bytes": 475,
+      "included": 3,
+      "included_bytes": 163,
+      "excluded": 7,
+      "excluded_bytes": 312,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/web-app-manifest-192x192.png",
+          "size": 56
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/web-app-manifest-512x512.png",
+          "size": 56
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/apple-touch-icon-v3.png",
+          "size": 51
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/apple-touch-icon.png",
+          "size": 48
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/favicon-96x96-v3.png",
+          "size": 48
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/social-share-zen.png",
+          "size": 47
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/favicon-96x96.png",
+          "size": 45
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/public/social-share.png",
+          "size": 43
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help",
+      "total": 3,
+      "total_bytes": 381860,
+      "included": 1,
+      "included_bytes": 23526,
+      "excluded": 2,
+      "excluded_bytes": 358334,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help/placeholder.png",
+          "size": 23526
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help/home.png",
+          "size": 191086
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help/tabs.png",
+          "size": 167248
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public",
+      "total": 11,
+      "total_bytes": 557,
+      "included": 3,
+      "included_bytes": 172,
+      "excluded": 8,
+      "excluded_bytes": 385,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/web-app-manifest-192x192.png",
+          "size": 59
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/web-app-manifest-512x512.png",
+          "size": 59
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/apple-touch-icon-v3.png",
+          "size": 54
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/social-share-black.png",
+          "size": 52
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/apple-touch-icon.png",
+          "size": 51
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/favicon-96x96-v3.png",
+          "size": 51
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/social-share-zen.png",
+          "size": 50
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/public/favicon-96x96.png",
+          "size": 48
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/black#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/black",
+      "total": 1,
+      "total_bytes": 28790,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 1,
+      "excluded_bytes": 28790,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/black/hero.png",
+          "size": 28790
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand",
+      "total": 17,
+      "total_bytes": 354476,
+      "included": 1,
+      "included_bytes": 20188,
+      "excluded": 16,
+      "excluded_bytes": 334288,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand/preview-opencode-wordmark-dark.png",
+          "size": 20188
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand/preview-opencode-logo-dark-square.png",
+          "size": 128611
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand/preview-opencode-logo-light-square.png",
+          "size": 92706
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand/preview-opencode-wordmark-light.png",
+          "size": 20056
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand/preview-opencode-wordmark-simple-dark.png",
+          "size": 20013
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/brand/preview-opencode-wordmark-simple-light.png",
+          "size": 19910
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander",
+      "total": 15,
+      "total_bytes": 1156829,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 15,
+      "excluded_bytes": 1156829,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/screenshot-github.png",
+          "size": 232073
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/screenshot.png",
+          "size": 139488
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/screenshot-splash.png",
+          "size": 133399
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/opencode-desktop-icon.png",
+          "size": 46114
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/dock.png",
+          "size": 18796
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static",
+      "total": 3,
+      "total_bytes": 10370,
+      "included": 3,
+      "included_bytes": 10370,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/zen-logo.png",
+          "size": 8336
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/logo.png",
+          "size": 1726
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/mail/emails/templates/static/right-arrow.png",
+          "size": 308
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta",
+      "total": 17,
+      "total_bytes": 455885,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 17,
+      "excluded_bytes": 455885,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/icon.png",
+          "size": 172485
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/Square310x310Logo.png",
+          "size": 54725
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/icon.ico",
+          "size": 49612
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/Square284x284Logo.png",
+          "size": 45201
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/128x128@2x.png",
+          "size": 36252
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-hdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-hdpi",
+      "total": 3,
+      "total_bytes": 19233,
+      "included": 3,
+      "included_bytes": 19233,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-hdpi/ic_launcher_foreground.png",
+          "size": 15269
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-hdpi/ic_launcher.png",
+          "size": 2077
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-hdpi/ic_launcher_round.png",
+          "size": 1887
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-mdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-mdpi",
+      "total": 3,
+      "total_bytes": 11720,
+      "included": 3,
+      "included_bytes": 11720,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-mdpi/ic_launcher_foreground.png",
+          "size": 7845
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-mdpi/ic_launcher.png",
+          "size": 2083
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-mdpi/ic_launcher_round.png",
+          "size": 1792
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xhdpi",
+      "total": 3,
+      "total_bytes": 36327,
+      "included": 3,
+      "included_bytes": 36327,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xhdpi/ic_launcher_foreground.png",
+          "size": 25523
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xhdpi/ic_launcher.png",
+          "size": 5778
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xhdpi/ic_launcher_round.png",
+          "size": 5026
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxhdpi",
+      "total": 3,
+      "total_bytes": 80833,
+      "included": 2,
+      "included_bytes": 20070,
+      "excluded": 1,
+      "excluded_bytes": 60763,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxhdpi/ic_launcher.png",
+          "size": 10758
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxhdpi/ic_launcher_round.png",
+          "size": 9312
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxhdpi/ic_launcher_foreground.png",
+          "size": 60763
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxxhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxxhdpi",
+      "total": 3,
+      "total_bytes": 148583,
+      "included": 2,
+      "included_bytes": 32063,
+      "excluded": 1,
+      "excluded_bytes": 116520,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxxhdpi/ic_launcher.png",
+          "size": 17122
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxxhdpi/ic_launcher_round.png",
+          "size": 14941
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/android/mipmap-xxxhdpi/ic_launcher_foreground.png",
+          "size": 116520
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios",
+      "total": 18,
+      "total_bytes": 690698,
+      "included": 3,
+      "included_bytes": 44199,
+      "excluded": 15,
+      "excluded_bytes": 646499,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-60x60@3x.png",
+          "size": 16916
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-83.5x83.5@2x.png",
+          "size": 14760
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-76x76@2x.png",
+          "size": 12523
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-40x40@3x.png",
+          "size": 8452
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-60x60@2x.png",
+          "size": 8452
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-29x29@3x.png",
+          "size": 5048
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-40x40@2x-1.png",
+          "size": 4396
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/beta/ios/AppIcon-40x40@2x.png",
+          "size": 4396
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev",
+      "total": 17,
+      "total_bytes": 713255,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 17,
+      "excluded_bytes": 713255,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/Square310x310Logo.png",
+          "size": 89075
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/Square284x284Logo.png",
+          "size": 74022
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/icon.ico",
+          "size": 73182
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/128x128@2x.png",
+          "size": 59884
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/dock.png",
+          "size": 50483
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-hdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-hdpi",
+      "total": 3,
+      "total_bytes": 30916,
+      "included": 3,
+      "included_bytes": 30916,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-hdpi/ic_launcher_foreground.png",
+          "size": 24987
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-hdpi/ic_launcher.png",
+          "size": 3076
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-hdpi/ic_launcher_round.png",
+          "size": 2853
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-mdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-mdpi",
+      "total": 3,
+      "total_bytes": 18400,
+      "included": 3,
+      "included_bytes": 18400,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-mdpi/ic_launcher_foreground.png",
+          "size": 12682
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-mdpi/ic_launcher.png",
+          "size": 3016
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-mdpi/ic_launcher_round.png",
+          "size": 2702
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xhdpi",
+      "total": 3,
+      "total_bytes": 58626,
+      "included": 2,
+      "included_bytes": 16341,
+      "excluded": 1,
+      "excluded_bytes": 42285,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xhdpi/ic_launcher.png",
+          "size": 8701
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xhdpi/ic_launcher_round.png",
+          "size": 7640
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xhdpi/ic_launcher_foreground.png",
+          "size": 42285
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxhdpi",
+      "total": 3,
+      "total_bytes": 129495,
+      "included": 2,
+      "included_bytes": 31909,
+      "excluded": 1,
+      "excluded_bytes": 97586,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxhdpi/ic_launcher.png",
+          "size": 16970
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxhdpi/ic_launcher_round.png",
+          "size": 14939
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxhdpi/ic_launcher_foreground.png",
+          "size": 97586
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxxhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxxhdpi",
+      "total": 3,
+      "total_bytes": 232007,
+      "included": 1,
+      "included_bytes": 24066,
+      "excluded": 2,
+      "excluded_bytes": 207941,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxxhdpi/ic_launcher_round.png",
+          "size": 24066
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxxhdpi/ic_launcher_foreground.png",
+          "size": 180625
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/android/mipmap-xxxhdpi/ic_launcher.png",
+          "size": 27316
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios",
+      "total": 18,
+      "total_bytes": 1143698,
+      "included": 2,
+      "included_bytes": 47964,
+      "excluded": 16,
+      "excluded_bytes": 1095734,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios/AppIcon-83.5x83.5@2x.png",
+          "size": 25898
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios/AppIcon-76x76@2x.png",
+          "size": 22066
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios/AppIcon-60x60@3x.png",
+          "size": 29995
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios/AppIcon-40x40@3x.png",
+          "size": 14557
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios/AppIcon-60x60@2x.png",
+          "size": 14557
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios/AppIcon-29x29@3x.png",
+          "size": 8781
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/dev/ios/AppIcon-40x40@2x-1.png",
+          "size": 7529
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod",
+      "total": 17,
+      "total_bytes": 474690,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 17,
+      "excluded_bytes": 474690,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/icon.png",
+          "size": 190179
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/Square310x310Logo.png",
+          "size": 58165
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/icon.ico",
+          "size": 47600
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/Square284x284Logo.png",
+          "size": 47137
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/dock.png",
+          "size": 38916
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-hdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-hdpi",
+      "total": 3,
+      "total_bytes": 17615,
+      "included": 3,
+      "included_bytes": 17615,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-hdpi/ic_launcher_foreground.png",
+          "size": 13918
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-hdpi/ic_launcher.png",
+          "size": 1886
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-hdpi/ic_launcher_round.png",
+          "size": 1811
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-mdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-mdpi",
+      "total": 3,
+      "total_bytes": 10164,
+      "included": 3,
+      "included_bytes": 10164,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-mdpi/ic_launcher_foreground.png",
+          "size": 6540
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-mdpi/ic_launcher.png",
+          "size": 1873
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-mdpi/ic_launcher_round.png",
+          "size": 1751
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xhdpi",
+      "total": 3,
+      "total_bytes": 34220,
+      "included": 3,
+      "included_bytes": 34220,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xhdpi/ic_launcher_foreground.png",
+          "size": 25393
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xhdpi/ic_launcher.png",
+          "size": 4726
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xhdpi/ic_launcher_round.png",
+          "size": 4101
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxhdpi",
+      "total": 3,
+      "total_bytes": 82255,
+      "included": 2,
+      "included_bytes": 17426,
+      "excluded": 1,
+      "excluded_bytes": 64829,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxhdpi/ic_launcher.png",
+          "size": 9156
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxhdpi/ic_launcher_round.png",
+          "size": 8270
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxhdpi/ic_launcher_foreground.png",
+          "size": 64829
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxxhdpi#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxxhdpi",
+      "total": 3,
+      "total_bytes": 157318,
+      "included": 2,
+      "included_bytes": 29423,
+      "excluded": 1,
+      "excluded_bytes": 127895,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxxhdpi/ic_launcher.png",
+          "size": 15359
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxxhdpi/ic_launcher_round.png",
+          "size": 14064
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/android/mipmap-xxxhdpi/ic_launcher_foreground.png",
+          "size": 127895
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios",
+      "total": 18,
+      "total_bytes": 772332,
+      "included": 3,
+      "included_bytes": 43977,
+      "excluded": 15,
+      "excluded_bytes": 728355,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-60x60@3x.png",
+          "size": 17106
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-83.5x83.5@2x.png",
+          "size": 14705
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-76x76@2x.png",
+          "size": 12166
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-40x40@3x.png",
+          "size": 7828
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-60x60@2x.png",
+          "size": 7828
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-29x29@3x.png",
+          "size": 4709
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-40x40@2x-1.png",
+          "size": 4058
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/desktop/icons/prod/ios/AppIcon-40x40@2x.png",
+          "size": 4058
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/docs/images#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/docs/images",
+      "total": 3,
+      "total_bytes": 375602,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 3,
+      "excluded_bytes": 375602,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/docs/images/checks-passed.png",
+          "size": 160724
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/docs/images/hero-dark.png",
+          "size": 110614
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/docs/images/hero-light.png",
+          "size": 104264
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public",
+      "total": 10,
+      "total_bytes": 475,
+      "included": 3,
+      "included_bytes": 163,
+      "excluded": 7,
+      "excluded_bytes": 312,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/web-app-manifest-192x192.png",
+          "size": 56
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/web-app-manifest-512x512.png",
+          "size": 56
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/apple-touch-icon-v3.png",
+          "size": 51
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/apple-touch-icon.png",
+          "size": 48
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/favicon-96x96-v3.png",
+          "size": 48
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/social-share-zen.png",
+          "size": 47
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/favicon-96x96.png",
+          "size": 45
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/enterprise/public/social-share.png",
+          "size": 43
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/identity#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/identity",
+      "total": 4,
+      "total_bytes": 926,
+      "included": 3,
+      "included_bytes": 804,
+      "excluded": 1,
+      "excluded_bytes": 122,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/identity/mark-512x512-light.png",
+          "size": 330
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/identity/mark-512x512.png",
+          "size": 330
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/identity/mark-192x192.png",
+          "size": 144
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/identity/mark-96x96.png",
+          "size": 122
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/llm/test/fixtures/media#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/llm/test/fixtures/media",
+      "total": 1,
+      "total_bytes": 14496,
+      "included": 1,
+      "included_bytes": 14496,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/llm/test/fixtures/media/restroom.png",
+          "size": 14496
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/opencode/test/image/fixtures#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/opencode/test/image/fixtures",
+      "total": 1,
+      "total_bytes": 3932160,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 1,
+      "excluded_bytes": 3932160,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/opencode/test/image/fixtures/picture-5mb-base64.png",
+          "size": 3932160
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/opencode/test/tool/fixtures#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/opencode/test/tool/fixtures",
+      "total": 1,
+      "total_bytes": 2688401,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 1,
+      "excluded_bytes": 2688401,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/opencode/test/tool/fixtures/large-image.png",
+          "size": 2688401
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/stats/app/public#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/stats/app/public",
+      "total": 2,
+      "total_bytes": 285165,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 2,
+      "excluded_bytes": 285165,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/stats/app/public/banner.jpg",
+          "size": 166886
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/stats/app/public/banner.png",
+          "size": 118279
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon",
+      "total": 8,
+      "total_bytes": 43121,
+      "included": 3,
+      "included_bytes": 37366,
+      "excluded": 5,
+      "excluded_bytes": 5755,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/favicon-v3.ico",
+          "size": 15086
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/favicon.ico",
+          "size": 15086
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/web-app-manifest-512x512.png",
+          "size": 7194
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/web-app-manifest-192x192.png",
+          "size": 1601
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/apple-touch-icon-v3.png",
+          "size": 1541
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/apple-touch-icon.png",
+          "size": 1541
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/favicon-96x96-v3.png",
+          "size": 536
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/favicon/favicon-96x96.png",
+          "size": 536
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/icons/app#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/icons/app",
+      "total": 5,
+      "total_bytes": 11936,
+      "included": 3,
+      "included_bytes": 8840,
+      "excluded": 2,
+      "excluded_bytes": 3096,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/icons/app/xcode.png",
+          "size": 3470
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/icons/app/textmate.png",
+          "size": 2900
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/icons/app/warp.png",
+          "size": 2470
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/icons/app/finder.png",
+          "size": 2127
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/icons/app/terminal.png",
+          "size": 969
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/images#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/images",
+      "total": 3,
+      "total_bytes": 68715,
+      "included": 2,
+      "included_bytes": 36156,
+      "excluded": 1,
+      "excluded_bytes": 32559,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/images/social-share-zen.png",
+          "size": 21918
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/images/social-share.png",
+          "size": 14238
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/ui/src/assets/images/social-share-black.png",
+          "size": 32559
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public",
+      "total": 10,
+      "total_bytes": 475,
+      "included": 3,
+      "included_bytes": 163,
+      "excluded": 7,
+      "excluded_bytes": 312,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/web-app-manifest-192x192.png",
+          "size": 56
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/web-app-manifest-512x512.png",
+          "size": 56
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/apple-touch-icon-v3.png",
+          "size": 51
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/apple-touch-icon.png",
+          "size": 48
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/favicon-96x96-v3.png",
+          "size": 48
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/social-share-zen.png",
+          "size": 47
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/favicon-96x96.png",
+          "size": 45
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/public/social-share.png",
+          "size": 43
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/lander#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/lander",
+      "total": 4,
+      "total_bytes": 2786261,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 4,
+      "excluded_bytes": 2786261,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/lander/screenshot-vscode.png",
+          "size": 1022418
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/lander/screenshot-github.png",
+          "size": 924094
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/lander/screenshot.png",
+          "size": 470646
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/lander/screenshot-splash.png",
+          "size": 369103
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/web#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/web",
+      "total": 3,
+      "total_bytes": 2051113,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 3,
+      "excluded_bytes": 2051113,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/web/web-homepage-active-session.png",
+          "size": 747629
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/web/web-homepage-see-servers.png",
+          "size": 680136
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/web/src/assets/web/web-homepage-new-session.png",
+          "size": 623348
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/sdks/vscode/images#image": {
+      "class": "image",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/sdks/vscode/images",
+      "total": 1,
+      "total_bytes": 43,
+      "included": 1,
+      "included_bytes": 43,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/sdks/vscode/images/icon.png",
+          "size": 43
+        }
+      ],
+      "omitted_sample": []
+    },
+    "Bin/App#image": {
+      "class": "image",
+      "directory": "Bin/App",
+      "total": 1,
+      "total_bytes": 1150,
+      "included": 1,
+      "included_bytes": 1150,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "Bin/App/ICON.ICO",
+          "size": 1150
+        }
+      ],
+      "omitted_sample": []
+    },
+    "___AHK#image": {
+      "class": "image",
+      "directory": "___AHK",
+      "total": 18,
+      "total_bytes": 49751,
+      "included": 2,
+      "included_bytes": 2695,
+      "excluded": 16,
+      "excluded_bytes": 47056,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "___AHK/cut_black.ico",
+          "size": 1702
+        },
+        {
+          "rel": "___AHK/suno_create.png",
+          "size": 993
+        }
+      ],
+      "omitted_sample": [
+        {
+          "rel": "___AHK/background.png",
+          "size": 40595
+        },
+        {
+          "rel": "___AHK/polzunok1.png",
+          "size": 471
+        },
+        {
+          "rel": "___AHK/cb.png",
+          "size": 468
+        },
+        {
+          "rel": "___AHK/layer_name1.png",
+          "size": 465
+        },
+        {
+          "rel": "___AHK/transform.png",
+          "size": 461
+        }
+      ]
+    },
+    "___AHK/_SPECIFIC#image": {
+      "class": "image",
+      "directory": "___AHK/_SPECIFIC",
+      "total": 1,
+      "total_bytes": 422,
+      "included": 1,
+      "included_bytes": 422,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "___AHK/_SPECIFIC/approve.png",
+          "size": 422
+        }
+      ],
+      "omitted_sample": []
+    },
+    "___AHK/_SPECIFIC/wr_assets#image": {
+      "class": "image",
+      "directory": "___AHK/_SPECIFIC/wr_assets",
+      "total": 2,
+      "total_bytes": 807,
+      "included": 2,
+      "included_bytes": 807,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "___AHK/_SPECIFIC/wr_assets/wr_pick_screen.png",
+          "size": 425
+        },
+        {
+          "rel": "___AHK/_SPECIFIC/wr_assets/wr_accept.png",
+          "size": 382
+        }
+      ],
+      "omitted_sample": []
+    },
+    "problip#image": {
+      "class": "image",
+      "directory": "problip",
+      "total": 1,
+      "total_bytes": 49906,
+      "included": 1,
+      "included_bytes": 49906,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "problip/problip.ico",
+          "size": 49906
+        }
+      ],
+      "omitted_sample": []
+    },
+    "tests#image": {
+      "class": "image",
+      "directory": "tests",
+      "total": 1,
+      "total_bytes": 3456,
+      "included": 1,
+      "included_bytes": 3456,
+      "excluded": 0,
+      "excluded_bytes": 0,
+      "sample_limit": 5,
+      "included_sample": [
+        {
+          "rel": "tests/problip-noaa-preview.png",
+          "size": 3456
+        }
+      ],
+      "omitted_sample": []
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out#video": {
+      "class": "video",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out",
+      "total": 5,
+      "total_bytes": 7633777,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 5,
+      "excluded_bytes": 7633777,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out/nz-sheep.mp4",
+          "size": 2788751
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out/novel-1984.mp4",
+          "size": 2569837
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out/glm-52-broke-out.mp4",
+          "size": 1591636
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out/minimax-climb.mp4",
+          "size": 349608
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/artifacts/glm52-rise-video/out/flash-share.mp4",
+          "size": 333945
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help#video": {
+      "class": "video",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help",
+      "total": 1,
+      "total_bytes": 1367486,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 1,
+      "excluded_bytes": 1367486,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/app/src/assets/help/introducing-tabs.mp4",
+          "size": 1367486
+        }
+      ]
+    },
+    ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander#video": {
+      "class": "video",
+      "directory": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander",
+      "total": 3,
+      "total_bytes": 42184159,
+      "included": 0,
+      "included_bytes": 0,
+      "excluded": 3,
+      "excluded_bytes": 42184159,
+      "sample_limit": 5,
+      "included_sample": [],
+      "omitted_sample": [
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/opencode-comparison-min.mp4",
+          "size": 16908501
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/desktop-tabs-landscape.mp4",
+          "size": 14906820
+        },
+        {
+          "rel": ".saipen/evidence/final-wave/official-20260906/source/opencode-337fd144d2ba144743368f78d9579a99cce175bd/packages/console/app/src/asset/lander/opencode-min.mp4",
+          "size": 10368838
+        }
+      ]
+    }
+  },
+  "saipen_detected": true,
+  "git": {
+    "branch": "main",
+    "head": "35a25e7",
+    "dirty": true,
+    "changed_files": 41
+  }
+}

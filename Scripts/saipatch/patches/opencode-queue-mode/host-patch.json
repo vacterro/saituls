@@ -1,0 +1,47 @@
+{
+  "id": "seamB-host-dispatch",
+  "kind": "binary-anchor-replacement",
+  "why": "T-144 P0 LIVE FREEZE repair: the host dispatch point must be FAIL-OPEN independently of plugin correctness. The 2.3.0 seam `globalThis.__SPB?.(w,e=>H(e,w))` dropped every non-sync host event whenever the hook was absent (plugin import failure left __SPB uninstalled -> the original H dispatch never ran -> frozen TUI; the real user reproduced this). The 254-byte Lw window cannot hold the fail-open branch plus the exact original callback context (proven by exhaustive minimization, floor ~272 bytes), so clause 12 selects a LARGER exact structural window: 853 bytes covering Lw plus the byte-stable neighbours (Args provider, Permission provider, path import, Nw registry object, yj binary search, Xy comparator). Replacement semantics: hook PRESENT -> __SPB(w, e=>H(e,w)) (emit context is the SSE wrapper; the exact-host E-1266 run proved the visible store accepts it and the installed hook barrier forwards the original payload); hook ABSENT -> H(w.payload,{directory:w.directory,workspace:w.workspace}) exactly as the original host dispatch. Window bytes outside the corrected Lw are verbatim except two semantic-preserving shrink rewrites used solely to fund the fail-open branch (Permission init inlines its single cj() reference; yj uses (H+w)/2|0, identical to Math.floor for the non-negative indices this function handles).",
+  "hook": "__SPB",
+  "anchor": {
+    "encoding": "latin-1",
+    "bytes": 853,
+    "offset_probe": "exactly-once search; the recorded offset for both supported builds is 97762249 but the probe, not the number, is the authority",
+    "text_file": "anchor-853.bin"
+  },
+  "replacement": {
+    "bytes": 853,
+    "text_file": "replacement-853.bin",
+    "pad_byte": 32,
+    "length_preserving": true
+  },
+  "builds": {
+    "1.18.29": {
+      "target": {
+        "file": "bin/opencode.exe",
+        "bytes": 179632680,
+        "sha256": "88d2fa691b2d9e32fde6d1039382a850ddf96fe49cd41683c6375fe1dc8ec2a5"
+      },
+      "patched_sha256": "2d9c03970c40a2b496aed6727fe21e47c797672a86f3379bd5c2d3a8b248f161"
+    },
+    "1.18.30": {
+      "target": {
+        "file": "bin/opencode.exe",
+        "bytes": 179793448,
+        "sha256": "c1bdbb18767048e1853af4238311b3f7e16ff2f91b68fb4c7ced3c5175347eea"
+      },
+      "patched_sha256": "46e4eb4c88e9c5ddce49a4f6def5fdee1b4a70270c416d73f8b7be5209dfece6"
+    }
+  },
+  "guards": [
+    "source sha256 must equal target.sha256",
+    "source size must equal target.bytes",
+    "anchor must occur exactly once in the source image",
+    "replacement must not be longer than the anchor",
+    "patched image must differ from the source only inside the anchor window",
+    "patched size must equal source size",
+    "patched image must NOT contain the original uncorrected Lw dispatch",
+    "patched image must contain exactly one fail-open dispatch site (hook-present + hook-absent branches)"
+  ],
+  "restore_contract": "Restore puts back the recorded original bytes of bin/opencode.exe (state.json original_hashes backup)."
+}

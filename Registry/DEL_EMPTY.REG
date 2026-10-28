@@ -4,5 +4,5 @@ Windows Registry Editor Version 5.00
 @="DEL EMPTY"
 
 [HKEY_CLASSES_ROOT\Directory\shell\DeleteEmptyFolders\command]
-@="pythonw.exe \"%%ROOT%%\\Scripts\\DEL_EMPTY.PYW\" \"%1\""
+@="pyw.exe \"%%ROOT%%\\Scripts\\DEL_EMPTY.PYW\" \"%1\""
 

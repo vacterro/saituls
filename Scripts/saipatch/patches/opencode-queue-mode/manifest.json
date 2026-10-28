@@ -1,0 +1,97 @@
+{
+    "id": "opencode-queue-mode",
+    "name": "OpenCode Native Queue + Ambient Session Status",
+    "version": "2.5.2",
+    "description": "Generation 2.x: every ordinary follow-up is admitted through the native OpenCode V2 scheduler (client.v2.session.prompt, delivery:'queue'; explicit steer only via delivery:'steer'), abort maps onto v2.session.interrupt, hydration projects native messages into the legacy transcript shape and the native event stream is projected live into the transcript stores, a projection-only ambient tint (NEUTRAL/RUNNING/NEEDS_HUMAN/DONE) is expressed by switching between background-tinted theme variants, and the authoritative completion sound (T-162) plays exactly once per completed queue drain from patch-owned staged WAV assets. No custom scheduler, no legacy/native mixed runner, no local FIFO, no timers. 2.1.0 fixes the TUI module install seam: 1.18.29 loads TUI plugins only from the tui.json 'plugin' array, never from the server-scanned plugins/ directory. 2.2.0: live transcript rows carry the complete legacy tokens shape (the 1.18.29 status bar reads tokens.output unguarded); completion sound added with settings GUI outside the OpenCode install. 2.3.0 (T-144 PATCHED_BUSY_ENTER_NO_STALL repair): on the recorded 1.18.29 build the installer ALSO applies a fail-closed, length-preserving, exactly-once-anchored binary seam (guarded globalThis.__SPB call at the single TUI dispatch point) so native session.next.* transcript events reach the visible store — the plugin-only configuration was proven to render zero assistant rows on the real host (LIVE_PROJECTION_SEAM_UNSUPPORTED). 2.4.0 (T-144 P0 LIVE FREEZE repair): package closure repaired -- saipatch-attention.js and the non-ESM runtime helper saipatch-attention-flash.ps1 are transaction-owned runtime files (the missing attention module broke the installed ESM import and left the host hook uninstalled); the host seam is fail-open -- hook absent now dispatches the ORIGINAL H(w.payload,{directory,workspace}) instead of dropping the event, with the exact original callback context for both passthrough and projected synthetic events. 2.5.1 (T-144 production occupancy fix): auto-cc queue precedence now reads an AUTHORITATIVE pending-ordinary-user-prompt tracker keyed by stable native message IDs (admission -> pending, native promotion -> consumed, bounded promotion tombstones cover the promotion-before-admission race), so user work queued BEFORE a timeout suppresses the synthetic cc; adds a DEBUG-only sanitized step.failed event-evidence sink (SAIPATCH_AUTOCC_EVENT_SINK: code/name/timeout/match only, never text). 2.5.2 (T-144 settle + intent-race repair): admissionIntents lifecycle wired into production queue core so ordinary in-flight admissions count as pending user work before native admission returns; synthetic cc explicitly identified via internal __saipatchAutoContinue (consumed by wrapper, never sent to native payload); removal of session-level synthetic admission guessing; settle-before-grace active-step accounting; bounded active-generation ownership state.",
+    "generation": 2,
+    "supports": {
+        "opencode": [
+            "1.18.29",
+            "1.18.30"
+        ],
+        "builds": {
+            "1.18.29": [
+                "88d2fa691b2d9e32fde6d1039382a850ddf96fe49cd41683c6375fe1dc8ec2a5"
+            ],
+            "1.18.30": [
+                "c1bdbb18767048e1853af4238311b3f7e16ff2f91b68fb4c7ced3c5175347eea"
+            ]
+        },
+        "host": {
+            "kind": "tui-plugin",
+            "loadPath": "<configDir>/tui-modules/saipatch-native-queue-2x.js",
+            "loadRef": "tui.json 'plugin' array gains exactly one file:// entry for the module (existing keys and plugin entries preserved; Restore restores the original tui.json bytes)",
+            "entryShape": "default-exported { id, tui } module",
+            "requires": [
+                "shared sdk client exposes client.v2.session.prompt",
+                "client.v2.session.interrupt",
+                "client.v2.session.switchAgent / switchModel",
+                "client.v2.session.messages pagination",
+                "EventV2Bridge global event stream carries session.next.* and session.status",
+                "tui plugin api.theme.set accepts installed theme variants"
+            ]
+        },
+        "opencodeGoSession": {
+            "target": "bin/opencode.exe",
+            "header": "x-opencode-session",
+            "providerGuard": "providerID.startsWith(\"opencode\")",
+            "sessionSource": ".sessionID",
+            "preservedHeaders": ".model.headers",
+            "fingerprints": {
+                "1.18.29": "opencode-go-session-v1",
+                "1.18.30": "opencode-go-session-v1"
+            }
+        }
+    },
+    "files": [
+        "saipatch-native-queue-2x.js",
+        "saipatch-completion-sound.js",
+        "saipatch-sound-runtime.js",
+        "saipatch-attention.js",
+        "saipatch-auto-continue.js",
+        "saipatch-attention-flash.ps1"
+    ],
+    "runtimeAssets": [
+        "saipatch-attention-flash.ps1"
+    ],
+    "hostPatch": {
+        "descriptor": "host-patch.json",
+        "kind": "binary-anchor-replacement, length-preserving, exactly-once anchor, fail-closed on any guard, fail-open host dispatch (hook absent = original dispatch preserved). 2.5.0: onAdmitted referenced a block-scoped attentionEpisodes, so every prompt admission threw ReferenceError (attentionEpisodes is not defined / Failed to send prompt); the WS-ATT episode registry now lives at plugin scope.",
+        "appliesOnlyTo": {
+            "1.18.29": "88d2fa691b2d9e32fde6d1039382a850ddf96fe49cd41683c6375fe1dc8ec2a5",
+            "1.18.30": "c1bdbb18767048e1853af4238311b3f7e16ff2f91b68fb4c7ced3c5175347eea"
+        },
+        "resultingSha256": {
+            "1.18.29": "2d9c03970c40a2b496aed6727fe21e47c797672a86f3379bd5c2d3a8b248f161",
+            "1.18.30": "46e4eb4c88e9c5ddce49a4f6def5fdee1b4a70270c416d73f8b7be5209dfece6"
+        },
+        "hook": "__SPB"
+    },
+    "ambient": {
+        "states": [
+            "NEUTRAL",
+            "RUNNING",
+            "NEEDS_HUMAN",
+            "DONE"
+        ],
+        "priority": [
+            "NEEDS_HUMAN",
+            "RUNNING",
+            "DONE",
+            "NEUTRAL"
+        ],
+        "tint": {
+            "RUNNING": "#b35a1f @ 16%",
+            "NEEDS_HUMAN": "#6f4fb0 @ 20%",
+            "DONE": "#3f7d4f @ 13%",
+            "NEUTRAL": "native theme background"
+        },
+        "disableSwitch": "tui plugin options { ambient: false }",
+        "authority": "authoritative native events only; no prose parsing; visual layer never writes execution"
+    },
+    "modules": {
+        "NATIVE_QUEUE_CORE": "prompt admission -> client.v2.session.prompt delivery:queue (ordinary) / delivery:steer (explicit only); abort -> client.v2.session.interrupt; model/agent -> v2 session settings; zero custom scheduling",
+        "AMBIENT_SESSION_STATUS": "pure event projection into four theme-variant states; independent of queue logic; queue works with ambient disabled, ambient works with no queued items",
+        "LIVE_TRANSCRIPT_PROJECTION": "native event stream projected into the live sync stores (new rows once, updates in place, parts by stable identity); hydration through the wrapped client.session.messages stays authoritative; three unverified live inserts fail the seam closed"
+    }
+}

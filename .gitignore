@@ -1,6 +1,7 @@
 # Source code — keep Bin/App/ structure for %%ROOT%%, but not the heavy binaries themselves
 Bin/*
 !Bin/FFMPEG_RUN.BAT
+!Bin/FFMPEG_RUN.PS1
 !Bin/AV1_COMPRESS.BAT
 !Bin/*.md
 Bin/App/*
@@ -11,11 +12,15 @@ Bin/App/*
 ___AHK/
 
 # SAIPEN project memory — private, not for public repo
-.saipen/
+.saipen/*
+!.saipen/IDENTITY.md
+
+
 
 # Runtime config, generated on first launch; may carry machine paths
 SAITULS.ini
-LIMISAW.ini
+Scripts/taskbar_edge/taskbar_edge.ini
+Scripts/saiopt/saiopt.ini
 
 # Freebuff menu points at a machine-specific freebuff.exe — personal
 _FREEBUFF_MENU/
@@ -27,6 +32,13 @@ _FREEBUFF_MENU/
 Scripts/_.txt
 tests/PROOF-*.txt
 
+# SAISPIN runtime: the state file and log both carry full command lines of
+# whatever was running on this machine
+saispin_state.json
+saispin_state.json.tmp
+saispin_notify.json
+saispin.log
+
 # Caches and build artifacts
 __pycache__/
 *.pyc
@@ -34,6 +46,7 @@ __pycache__/
 *.saisent.bak
 *.tmp
 *.old
+*.new
 Scripts/__pycache__/
 tests/__pycache__/
 
@@ -51,5 +64,82 @@ $RECYCLE.BIN/
 # Temp files from test runs
 _V_TEMP_/
 
-# Personal shortcuts
-*.lnk
+# Unrelated tool parked in this working copy, not part of SAITULS
+9router_scanner/
+
+# Installed locale generation marker (INSTALL_ALL.PS1 stamps this; machine state, not source)
+Installers/.installed_lang
+
+# Secure Apps managed payload. The managed root normally lives outside the
+# repo (%LOCALAPPDATA%\SAITULS\secure-apps), but SAITULS_SECURE_APPS_ROOT can
+# point it anywhere, so the shapes are refused here too. None of this may
+# ever reach Git or AUDAPACK: imported application binaries, user vaults,
+# encrypted containers, wrapped keys, audit records and migration journals.
+secure-apps/
+Scripts/secure_apps/state/
+Scripts/secure_apps/vaults/
+Scripts/secure_apps/apps/
+# The frozen privileged FIDO worker is a machine-specific BUILD OUTPUT of
+# build_frozen_worker.ps1 (PyInstaller --onedir). It is installed into the
+# protected runtime and fingerprinted there; it is never committed.
+Scripts/secure_apps/fido-worker/
+Scripts/secure_apps/dist/
+Scripts/secure_apps/sa_fido_worker.exe
+**/secure-apps/state/
+**/secure-apps/vaults/
+**/secure-apps/apps/
+*.vhdx
+*.vhd
+secure-apps.json.tmp
+credentials.json
+
+# Scratch output from one-off diagnostic runs. Never committed.
+_diag*
+tmp_*_cov*.txt
+tq_*
+submit_window.txt
+identity-trace.txt
+ACCEPT
+createQueueCore
+-
+opencode_serve.log
+tests/bin/*.log
+# Per-repo scratch pen (one-off probe/acceptance scripts and their captured
+# output). Kept on disk — never assumed disposable evidence, so the hygiene
+# ticket deliberately does NOT bulk-delete it — but never committed.
+tmp/
+# Live-registry captures and one-off probe scripts written into tests/ by an
+# operator session. They carry real identities, profile paths and credential
+# fingerprints, and nothing in the tree reads them, so they must never be
+# staged. Rotating them out of the working tree is a separate operator call.
+tests/_snap.json
+tests/_ag2_watch.txt
+tests/_smoke_*.py
+tests/_del_junk_red_probe.py
+tests/_*_red_probe.py
+# Live-acceptance evidence store: a PRIVATE LOCAL working record, not a public
+# artifact. It names the operator's real Windows accounts, SIDs and profile
+# paths, so the whole tree is ignored wholesale rather than curated file by
+# file -- a curated subset is exactly the mistake, because the next capture is
+# sensitive too and would not be on any list. Publication of a redacted
+# evidence set, if it is ever wanted, is a separate deliberate act.
+evidence/
+
+# Machine-local PowerShell module analysis cache: host junk from a Windows
+# shell, never project source.
+/Microsoft/
+
+# ZAICODE agent-local state (plans, workflow drafts, codebase memory): a local
+# working record, not product source.
+/.zcode/
+/.codebase-memory/
+
+# Test build output: compiled test binaries and the fixture dirs the suites
+# generate. Every suite rebuilds them; none of them is source.
+tests/bin/
+
+# Runtime artifact: the single-instance guard copies the binary next to itself.
+/SAITULS.exe.running
+
+# Test build output: every suite compiles its own binary from the .cs beside it.
+tests/*.exe

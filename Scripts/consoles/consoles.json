@@ -1,0 +1,188 @@
+{
+  "schema": "saituls.consoles/1",
+  "schema_version": 1,
+  "launcher": "CONSOLES.ps1",
+  "notes": "Data-driven console launcher. 'command' is a bare executable name resolved on PATH before launch; 'arguments' is a list and is never parsed from a string, so nothing in this file can become a shell command. Inside an argument, %VAR% is expanded and {workdir} becomes the project folder. 'environment' is applied to the CHILD process only - the launcher's own environment is never modified, an empty value removes the variable from the child, and HOME is refused outright. 'requires_path' must exist before launch; the first existing 'script_candidates' path becomes {script}; 'ensure_directories' are created before launch. Profiles are non-elevated unless they declare requires_admin, and no profile here declares it. A profile with 'provider' declares which local identity it already claims, so a canonical account pointing at the same profile directory is shown once instead of twice; display name is never a matching key. A profile with 'expand_accounts' is a TEMPLATE: it renders one concrete profile per canonical account of that provider and carries no command at all - the executable comes from the SAI Accounts engine resolver, never from this file. The templates contribute nothing when the control plane is not installed: every local profile here works standalone. The Explorer cascade (Installers\\INSTALL_CONSOLES_MENU.PS1) lists every enabled profile in file order, labelled from the i18n bundle key menu.open_in.",
+  "profiles": [
+    {
+      "id": "claude-1",
+      "icon": "%LOCALAPPDATA%\\AnthropicClaude\\claude.exe",
+      "label": "Claude 1",
+      "enabled": true,
+      "provider": "claude",
+      "command": "claude",
+      "arguments": ["--dangerously-skip-permissions"],
+      "environment": {
+        "CLAUDE_CONFIG_DIR": "%USERPROFILE%\\.claude"
+      },
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Claude 1 YOLO",
+      "description": "Claude Code on the primary account configuration directory, permission prompts bypassed."
+    },
+    {
+      "id": "claude-2",
+      "icon": "%LOCALAPPDATA%\\AnthropicClaude\\claude.exe",
+      "label": "Claude 2",
+      "enabled": true,
+      "provider": "claude",
+      "command": "claude",
+      "arguments": ["--dangerously-skip-permissions"],
+      "environment": {
+        "CLAUDE_CONFIG_DIR": "%USERPROFILE%\\.claude-account2"
+      },
+      "ensure_directories": ["%USERPROFILE%\\.claude-account2"],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Claude 2 YOLO",
+      "description": "Claude Code on the second account configuration directory, permission prompts bypassed. Isolation is at launcher level: the child process gets its own CLAUDE_CONFIG_DIR and nothing else is changed."
+    },
+    {
+      "id": "codex-1",
+      "label": "Codex 1",
+      "enabled": true,
+      "provider": "codex",
+      "command": "codex",
+      "arguments": ["--dangerously-bypass-approvals-and-sandbox"],
+      "environment": {
+        "CODEX_HOME": "%USERPROFILE%\\.codex",
+        "OPENAI_API_KEY": "",
+        "CODEX_API_KEY": "",
+        "CODEX_ACCESS_TOKEN": ""
+      },
+      "ensure_directories": ["%USERPROFILE%\\.codex"],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Codex 1 YOLO",
+      "description": "Codex CLI on the primary account (CODEX_HOME=.codex), approvals and sandbox bypassed."
+    },
+    {
+      "id": "codex-2",
+      "label": "Codex 2",
+      "enabled": true,
+      "provider": "codex",
+      "command": "codex",
+      "arguments": ["--dangerously-bypass-approvals-and-sandbox"],
+      "environment": {
+        "CODEX_HOME": "%USERPROFILE%\\.codex-account2",
+        "OPENAI_API_KEY": "",
+        "CODEX_API_KEY": "",
+        "CODEX_ACCESS_TOKEN": ""
+      },
+      "ensure_directories": ["%USERPROFILE%\\.codex-account2"],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Codex 2 YOLO",
+      "description": "Codex CLI on the isolated second account (CODEX_HOME=.codex-account2), inherited API keys removed. Sign in from the Codex TUI on first start."
+    },
+    {
+      "id": "codex-3-free",
+      "label": "Codex 3 free",
+      "enabled": true,
+      "provider": "codex",
+      "command": "codex",
+      "arguments": ["--dangerously-bypass-approvals-and-sandbox"],
+      "environment": {
+        "CODEX_HOME": "%USERPROFILE%\\.codex-account3free",
+        "OPENAI_API_KEY": "",
+        "CODEX_API_KEY": "",
+        "CODEX_ACCESS_TOKEN": ""
+      },
+      "ensure_directories": ["%USERPROFILE%\\.codex-account3free"],
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Codex 3 free YOLO",
+      "description": "Codex CLI on the isolated free account (CODEX_HOME=.codex-account3free), inherited API keys removed. Sign in from the Codex TUI on first start."
+    },
+    {
+      "id": "antigravity",
+      "icon": "%LOCALAPPDATA%\\Programs\\Antigravity\\Antigravity.exe",
+      "label": "Antigravity",
+      "enabled": true,
+      "provider": "antigravity",
+      "command": "agy",
+      "arguments": ["--dangerously-skip-permissions"],
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Antigravity YOLO",
+      "description": "Antigravity CLI in the selected working directory, tool permissions auto-approved."
+    },
+    {
+      "id": "shared-claude",
+      "icon": "%LOCALAPPDATA%\\AnthropicClaude\\claude.exe",
+      "label": "Claude",
+      "enabled": true,
+      "expand_accounts": true,
+      "provider": "claude",
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "YOLO",
+      "description": "Canonical Claude account from SAI Accounts, launched through the control plane."
+    },
+    {
+      "id": "shared-codex",
+      "label": "Codex",
+      "enabled": true,
+      "expand_accounts": true,
+      "provider": "codex",
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "YOLO",
+      "description": "Canonical Codex account from SAI Accounts, launched through the control plane."
+    },
+    {
+      "id": "shared-antigravity",
+      "icon": "%LOCALAPPDATA%\\Programs\\Antigravity\\Antigravity.exe",
+      "label": "Antigravity",
+      "enabled": true,
+      "expand_accounts": true,
+      "provider": "antigravity",
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "YOLO",
+      "description": "Canonical Antigravity account from SAI Accounts. A secondary Windows context is launched by the control plane's broker; an offline one is reported as offline, never silently run as a different user."
+    },
+    {
+      "id": "zcode",
+      "label": "ZCode",
+      "enabled": true,
+      "command": "node",
+      "arguments": ["{script}", "--cwd", "{workdir}", "--mode", "yolo"],
+      "script_candidates": [
+        "%ZCODE_CLI%",
+        "V:\\___VAC\\__K\\__CODE\\_AI_STUFF_AGENTIC\\_ZAICODE\\zcode\\apps\\zcode-cli\\packages\\cli\\dist\\zcode.cjs"
+      ],
+      "icon": "%LOCALAPPDATA%\\Programs\\ZCode\\ZCode.exe",
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "ZCode YOLO",
+      "description": "ZCode terminal UI in yolo permission mode. Needs a full ZCode CLI build (the desktop app bundles only the headless part): set ZCODE_CLI to its dist\\zcode.cjs or keep the listed checkout."
+    },
+    {
+      "id": "cline",
+      "label": "Cline",
+      "enabled": true,
+      "command": "cline",
+      "arguments": ["--cwd", "{workdir}", "--auto-approve", "true", "--tui"],
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "Cline YOLO",
+      "description": "Cline CLI terminal UI with auto-approval for all tools."
+    },
+    {
+      "id": "opencode",
+      "label": "OpenCode",
+      "enabled": true,
+      "command": "opencode",
+      "arguments": ["{workdir}", "--auto"],
+      "environment": {},
+      "working_directory_mode": "ask",
+      "requires_admin": false,
+      "title_suffix": "OpenCode YOLO",
+      "description": "OpenCode terminal UI with every permission not explicitly denied auto-approved."
+    }
+  ]
+}

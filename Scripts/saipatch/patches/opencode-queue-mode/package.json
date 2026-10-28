@@ -1,0 +1,8 @@
+{
+    "name": "saipatch-opencode-queue-mode",
+    "version": "2.5.2",
+    "type": "module",
+    "description": "SAIPATCH opencode-queue-mode generation 2.x: native V2 scheduler admissions plus ambient session status for the OpenCode TUI",
+    "main": "saipatch-native-queue-2x.js",
+    "license": "MIT"
+}
