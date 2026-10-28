@@ -62,7 +62,11 @@ static class AccountIdentityContractTest
     {
         for (int y = 0; y < left.Height; y++)
             for (int x = 0; x < left.Width; x++)
-                if (left.GetPixel(x, y) != right.GetPixel(x, y)) return false;
+                if (left.GetPixel(x, y) != right.GetPixel(x, y))
+                {
+                    Console.WriteLine("PIXEL_DIFF x=" + x + " y=" + y);
+                    return false;
+                }
         return true;
     }
     [STAThread]
