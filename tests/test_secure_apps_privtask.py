@@ -1584,15 +1584,19 @@ class InstallTransactionFaultTests(unittest.TestCase):
         real_open = builtins.open
 
         def watched(path, *args, **kwargs):
+            handle = real_open(path, *args, **kwargs)
             if isinstance(path, str) and path.lower().endswith(".xml"):
-                seen.append(path)
-            return real_open(path, *args, **kwargs)
+                # Measure the live file, before transaction cleanup removes it.
+                # An existing root can expand an 8.3 alias while a deleted XML
+                # retains its short spelling, making a later comparison false.
+                seen.append((path, sa_privtask.path_is_within(self.scratch, path)))
+            return handle
 
         with mock.patch.object(builtins, "open", watched):
             self.assertTrue(self.install()["ok"])
         self.assertTrue(seen, "no task XML was written at all")
-        for path in seen:
-            self.assertTrue(sa_privtask.path_is_within(self.scratch, path),
+        for path, was_within in seen:
+            self.assertTrue(was_within,
                             "the task XML was written outside protected "
                             "scratch: %s" % path)
         # ...and in production that scratch root is under %ProgramData%, not
