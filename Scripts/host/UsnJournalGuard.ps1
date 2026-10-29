@@ -445,7 +445,7 @@ function Invoke-JournalResize([string]$vol, [int64]$minBytes, [int64]$targetByte
     }
     $r = Invoke-Fsutil -Arguments @('usn', 'createjournal', "m=$targetBytes", "a=$deltaBytes", $vol)
     if ($r.ExecutionFailed -or $r.ExitCode -ne 0) {
-        Add-Problem (Format-Inv '{0}: createjournal failed exit {1}: {2}' @($vol, $r.ExitCode, $r.FirstLine))
+        Add-ToolProblem (Format-Inv '{0}: createjournal failed exit {1}: {2}' @($vol, $r.ExitCode, $r.FirstLine))
         if (-not $script:IsAdmin) { $script:ElevationNeeded = $true }
         # The resize was never issued: a later delete would destroy a journal
         # over a permission or execution problem, so it stays forbidden.
@@ -524,7 +524,7 @@ function Invoke-JournalRecreate([string]$vol, [int64]$minBytes, [int64]$targetBy
     Write-Log "WARNING: $vol : recreating the journal (deletejournal + createjournal) under explicit volume-scoped authorization; this forces a full volume rescan for every USN consumer"
     $d = Invoke-Fsutil -Arguments @('usn', 'deletejournal', '/n', $vol)
     if ($d.ExecutionFailed -or $d.ExitCode -ne 0) {
-        Add-Problem (Format-Inv '{0}: deletejournal failed exit {1}: {2}' @($vol, $d.ExitCode, $d.FirstLine))
+        Add-ToolProblem (Format-Inv '{0}: deletejournal failed exit {1}: {2}' @($vol, $d.ExitCode, $d.FirstLine))
         if (-not $script:IsAdmin) { $script:ElevationNeeded = $true }
         return $false
     }
