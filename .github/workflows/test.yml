@@ -8,6 +8,8 @@ on:
 jobs:
   regs:
     runs-on: windows-latest
+    env:
+      PYTHONIOENCODING: utf-8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,6 +26,11 @@ jobs:
           # The negative control for the fixture layer itself: removing the
           # stubs must break the dependent harnesses, never silently skip.
           powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_ci_hermetic.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test isolated CI Python launcher and argument forwarding
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_ci_python_launcher.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Run integrity suite
         shell: pwsh
@@ -196,7 +203,9 @@ jobs:
       - name: Test Explorer menu launch and argument contract
         shell: pwsh
         run: |
-          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_shell_menu.ps1
+          # Exercise a recorder that is still live after the old ten-second
+          # bound; preserve real shell resolution and drive-root assertions.
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_shell_menu.ps1 -RecorderDelayMilliseconds 12000
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Test single-instance activation publication
         shell: pwsh

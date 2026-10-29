@@ -922,13 +922,20 @@ public static class SaiAccountsHelper
         return Environment.GetEnvironmentVariable("SAI_HELPER_TEST_MODE") == "1";
     }
 
+    private static string ResolveUserSid(string username)
+    {
+        if (IsTestMode())
+            return "S-1-5-21-999999999-888888888-777777777-" + Math.Abs(username.GetHashCode() % 9000 + 1000);
+        return ((SecurityIdentifier)new NTAccount(username).Translate(typeof(SecurityIdentifier))).Value;
+    }
+
     public static bool CreateLocalUser(string username, string password, out string sid, out string error)
     {
         sid = null; error = null;
         if (IsTestMode())
         {
             // Simulated user for hermetic testing
-            sid = "S-1-5-21-999999999-888888888-777777777-" + Math.Abs(username.GetHashCode() % 9000 + 1000);
+            sid = ResolveUserSid(username);
             return true;
         }
 
@@ -1756,8 +1763,7 @@ try
                 // recover from.
                 try
                 {
-                    var acct = new NTAccount(username);
-                    sid = ((SecurityIdentifier)acct.Translate(typeof(SecurityIdentifier))).Value;
+                    sid = ResolveUserSid(username);
                 }
                 catch (Exception ex)
                 {

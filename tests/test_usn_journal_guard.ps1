@@ -132,13 +132,13 @@ function New-Mock {
 function Step([int]$exit, [string]$output) { return [pscustomobject]@{ exit = $exit; output = $output } }
 
 function Invoke-Guard {
-    param([string]$Mock, [string[]]$Extra = @(), [switch]$ExpectRaw, [string]$RegKey = '', [hashtable]$Replace = @{}, [string]$Volumes = 'C')
+    param([string]$Mock, [string[]]$Extra = @(), [switch]$ExpectRaw, [string]$RegKey = '', [hashtable]$Replace = @{}, [string]$Volumes = 'C', [string]$Source = $GuardSource)
     $stamp = [Guid]::NewGuid().ToString('N')
     $stdout = Join-Path $Sandbox "out_$stamp.txt"
     $stderr = Join-Path $Sandbox "err_$stamp.txt"
     $log = Join-Path $Sandbox "guard_$stamp.log"
     $reg = if ($RegKey) { $RegKey } else { $scratchKey }
-    $base = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $GuardSource,
+    $base = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $Source,
         '-Volume', $Volumes, '-FsutilPath', $Mock, '-RegistryKey', $reg,
         '-LogPath', $log, '-Json', '-ResizeWaitSeconds', '10', '-ResizePollSeconds', '0')
     foreach ($k in $Replace.Keys) {
@@ -282,6 +282,39 @@ $calls = Get-Calls $mock
 Check 'failed_createjournal_exits_nonzero' ($r.Code -eq 2 -or $r.Code -eq 3) "exit=$($r.Code)"
 Check 'failed_createjournal_is_reported' ((Get-ProblemText $r.Report) -match 'createjournal failed') "problems=$(Get-ProblemText $r.Report)"
 Check 'failed_createjournal_does_not_delete' ((@($calls | Where-Object { $_ -match 'deletejournal' }).Count) -eq 0) "calls=[$($calls -join ' / ')]"
+
+# The hosted runner can be elevated even when the local test process is not.
+# Exercise both classification branches without elevation or real fsutil:
+# only the admin fact in a sandbox copy changes; every operation still uses
+# the recording fake and scratch registry key. Otherwise exit 3 on a local
+# unelevated host can hide a missing ToolFailed flag (hosted exit 1).
+$guardText = [System.IO.File]::ReadAllText($GuardSource)
+$adminAssignment = '$script:IsAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)'
+if ([regex]::Matches($guardText, [regex]::Escape($adminAssignment)).Count -ne 1) {
+    throw 'admin classification fixture must replace exactly one native admin fact'
+}
+foreach ($adminFact in @($true, $false)) {
+    $label = if ($adminFact) { 'elevated' } else { 'unelevated' }
+    $expectedCode = if ($adminFact) { 2 } else { 3 }
+    $factLiteral = if ($adminFact) { '$true' } else { '$false' }
+    $fixtureSource = Join-Path $Sandbox ("guard_$label.ps1")
+    [System.IO.File]::WriteAllText($fixtureSource,
+        $guardText.Replace($adminAssignment, ('$script:IsAdmin = ' + $factLiteral)),
+        (New-Object System.Text.UTF8Encoding($true)))
+
+    $mock = New-Mock -Name ("create_fails_$label") -QuerySequence @((Step 0 $english1mb)) -Create (Step 1 'Access is denied.')
+    $r = Invoke-Guard -Mock $mock -Source $fixtureSource -Extra @('-RepairJournals', '-AllowJournalRecreate', '-RecreateVolume', 'C')
+    $calls = Get-Calls $mock
+    Check "failed_createjournal_${label}_exit_class" ($r.Code -eq $expectedCode -and $r.Report -and $r.Report.exitCode -eq $expectedCode -and $r.Report.elevated -eq $adminFact) "exit=$($r.Code) expected=$expectedCode"
+    Check "failed_createjournal_${label}_no_delete" (@($calls | Where-Object { $_ -match 'deletejournal' }).Count -eq 0 -and @($calls | Where-Object { $_ -match 'createjournal' }).Count -eq 1) "calls=[$($calls -join ' / ')]"
+
+    $mock = New-Mock -Name ("delete_fails_$label") -QuerySequence @((Step 0 $english1mb)) -Delete (Step 1 'Access is denied.')
+    $r = Invoke-Guard -Mock $mock -Source $fixtureSource -Replace @{ '-ResizeWaitSeconds' = '0' } -Extra @('-RepairJournals', '-AllowJournalRecreate', '-RecreateVolume', 'C')
+    $calls = Get-Calls $mock
+    Check "failed_deletejournal_${label}_exit_class" ($r.Code -eq $expectedCode -and $r.Report -and $r.Report.exitCode -eq $expectedCode -and $r.Report.elevated -eq $adminFact) "exit=$($r.Code) expected=$expectedCode"
+    Check "failed_deletejournal_${label}_reported" ((Get-ProblemText $r.Report) -match 'deletejournal failed') "problems=$(Get-ProblemText $r.Report)"
+    Check "failed_deletejournal_${label}_no_followup_create" (@($calls | Where-Object { $_ -match 'deletejournal' }).Count -eq 1 -and @($calls | Where-Object { $_ -match 'createjournal' }).Count -eq 1) "calls=[$($calls -join ' / ')]"
+}
 
 # ---- 13. registry clamp: read-only by default, removed only on request --
 Set-ItemProperty -Path $scratchKey -Name $clampName -Value 1 -Type DWord

@@ -255,7 +255,8 @@ static class AccountsFlowTest
         bool focused = args.Length == 1 && args[0] == "--offline-start-and-switch";
         bool identityFocused = args.Length == 1 && args[0] == "--identity-status-and-switch";
         bool catalogFocused = args.Length == 1 && args[0] == "--provider-catalog-and-layout";
-        if (args.Length > 0 && !focused && !identityFocused && !catalogFocused)
+        bool lifetimeFocused = args.Length == 1 && args[0] == "--window-lifetime-and-scroll";
+        if (args.Length > 0 && !focused && !identityFocused && !catalogFocused && !lifetimeFocused)
         {
             Console.WriteLine("FAIL  unknown runtime test selection");
             return 1;
@@ -281,7 +282,12 @@ static class AccountsFlowTest
 
         try
         {
-            if (catalogFocused)
+            if (lifetimeFocused)
+            {
+                TestSignInWatchStopsOnClose();
+                TestAccountDetailHeightDoesNotGrowWithScroll();
+            }
+            else if (catalogFocused)
             {
                 T45ProviderCatalogIsTheDialogsSingleSource();
                 T46PlannedProvidersCannotNameABackend();
@@ -320,6 +326,8 @@ static class AccountsFlowTest
             Test16FailedConnectRendersTheRealError();
             Test17ConnectSuccessShowsOnline();
             Test18SignInIsNotAConsoleLaunch();
+            TestSignInWatchStopsOnClose();
+            TestAccountDetailHeightDoesNotGrowWithScroll();
             Test19SignInNeverTouchesAWorkdir();
             Test20SignInStartsAnOfflineContextFirst();
             Test21SignInOnAnOnlineAccountSkipsTheContextStart();
@@ -415,8 +423,8 @@ static class AccountsFlowTest
 
         Arm("offline_status_calls=0", "saipen_verdict=RUNTIME_STALE");
         Saituls.SaitulsForm f = MakeForm(true);
-        SetOf(f, "_accountsWorkdir", project);
         Select(f, "AG2");
+        M(f, "RememberWorkdir", project);
         M(f, "OpenConsole");
         Pump(() => !Busy(f) && Note(f).StartsWith("SAIPEN"), 30000);
         Check(LaunchCall("AG2") == null, "T288a a stale machine runtime launches no console", Show());
@@ -430,8 +438,8 @@ static class AccountsFlowTest
 
         Arm("offline_status_calls=0", "saipen_verdict=READY");
         f = MakeForm(true);
-        SetOf(f, "_accountsWorkdir", project);
         Select(f, "AG2");
+        M(f, "RememberWorkdir", project);
         M(f, "OpenConsole");
         Pump(() => !Busy(f) && Note(f).StartsWith("Launched"), 30000);
         string[] launch = LaunchCall("AG2");
@@ -444,8 +452,8 @@ static class AccountsFlowTest
 
         Arm("offline_status_calls=0", "saipen_verdict=PROJECT_LIFECYCLE_DENIED");
         f = MakeForm(true);
-        SetOf(f, "_accountsWorkdir", project);
         Select(f, "AG2");
+        M(f, "RememberWorkdir", project);
         M(f, "OpenConsole");
         Pump(() => !Busy(f) && Note(f).StartsWith("Launched"), 30000);
         Check(LaunchCall("AG2") != null, "T288c a lifecycle refusal still opens the console that repairs it", Show());
@@ -455,8 +463,8 @@ static class AccountsFlowTest
 
         Arm("offline_status_calls=0");
         f = MakeForm(true);
-        SetOf(f, "_accountsWorkdir", project);
         Select(f, "AG2");
+        M(f, "RememberWorkdir", project);
         M(f, "OpenConsole");
         Pump(() => !Busy(f) && Note(f).StartsWith("Launched"), 30000);
         Check(LaunchCall("AG2") != null && !Note(f).Contains("SAIPEN"),
@@ -854,7 +862,7 @@ static class AccountsFlowTest
         Select(f, "AG2");
         Arm("offline_status_calls=0", "online_auth=AUTH_REQUIRED");
         M(f, "SignInSelectedAccount");
-        Pump(() => !Busy(f) && Note(f).Contains("Antigravity is open"), 40000);
+        Pump(() => HasCall("auth", "AG2") && Note(f).Contains("Antigravity is open"), 40000);
 
         Check(HasCall("auth", "AG2"), "T18a SIGN IN issues the dedicated auth operation", Show());
         Check(LaunchCall("AG2") == null, "T18b SIGN IN never issues a console launch", Show());
@@ -864,6 +872,55 @@ static class AccountsFlowTest
     }
 
     // ------------------------------------------------------------------- T19
+    static void TestSignInWatchStopsOnClose()
+    {
+        Saituls.SaitulsForm f = MakeForm(true);
+        Select(f, "AG2");
+        Arm("offline_status_calls=0", "online_auth=AUTH_REQUIRED");
+        Exception failure = null;
+        var watch = new Thread(delegate() {
+            try { M(f, "SignInFlow", "AG2", "managed_windows_user", "antigravity", "test-secondary"); }
+            catch (Exception ex) { failure = ex; }
+        });
+        watch.IsBackground = true;
+        watch.Start();
+        Pump(() => HasCall("auth", "AG2") && Note(f).Contains("Antigravity is open"), 20000);
+        Check(HasCall("auth", "AG2"), "sign-in watch starts before testing close", Show());
+        f.Dispose();
+        Check(watch.Join(5000), "closing the window terminates its sign-in watch", "the owned worker remained alive");
+        Check(failure == null, "closing the sign-in watch raises no worker error", Convert.ToString(failure));
+    }
+
+    static void TestAccountDetailHeightDoesNotGrowWithScroll()
+    {
+        var f = MakeForm(true);
+        Select(f, "AG2");
+        SF(f, "_acctAdvancedExpanded", true);
+        using (var image = new Bitmap(900, 700))
+        using (var g = Graphics.FromImage(image))
+        {
+            SetOf(f, "_acctDetailScrollY", 0);
+            int first = (int)M(f, "DrawAccountDetailPane", g, 0, 0, 600, 700, Row(f, "AG2"));
+            SetOf(f, "_acctDetailScrollY", 100);
+            int scrolled = (int)M(f, "DrawAccountDetailPane", g, 0, 0, 600, 700, Row(f, "AG2"));
+            Check(first > 0 && scrolled == first,
+                  "account detail scroll does not grow its own content height", first + " -> " + scrolled);
+        }
+        f.Dispose();
+    }
+
+    static void PaintAccountsAtBottom(Saituls.SaitulsForm form, Graphics graphics)
+    {
+        // The advanced controls can extend below the viewport. Emulate a
+        // scroll to the end and its following paint, including normal hitbox
+        // reset; clicking an offscreen button is not a real UI route.
+        SF(form, "_acctDetailScrollY", 5000);
+        ((IList)F(form, "Buttons")).Clear();
+        M(form, "DrawAccountsTab", graphics, 0, 0, 900, 700);
+        ((IList)F(form, "Buttons")).Clear();
+        M(form, "DrawAccountsTab", graphics, 0, 0, 900, 700);
+    }
+
     // The whole point of PART 1: no workdir anywhere on the sign-in path. Not
     // on the command line, not in the note, and the form must not even need a
     // usable workdir -- so this one runs with the saved workdir cleared.
@@ -873,7 +930,7 @@ static class AccountsFlowTest
         Select(f, "AG2");
         Arm("offline_status_calls=0", "online_auth=AUTH_REQUIRED");
         M(f, "SignInSelectedAccount");
-        Pump(() => !Busy(f) && Note(f).Contains("Antigravity is open"), 40000);
+        Pump(() => HasCall("auth", "AG2") && Note(f).Contains("Antigravity is open"), 40000);
 
         bool anyFlag = false;
         foreach (string[] a in Calls())
@@ -898,7 +955,7 @@ static class AccountsFlowTest
         Select(f, "AG2");
         Arm("offline_status_calls=1", "online_auth=AUTH_REQUIRED");
         M(f, "SignInSelectedAccount");
-        Pump(() => !Busy(f) && Note(f).Contains("Antigravity is open"), 40000);
+        Pump(() => HasCall("auth", "AG2") && Note(f).Contains("Antigravity is open"), 40000);
 
         Check(ContextCall("start", "AG2") != null,
             "T20a an OFFLINE AG2 starts its own context before signing in", Show());
@@ -917,7 +974,7 @@ static class AccountsFlowTest
         Select(f, "AG2");
         Arm("offline_status_calls=0", "online_auth=AUTH_REQUIRED");
         M(f, "SignInSelectedAccount");
-        Pump(() => !Busy(f) && Note(f).Contains("Antigravity is open"), 40000);
+        Pump(() => HasCall("auth", "AG2") && Note(f).Contains("Antigravity is open"), 40000);
 
         Check(ContextCall("start", "AG2") == null,
             "T21a an ONLINE AG2 + SIGN IN goes straight to auth", Show());
@@ -1258,7 +1315,7 @@ static class AccountsFlowTest
         SF(f, "_acctAdvancedExpanded", true);
         var bmp = new Bitmap(900, 700);
         using (var g = Graphics.FromImage(bmp))
-            M(f, "DrawAccountsTab", g, 0, 0, 900, 700);
+            PaintAccountsAtBottom(f, g);
 
         var buttons = (IList)F(f, "Buttons");
         object copy = null;
@@ -1746,7 +1803,7 @@ static class AccountsFlowTest
         SF(f, "_acctAdvancedExpanded", true);
         var bmp = new Bitmap(900, 700);
         using (var g = Graphics.FromImage(bmp))
-            M(f, "DrawAccountsTab", g, 0, 0, 900, 700);
+            PaintAccountsAtBottom(f, g);
         object copy = null;
         foreach (object b in (IList)F(f, "Buttons"))
         {

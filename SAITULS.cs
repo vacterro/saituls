@@ -7840,7 +7840,7 @@ static Dictionary<string, object> ParseEnv(string json)
                 oy += 22;
             }
 
-            return oy - startY + _acctDetailScrollY;
+            return oy - startY;
         }
 
         void DrawAccountsTab(Graphics g, int x, int y, int w, int h)
@@ -8950,9 +8950,10 @@ static Dictionary<string, object> ParseEnv(string json)
             // time out into a false READY, and never open a second account to
             // "help" if they abandon it.
             var sw = Stopwatch.StartNew();
-            while (sw.ElapsedMilliseconds < AuthPollBudgetMs)
+            while (!_closing && sw.ElapsedMilliseconds < AuthPollBudgetMs)
             {
                 Thread.Sleep(3000);
+                if (_closing) return;
                 CliRun r = AccountsExec("status \"" + label + "\"", 20000);
                 var o = ParseEnv(r.Stdout);
                 if (o == null) continue;

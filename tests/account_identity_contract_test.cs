@@ -62,7 +62,11 @@ static class AccountIdentityContractTest
     {
         for (int y = 0; y < left.Height; y++)
             for (int x = 0; x < left.Width; x++)
-                if (left.GetPixel(x, y) != right.GetPixel(x, y)) return false;
+                if (left.GetPixel(x, y) != right.GetPixel(x, y))
+                {
+                    Console.WriteLine("PIXEL_DIFF x=" + x + " y=" + y);
+                    return false;
+                }
         return true;
     }
     [STAThread]
@@ -82,8 +86,14 @@ static class AccountIdentityContractTest
                 object row = Row("AG1", "antigravity", Alice);
                 Set(form, "_accounts", Rows(row)); Set(form, "_accountsRuntime", Rows(row));
                 Set(form, "_selectedAccount", "contract-AG1");
+                // The invisible fixture has not had a first paint. Real GDI
+                // font initialization changes even the unchanged subtitle on
+                // hosted Windows; initialize it before comparing identities.
+                using (var warmup = Render(form, row, 640, 540)) { }
                 using (var same = Render(form, row, 640, 540))
                 {
+                    using (var unchanged = Render(form, row, 640, 540))
+                        Check(Equal(same, unchanged), "unchanged identity rendering is stable before comparisons");
                     Set(row, "RuntimeIdentityFp", Bob);
                     using (var distinct = Render(form, row, 640, 540))
                     {

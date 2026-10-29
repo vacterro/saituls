@@ -126,7 +126,8 @@ class AccountConsoleTitleTests(unittest.TestCase):
         self.assertEqual(payload["expected_title"], title)
         self.assertEqual(payload["expected_account"], account)
         self.assertEqual(payload["arguments"], ["--dangerously-skip-permissions"])
-        self.assertEqual(os.path.normcase(payload["cwd"]), os.path.normcase(workdir))
+        self.assertEqual(os.path.normcase(os.path.realpath(payload["cwd"])),
+                         os.path.normcase(os.path.realpath(workdir)))
         self.assertEqual(payload["console_process_count"], 2, "guard and vendor must share one console")
         self.assertEqual(payload["console_process_count_after"], 2, "the guard lives until its vendor exits")
         self.assertTrue(payload["sid"].startswith("S-1-5-21-"))

@@ -956,7 +956,16 @@ public static class SaiAccounts
         return resp;
     }
 
+    // In-process seam for an authenticated launch fixture; the shipped CLI
+    // has no environment variable or command that replaces the native reader.
+    internal static Func<Dictionary<string, object>> CredentialProbe = ReadCredential;
+
     public static Dictionary<string, object> CheckCredential()
+    {
+        return CredentialProbe();
+    }
+
+    static Dictionary<string, object> ReadCredential()
     {
         IntPtr ptr; bool present = CredReadW("gemini:antigravity", 1, 0, out ptr);
         var result = Obj();

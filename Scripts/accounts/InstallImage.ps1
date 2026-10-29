@@ -10,9 +10,11 @@ function Get-SaiExecutableHash([string]$Path) {
 function Install-SaiExecutableImage([string]$Source, [string]$Target, [string]$AllowedDirectory) {
     $directory = (Get-Item -LiteralPath $AllowedDirectory -ErrorAction Stop).FullName
     $destination = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Target)
-    if (-not [string]::Equals([IO.Path]::GetDirectoryName($destination).TrimEnd('\'), $directory.TrimEnd('\'), [StringComparison]::OrdinalIgnoreCase)) {
+    $destinationDirectory = (Get-Item -LiteralPath ([IO.Path]::GetDirectoryName($destination)) -ErrorAction Stop).FullName
+    if (-not [string]::Equals($destinationDirectory.TrimEnd('\'), $directory.TrimEnd('\'), [StringComparison]::OrdinalIgnoreCase)) {
         throw "Executable replacement target is outside its owned directory: $destination"
     }
+    $destination = Join-Path $destinationDirectory ([IO.Path]::GetFileName($destination))
     $sourcePath = (Get-Item -LiteralPath $Source -ErrorAction Stop).FullName
     $sourceHash = Get-SaiExecutableHash $sourcePath
     if ((Test-Path -LiteralPath $destination -PathType Leaf) -and

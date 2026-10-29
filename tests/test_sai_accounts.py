@@ -75,6 +75,7 @@ class Plane:
     """One isolated control-plane environment (registry + broker processes)."""
 
     def __init__(self, scope='op-test'):
+        self.executable = EXE
         self.dir = tempfile.mkdtemp(prefix='sai-accounts-test-')
         self.scope = scope
         self.sid = real_sid()
@@ -88,7 +89,7 @@ class Plane:
         })
 
     def run(self, *args, timeout=90):
-        r = subprocess.run([EXE] + list(args), capture_output=True, text=True,
+        r = subprocess.run([self.executable] + list(args), capture_output=True, text=True,
                            env=self.env, timeout=timeout, cwd=self.dir)
         try:
             payload = json.loads(r.stdout.strip().splitlines()[-1]) if r.stdout.strip() else None
@@ -114,6 +115,26 @@ class Plane:
         path = self.env['SAI_ACCOUNTS_LEGACY_USER' if which == 'user' else 'SAI_ACCOUNTS_LEGACY_MACHINE']
         with open(path, 'w', encoding='utf-8') as fh:
             json.dump({'schema_version': schema_version, 'accounts': accounts}, fh)
+
+    def profile(self, provider):
+        """Seed a profile in this fixture, without relying on operator profiles."""
+        path = os.path.join(self.dir, provider + '-profile')
+        os.makedirs(path, exist_ok=True)
+        identity = os.path.normpath(path).rstrip('\\').lower()
+        account_id = provider + ':profile-dir:' + hashlib.sha256(identity.encode('utf-8')).hexdigest()[:16]
+        doc = self.registry()
+        doc['accounts'].append({
+            'account_id': account_id, 'provider_id': provider,
+            'display_name': None, 'execution_backend': 'profile_directory',
+            'execution_context_id': 'current-user', 'operational_state': 'ENABLED',
+            'hidden': False, 'auto_connect': False, 'auto_connect_reason': 'default',
+            'created_at': '2026-10-01T00:00:00Z', 'updated_at': '2026-10-01T00:00:00Z',
+            'provider_metadata': {'profile_locator': path,
+                                  'env_scrub': ['OPENAI_API_KEY', 'CODEX_API_KEY', 'CODEX_ACCESS_TOKEN']},
+            'tags': [],
+        })
+        self.write_registry(doc)
+        return account_id
 
     def cleanup(self):
         shutil.rmtree(self.dir, ignore_errors=True)
@@ -713,10 +734,11 @@ def test_profile_directory_launch():
 
         p.legacy('user', [ag_account('S-1-5-21-9-9-9-1002', 'op_a')])
         p.run('import')
+        profile_id = p.profile('codex')
         _, listing, _, _ = p.run('list')
         codex = None
         for a in (listing or {}).get('accounts', []):
-            if a.get('provider_id') == 'codex' and a.get('execution_backend') == 'profile_directory':
+            if a.get('account_id') == profile_id:
                 codex = a
                 break
         check('profile-dir-account-exists', codex is not None, json.dumps(listing)[:200])
@@ -1498,9 +1520,9 @@ def test_auth_operation():
         p.run('restore', ids['AG2'])
 
         # Only providers with an interactive login can answer.
-        p.run('add', '--provider', 'claude', '--alias', 'Claude profile')
+        profile_id = p.profile('claude')
         _, listing2, _, _ = p.run('list', '--all')
-        claude = [a for a in listing2['accounts'] if a['provider_id'] != 'antigravity']
+        claude = [a for a in listing2['accounts'] if a['account_id'] == profile_id]
         if claude:
             code, out, _, _ = p.run('auth', claude[0]['account_id'])
             check('auth04-non-antigravity-provider-refused',
@@ -1749,7 +1771,7 @@ def test_workdir_grants():
         rows = ledger(p)
         check('grant16-ledger-records-what-we-created',
               len(rows) == 1 and rows[0].get('created') is True
-              and rows[0].get('workdir', '').rstrip('\\').lower() == os.path.normpath(workdir).rstrip('\\').lower(),
+              and os.path.normcase(os.path.realpath(rows[0].get('workdir', ''))) == os.path.normcase(os.path.realpath(workdir)),
               str(rows)[:200])
 
         # (11) the second call is a no-op that claims no ownership.

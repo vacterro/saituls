@@ -2,7 +2,9 @@ param(
     # The tree whose Registry\*.REG and Scripts\ are under test. Defaults to the
     # repository this file lives in; point it at an older checkout to use this
     # same harness as a red control.
-    [string]$Repo = (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition))
+    [string]$Repo = (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)),
+    [string]$WaitImplementation = (Join-Path $PSScriptRoot 'shell_probe_wait.ps1'),
+    [ValidateRange(0,60000)][int]$RecorderDelayMilliseconds = 0
 )
 
 $ErrorActionPreference = 'Stop'
@@ -46,12 +48,20 @@ public class SaiShellExec {
     }
     [DllImport("shell32.dll", SetLastError=true, CharSet=CharSet.Unicode)]
     public static extern bool ShellExecuteExW(ref SHELLEXECUTEINFO lpExecInfo);
+    [DllImport("kernel32.dll", SetLastError=true)]
+    public static extern uint WaitForSingleObject(IntPtr handle, uint milliseconds);
+    [DllImport("kernel32.dll", SetLastError=true)]
+    public static extern bool GetExitCodeProcess(IntPtr handle, out uint exitCode);
+    [DllImport("kernel32.dll", SetLastError=true)]
+    public static extern bool CloseHandle(IntPtr handle);
 }
 '@
+. $WaitImplementation
 
 $sandbox = Join-Path $env:TEMP ('saituls_menu_' + [Guid]::NewGuid().ToString('N'))
-$out     = Join-Path $sandbox 'recorded.txt'
 $fails   = 0
+$cleanupReady = $true
+$ownedKeys = @()
 
 function Check([string]$name, [bool]$ok, [string]$detail = '') {
     if ($ok) { Write-Host "PASS  $name  $detail" } else { Write-Host "FAIL  $name  $detail"; $script:fails++ }
@@ -92,10 +102,12 @@ try {
         Copy-Item $shellArg $sandbox -Force
     }
 
-    # The recorder's argument handling is the workers': shell_target(argv[1]).
-    $recorder = Join-Path $sandbox 'recorder.pyw'
-    @"
-import os, sys
+    # Each case owns its script and output: a timed-out recorder must never
+    # supply a later case's evidence or lose its script while it is still live.
+    function New-Recorder([string]$recorder, [string]$out) {
+        @"
+import os, sys, time
+time.sleep($RecorderDelayMilliseconds / 1000.0)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
     from shell_arg import shell_target
@@ -106,6 +118,7 @@ t = shell_target(sys.argv[1])
 open(r'$out', 'w', encoding='utf-8').write(
     "raw=%r target=%r abspath=%r isdir=%s" % (sys.argv[1], t, os.path.abspath(t), os.path.isdir(t)))
 "@ | Set-Content -LiteralPath $recorder -Encoding UTF8
+    }
 
     # DEL_JUNK is the only worker registered on Drive as well as Directory, so it
     # is the one that exposes the drive-root case.
@@ -131,14 +144,18 @@ open(r'$out', 'w', encoding='utf-8').write(
     )
 
     foreach ($case in $cases) {
+        $out = Join-Path $sandbox ("recorded-" + $case.class + '.txt')
+        $recorder = Join-Path $sandbox ("recorder-" + $case.class + '.pyw')
+        New-Recorder $recorder $out
         $shipped = Get-ShippedCommand (Join-Path $Repo 'Registry\DEL_JUNK.REG') $case.class $Repo
         if (-not $shipped) {
             Check "$($case.class): the .REG declares a command" $false 'no command value found'
             continue
         }
         $probe = $shipped.Replace($worker, $recorder)
-        $verb  = "SaiMenuProbe$($case.class)"
+        $verb  = "SaiMenuProbe$($case.class)_$([Guid]::NewGuid().ToString('N'))"
         $key   = "HKCU:\Software\Classes\$($case.class)\shell\$verb"
+        $ownedKeys += $key
         New-Item -Path "$key\command" -Force | Out-Null
         Set-ItemProperty -Path "$key\command" -Name '(default)' -Value $probe
 
@@ -150,14 +167,15 @@ open(r'$out', 'w', encoding='utf-8').write(
         $si.lpFile = $case.target
         $si.nShow  = 0
         $launched = [SaiShellExec]::ShellExecuteExW([ref]$si)
-        Start-Sleep -Milliseconds 1200
+        $processResult = Wait-SaiShellProbeProcess $si.hProcess
+        if (-not $processResult.completed) { $cleanupReady = $false }
         Remove-Item $key -Recurse -Force -ErrorAction SilentlyContinue
 
         $launcher = ($probe -split ' ')[0]
         Check "$($case.label): the shell resolves the shipped launcher $launcher" $launched `
             $(if ($launched) { '' } else { "hInstApp=$([int]$si.hInstApp) -- the menu entry cannot start" })
 
-        if (Test-Path $out) {
+        if ($processResult.completed -and $processResult.exit -eq 0 -and (Test-Path $out)) {
             $rec     = Get-Content $out -Raw
             $raw     = ([regex]::Match($rec, "raw='([^']*)'")).Groups[1].Value.Replace('\\', '\')
             $target  = ([regex]::Match($rec, "target='([^']*)'")).Groups[1].Value.Replace('\\', '\')
@@ -174,14 +192,23 @@ open(r'$out', 'w', encoding='utf-8').write(
                 ($target -eq $want -and $abspath -eq $want -and $isdir -eq 'True') `
                 "raw='$raw' target='$target' abspath='$abspath' isdir=$isdir"
         } else {
-            Check "$($case.label): the worker receives the real target" $false 'the worker never ran'
+            Check "$($case.label): the worker receives the real target" $false `
+                "no completed recorder: wait=$($processResult.wait) exit=$($processResult.exit)"
         }
     }
 } finally {
-    foreach ($c in 'Drive', 'Directory') {
-        Remove-Item "HKCU:\Software\Classes\$c\shell\SaiMenuProbe$c" -Recurse -Force -ErrorAction SilentlyContinue
+    foreach ($ownedKey in $ownedKeys) {
+        Remove-Item -LiteralPath $ownedKey -Recurse -Force -ErrorAction SilentlyContinue
     }
-    Remove-Item -LiteralPath $sandbox -Recurse -Force -ErrorAction SilentlyContinue
+    if ($cleanupReady) {
+        $full = [IO.Path]::GetFullPath($sandbox)
+        $tempBase = [IO.Path]::GetFullPath($env:TEMP).TrimEnd('\') + '\'
+        if (-not $full.StartsWith($tempBase, [StringComparison]::OrdinalIgnoreCase) -or
+            (Split-Path $full -Leaf) -notlike 'saituls_menu_*') { throw 'Unsafe recorder cleanup target' }
+        Remove-Item -LiteralPath $full -Recurse -Force -ErrorAction SilentlyContinue
+    } else {
+        Write-Host "Recorder did not complete; retained its owned sandbox: $sandbox"
+    }
 }
 
 Write-Host '---'

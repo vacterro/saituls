@@ -236,7 +236,7 @@ if __name__ == "__main__":
         ok = ok and cond
 
     check("drive root selects SAFE_DISK", select_policy("G:\\") == "SAFE_DISK")
-    check("folder selects AGGRESSIVE_PROJECT", select_policy("V:\\a\\b") == "AGGRESSIVE_PROJECT")
+    check("folder selects AGGRESSIVE_PROJECT", select_policy(os.path.dirname(__file__)) == "AGGRESSIVE_PROJECT")
     p = build_policy(False, now)
     check("SAFE_DISK keeps build", not p["dir_junk"]("build"))
     check("SAFE_DISK keeps dist", not p["dir_junk"]("dist"))
