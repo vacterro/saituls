@@ -58,6 +58,58 @@ def strip_csharp_comments(text):
 
 LAUNCHER_CODE = strip_powershell_comments(LAUNCHER_SOURCE)
 
+SUITE_ENV = None
+
+
+def console_test_environment(env=None):
+    """Resolve only disposable CLI/account fixtures, never operator services.
+
+    The account transport is a compiled recording stub; integration with the
+    real engine is covered separately by test_sai_accounts.py.
+    """
+    global SUITE_ENV
+    if SUITE_ENV is None:
+        engine = build_stub_engine("sai-accounts", stdout_env="SAITULS_TEST_ACCOUNTS")
+        root = Path(engine).parent / "console-fixtures"
+        root.mkdir(exist_ok=True)
+        bindir = root / "bin"
+        bindir.mkdir(exist_ok=True)
+        for name in ("claude", "codex", "agy", "node", "cline", "opencode"):
+            (bindir / (name + ".cmd")).write_bytes(b"@echo off\r\nexit /b 0\r\n")
+        script = root / "zcode.cjs"
+        script.write_text("// Resolution-only test fixture; no provider code.\n", encoding="utf-8")
+        accounts = []
+        for provider, locators in (
+            ("claude", [str(Path(os.environ["USERPROFILE"]) / ".claude"),
+                        str(Path(os.environ["USERPROFILE"]) / ".claude-account2")]),
+            ("codex", [str(Path(os.environ["USERPROFILE"]) / ".codex")]),
+            ("antigravity", [os.environ["USERNAME"], "console-fixture-ag2"]),
+        ):
+            for index, locator in enumerate(locators, 1):
+                prefix = {"claude": "CL", "codex": "CX", "antigravity": "AG"}[provider]
+                kind = "windows-user" if provider == "antigravity" else "profile-dir"
+                accounts.append({
+                    "account_id": "%s:%s:%016x" % (provider, kind, index),
+                    "provider_id": provider, "display_name": "%s %s" % (provider.title(), index),
+                    "compact_label": prefix + str(index), "operational_state": "ENABLED",
+                    "hidden": False, "provider_metadata": {
+                        "windows_user" if kind == "windows-user" else "profile_locator": locator},
+                })
+        SUITE_ENV = {
+            "PATH": str(bindir) + os.pathsep + os.environ["PATH"],
+            "ZCODE_CLI": str(script), "SAI_ACCOUNTS_EXE": engine,
+            "SAITULS_TEST_ACCOUNTS": json.dumps({"schema": "sai.accounts/list/1", "accounts": accounts}),
+            "STUB_EXIT": "0", "STUB_STDERR": "", "STUB_ARGV_FILE": "",
+            "SAITULS_CONSOLE_LOG": str(root / "launch.log"),
+        }
+    merged = dict(os.environ)
+    # PS7's module path can shadow the PS5 built-ins used by these children.
+    merged = {key: value for key, value in merged.items() if key.upper() != "PSMODULEPATH"}
+    merged.update(SUITE_ENV)
+    if env:
+        merged.update(env)
+    return merged
+
 
 def run_selftest(*extra, registry_path=None, env=None, federation="off"):
     """Every suite here runs STANDALONE unless it says otherwise.
@@ -69,16 +121,15 @@ def run_selftest(*extra, registry_path=None, env=None, federation="off"):
     """
     cmd = ["powershell", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass",
            "-File", str(LAUNCHER), "-SelfTest", "-Federation", federation] + list(extra)
-    merged = dict(os.environ)
-    if env:
-        merged.update(env)
+    merged = console_test_environment(env)
     completed = subprocess.run(cmd, capture_output=True, text=True,
                                encoding="utf-8", errors="replace",
                                cwd=str(REPO), env=merged)
     text = (completed.stdout or "").strip()
     start = text.find("{")
     payload = json.loads(text[start:]) if start >= 0 else None
-    return completed.returncode, payload, completed.stderr
+    diagnostic = completed.stderr or (text if completed.returncode else "")
+    return completed.returncode, payload, diagnostic
 
 def is_template(profile):
     """A profile that renders one console per canonical account, not a console."""
@@ -186,7 +237,7 @@ class SelfTestTests(unittest.TestCase):
 
     def test_project_first_title(self):
         with tempfile.TemporaryDirectory(prefix="saituls-console-") as tmp:
-            project = Path(tmp) / "MyProject"
+            project = (Path(tmp) / "MyProject").resolve()
             project.mkdir()
             rc, payload, stderr = run_selftest("-Profile", "claude-1",
                                                "-WorkDir", str(project))
@@ -441,9 +492,7 @@ INSTALLER = REPO / "Installers" / "INSTALL_CONSOLES_MENU.PS1"
 INSTALLER_SOURCE = INSTALLER.read_text(encoding="utf-8")
 
 def ps(script, env=None):
-    merged = dict(os.environ)
-    if env:
-        merged.update(env)
+    merged = console_test_environment(env)
     completed = subprocess.run(
         ["powershell", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass",
          "-Command", "[Console]::OutputEncoding=[Text.Encoding]::UTF8; "
@@ -494,6 +543,25 @@ class StandaloneTests(unittest.TestCase):
         rc, out, err = ps("@(Get-SaiAccountDescriptors 'C:\\nope\\sai-accounts.exe').Count")
         self.assertEqual(rc, 0, err)
         self.assertEqual(out, "0")
+
+    def test_missing_cli_still_reports_an_unresolved_profile(self):
+        with tempfile.TemporaryDirectory(prefix="saituls-no-cli-") as tmp:
+            rc, payload, stderr = run_selftest(
+                "-Profile", "claude-1", env={"PATH": tmp}, federation="off")
+            self.assertEqual(rc, 0, stderr)
+            self.assertFalse(payload["ok"])
+            row = profile_row(payload, "claude-1")
+            self.assertFalse(row["Resolved"])
+            self.assertEqual(row["ErrorCategory"], "EXECUTABLE_MISSING")
+
+    def test_shared_profiles_are_bound_to_the_fixture_engine(self):
+        rc, payload, stderr = run_selftest(federation="on")
+        self.assertEqual(rc, 0, stderr)
+        self.assertEqual(payload["federation"]["engine"],
+                         str(Path(console_test_environment()["SAI_ACCOUNTS_EXE"]).resolve()))
+        shared = [row for row in payload["profiles"] if row["Origin"] == "shared"]
+        self.assertTrue(shared)
+        self.assertTrue(all(row["Command"] == payload["federation"]["engine"] for row in shared))
 
 class AccountProfileShapeTests(unittest.TestCase):
     """The adapter's launch shape, proven on every machine.
@@ -572,8 +640,7 @@ class FederationTests(unittest.TestCase):
     """The control plane adds accounts. It never takes any away."""
 
     def setUp(self):
-        if not engine_is_installed():
-            self.skipTest("SAI Accounts control plane is not installed on this machine")
+        self.assertTrue(engine_is_installed(), "compiled account fixture did not resolve")
 
     def federated(self):
         rc, payload, stderr = run_selftest(federation="on")
@@ -646,7 +713,7 @@ class FederationTests(unittest.TestCase):
 
     def test_a_workdir_with_spaces_stays_exactly_one_argument(self):
         with tempfile.TemporaryDirectory(prefix="saituls-console-") as tmp:
-            project = Path(tmp) / "My Big Project 2"
+            project = (Path(tmp) / "My Big Project 2").resolve()
             project.mkdir()
             rc, payload, stderr = run_selftest("-WorkDir", str(project), federation="on")
             self.assertEqual(rc, 0, stderr)
@@ -659,7 +726,7 @@ class FederationTests(unittest.TestCase):
 
     def test_a_unicode_workdir_survives_intact(self):
         with tempfile.TemporaryDirectory(prefix="saituls-console-") as tmp:
-            project = Path(tmp) / "проект Ünïcødé"
+            project = (Path(tmp) / "проект Ünïcødé").resolve()
             project.mkdir()
             rc, payload, stderr = run_selftest("-WorkDir", str(project), federation="on")
             self.assertEqual(rc, 0, stderr)
@@ -837,14 +904,21 @@ class FederationTests(unittest.TestCase):
         self.assertEqual(out, "0")
 
     def test_federation_on_without_an_engine_fails_closed(self):
-        rc, payload, stderr = run_selftest(federation="on", env={
-            "SAI_ACCOUNTS_EXE": str(REPO / "Scripts" / "consoles" / "ACCOUNTS.ps1")})
-        # The canonical install still resolves on this machine, so the honest
-        # assertion is the one below: 'on' never silently degrades to 'off'.
-        if payload:
-            self.assertIsNotNone(payload["federation"]["engine"])
-        else:
-            self.assertIn("control plane is not installed", stderr)
+        # Inject an absent resolver into a disposable module: a developer's
+        # deployed/repo-built engine must not turn this negative into success.
+        with tempfile.TemporaryDirectory(prefix="saituls-no-engine-") as tmp:
+            root = Path(tmp)
+            (root / "CONSOLES.ps1").write_text(LAUNCHER_SOURCE, encoding="utf-8-sig")
+            (root / "ACCOUNTS.ps1").write_text(
+                ACCOUNTS_SOURCE + "\nfunction Resolve-SaiAccountsEngine { return $null }\n",
+                encoding="utf-8-sig")
+            shutil.copy(REGISTRY, root / "consoles.json")
+            completed = subprocess.run(
+                ["powershell", "-NoProfile", "-File", str(root / "CONSOLES.ps1"),
+                 "-SelfTest", "-Federation", "on"], capture_output=True, text=True,
+                encoding="utf-8", errors="replace", env=console_test_environment(), timeout=30)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("control plane is not installed", completed.stdout + completed.stderr)
 
     def test_installer_and_launcher_share_one_expansion(self):
         self.assertIn("ACCOUNTS.ps1", INSTALLER_SOURCE)
@@ -1014,9 +1088,7 @@ def ps_single(text):
 
 def psraw(script, env=None):
     """Plain PowerShell, without dot-sourcing the federation module."""
-    merged = dict(os.environ)
-    if env:
-        merged.update(env)
+    merged = console_test_environment(env)
     completed = subprocess.run(
         ["powershell", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass",
          "-Command", "[Console]::OutputEncoding=[Text.Encoding]::UTF8; " + script],
@@ -1029,7 +1101,7 @@ STUB_CACHE = {}
 STUB_DIR = []
 
 
-def build_stub_engine(name="stub-engine"):
+def build_stub_engine(name="stub-engine", stdout_env="STUB_STDOUT"):
     """A minimal stand-in for an engine or a CLI.
 
     It records the argv it was REALLY started with and prints whatever envelope
@@ -1082,7 +1154,8 @@ class StubEngine {
         return code;
     }
 }
-''', encoding="utf-8")
+'''.replace('GetEnvironmentVariable("STUB_STDOUT")',
+            'GetEnvironmentVariable("%s")' % stdout_env), encoding="utf-8")
     built = subprocess.run([csc, "-nologo", "-target:exe", "-out:" + str(exe), str(source)],
                            capture_output=True, text=True, timeout=180)
     if built.returncode != 0 or not exe.exists():
@@ -1204,7 +1277,7 @@ class ExplorerLaunchBoundaryTests(unittest.TestCase):
         self.windir = os.environ.get("WINDIR", r"C:\Windows")
 
     def launch(self, *extra, env=None, launcher=None):
-        merged = dict(os.environ)
+        merged = console_test_environment()
         merged["SAITULS_CONSOLE_LOG"] = self.log
         if env:
             merged.update(env)
@@ -1274,7 +1347,7 @@ class ExplorerLaunchBoundaryTests(unittest.TestCase):
             "requires_admin": False, "title_suffix": "Stub",
             "description": "stub CLI"}]
         (Path(registry) / "consoles.json").write_text(json.dumps(doc), encoding="utf-8")
-        project = os.path.join(self.tmp, "project")
+        project = str((Path(self.tmp) / "project").resolve())
         os.makedirs(project, exist_ok=True)
         argv_file = os.path.join(self.tmp, "argv.txt")
         completed = self.launch(
