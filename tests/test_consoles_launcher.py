@@ -557,8 +557,11 @@ class StandaloneTests(unittest.TestCase):
     def test_shared_profiles_are_bound_to_the_fixture_engine(self):
         rc, payload, stderr = run_selftest(federation="on")
         self.assertEqual(rc, 0, stderr)
-        self.assertEqual(payload["federation"]["engine"],
-                         str(Path(console_test_environment()["SAI_ACCOUNTS_EXE"]).resolve()))
+        # PowerShell can preserve an 8.3 parent while Python expands it.
+        # Bind the actual fixture file, including rejection of other engines.
+        self.assertTrue(os.path.samefile(
+            payload["federation"]["engine"],
+            console_test_environment()["SAI_ACCOUNTS_EXE"]))
         shared = [row for row in payload["profiles"] if row["Origin"] == "shared"]
         self.assertTrue(shared)
         self.assertTrue(all(row["Command"] == payload["federation"]["engine"] for row in shared))
