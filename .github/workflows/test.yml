@@ -203,7 +203,9 @@ jobs:
       - name: Test Explorer menu launch and argument contract
         shell: pwsh
         run: |
-          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_shell_menu.ps1
+          # Exercise a recorder that is still live after the old ten-second
+          # bound; preserve real shell resolution and drive-root assertions.
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\test_shell_menu.ps1 -RecorderDelayMilliseconds 12000
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Test single-instance activation publication
         shell: pwsh

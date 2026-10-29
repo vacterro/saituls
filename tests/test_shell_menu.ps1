@@ -4,7 +4,7 @@ param(
     # same harness as a red control.
     [string]$Repo = (Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)),
     [string]$WaitImplementation = (Join-Path $PSScriptRoot 'shell_probe_wait.ps1'),
-    [ValidateRange(0,5000)][int]$RecorderDelayMilliseconds = 0
+    [ValidateRange(0,60000)][int]$RecorderDelayMilliseconds = 0
 )
 
 $ErrorActionPreference = 'Stop'
@@ -59,7 +59,6 @@ public class SaiShellExec {
 . $WaitImplementation
 
 $sandbox = Join-Path $env:TEMP ('saituls_menu_' + [Guid]::NewGuid().ToString('N'))
-$out     = Join-Path $sandbox 'recorded.txt'
 $fails   = 0
 $cleanupReady = $true
 $ownedKeys = @()
@@ -103,9 +102,10 @@ try {
         Copy-Item $shellArg $sandbox -Force
     }
 
-    # The recorder's argument handling is the workers': shell_target(argv[1]).
-    $recorder = Join-Path $sandbox 'recorder.pyw'
-    @"
+    # Each case owns its script and output: a timed-out recorder must never
+    # supply a later case's evidence or lose its script while it is still live.
+    function New-Recorder([string]$recorder, [string]$out) {
+        @"
 import os, sys, time
 time.sleep($RecorderDelayMilliseconds / 1000.0)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -118,6 +118,7 @@ t = shell_target(sys.argv[1])
 open(r'$out', 'w', encoding='utf-8').write(
     "raw=%r target=%r abspath=%r isdir=%s" % (sys.argv[1], t, os.path.abspath(t), os.path.isdir(t)))
 "@ | Set-Content -LiteralPath $recorder -Encoding UTF8
+    }
 
     # DEL_JUNK is the only worker registered on Drive as well as Directory, so it
     # is the one that exposes the drive-root case.
@@ -143,6 +144,9 @@ open(r'$out', 'w', encoding='utf-8').write(
     )
 
     foreach ($case in $cases) {
+        $out = Join-Path $sandbox ("recorded-" + $case.class + '.txt')
+        $recorder = Join-Path $sandbox ("recorder-" + $case.class + '.pyw')
+        New-Recorder $recorder $out
         $shipped = Get-ShippedCommand (Join-Path $Repo 'Registry\DEL_JUNK.REG') $case.class $Repo
         if (-not $shipped) {
             Check "$($case.class): the .REG declares a command" $false 'no command value found'
@@ -171,7 +175,7 @@ open(r'$out', 'w', encoding='utf-8').write(
         Check "$($case.label): the shell resolves the shipped launcher $launcher" $launched `
             $(if ($launched) { '' } else { "hInstApp=$([int]$si.hInstApp) -- the menu entry cannot start" })
 
-        if ($processResult.completed -and (Test-Path $out)) {
+        if ($processResult.completed -and $processResult.exit -eq 0 -and (Test-Path $out)) {
             $rec     = Get-Content $out -Raw
             $raw     = ([regex]::Match($rec, "raw='([^']*)'")).Groups[1].Value.Replace('\\', '\')
             $target  = ([regex]::Match($rec, "target='([^']*)'")).Groups[1].Value.Replace('\\', '\')
